@@ -1,3 +1,4 @@
+https://user-images.githubusercontent.com/26161723/233777277-e3b9928e-b88f-43e2-b0e0-3cbc923bc799.mp4
 ## 插件描述
 
 - 支持运用百度AI进行图像处理

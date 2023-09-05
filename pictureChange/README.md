@@ -31,7 +31,7 @@ pip3 install -r requirements.txt
 
 请将`config.json.template`复制为`config.json`，并修改其中的参数和规则。
 
-PS: 修改了pictureChange的`host`和`port`
+PS: 修改了pictureChange的`host`和`port`和`sd_model_checkpoint`
 
 ### 图生图请求格式
 
@@ -235,12 +235,12 @@ PS: 实际参数分为两部分:
     ]
 }
 ```
-PS: 如果你下载了多个模型，就可以根据实际需要，填入你想要的模型
+PS: 如果你下载了多个模型，就可以根据实际需要，填入你想要的模型 请确保你填入的模型是你下载过的模型，且模型能正常使用！
 
 3. 修改文件
 ## 个人号
-1.直接把[chat_channel.py]()覆盖你的chatgpt-on-wechat\channel\chat_channel.py
-2.直接把[godcmd.py]()覆盖你的chatgpt-on-wechat\plugins\godcmd\godcmd.py
+1. 直接把[chat_channel.py]()覆盖你的chatgpt-on-wechat\channel\chat_channel.py
+2. 直接把[godcmd.py]()覆盖你的chatgpt-on-wechat\plugins\godcmd\godcmd.py
 
 ### 公众号和企业微信
 不需要进行上述操作

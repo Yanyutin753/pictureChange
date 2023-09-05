@@ -37,8 +37,8 @@ PS: 修改了pictureChange的`host`和`port`
 
 ## 个人号
 -群聊 
-1.需要发送"开启图生图"之后自动识别群聊里的每一张图
-2.不需要则发送"关闭图生图"之后关闭功能
+1、需要发送"开启图生图"之后自动识别群聊里的每一张图
+2、不需要则发送"关闭图生图"之后关闭功能
 ![image](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/bfb66026-6e43-4157-b08d-9d7b20568ef6)
 ![image](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/57096c68-2f68-4cf3-823b-88fb309664e1)
 

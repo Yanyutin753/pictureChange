@@ -1,4 +1,3 @@
-https://github-production-user-asset-6210df.s3.amazonaws.com/132346501/265570567-535998bb-77ab-45bc-9564-a7539549bb30.MP4
 ## 插件描述
 
 - 支持运用百度AI进行图像处理
@@ -250,8 +249,7 @@ PS: 如果你下载了多个模型，就可以根据实际需要，填入你想�
 ### 使用实例
 ![d000a9e07c71a4585bfdf7978316650](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/38979d24-ac07-4611-8b53-0cbae550f6a8)
 ![1d132547ec8e743f6d2dd8aa5526699](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/acdcceea-2d2d-4f24-86cb-e846759c05a9)
-https://github-production-user-asset-6210df.s3.amazonaws.com/132346501/265570567-535998bb-77ab-45bc-9564-a7539549bb30.MP4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20230905%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230905T024238Z&X-Amz-Expires=300&X-Amz-Signature=b50af3df8a54efde6d6d94a57314ce38dddda4ca015b3c3231dfd8ae550627f0&X-Amz-SignedHeaders=host&actor_id=132346501&key_id=0&repo_id=687255129
-
+<video src="https://github-production-user-asset-6210df.s3.amazonaws.com/132346501/265570567-535998bb-77ab-45bc-9564-a7539549bb30.MP4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20230905%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230905T024238Z&X-Amz-Expires=300&X-Amz-Signature=b50af3df8a54efde6d6d94a57314ce38dddda4ca015b3c3231dfd8ae550627f0&X-Amz-SignedHeaders=host&actor_id=132346501&key_id=0&repo_id=687255129" controls></video>
 
 
 

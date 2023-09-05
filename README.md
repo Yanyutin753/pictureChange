@@ -1,4 +1,5 @@
 https://user-images.githubusercontent.com/26161723/233777277-e3b9928e-b88f-43e2-b0e0-3cbc923bc799.mp4
+https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/535998bb-77ab-45bc-9564-a7539549bb30
 ## 插件描述
 
 - 支持运用百度AI进行图像处理
@@ -251,6 +252,10 @@ PS: 如果你下载了多个模型，就可以根据实际需要，填入你想�
 ![d000a9e07c71a4585bfdf7978316650](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/38979d24-ac07-4611-8b53-0cbae550f6a8)
 ![1d132547ec8e743f6d2dd8aa5526699](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/acdcceea-2d2d-4f24-86cb-e846759c05a9)
 <video src="https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/535998bb-77ab-45bc-9564-a7539549bb30" controls></video>
+
+
+
+Uploading 790d5a0ba99950b0a92b386cd7f022fe.mp4…
 
 
 

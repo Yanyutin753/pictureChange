@@ -1,8 +1,8 @@
 ## 插件描述
 
-- 可以运用百度AI进行图像处理
-- 可以运用stable diffusion webui进行图像处理
-- 可以运用stable diffusion webui画图
+- 支持运用百度AI进行图像处理
+- 支持运用stable diffusion webui进行图像处理
+- 支持运用stable diffusion webui画图
 - 支持多种sd模型
 - 支持并发控制
 - 支持管理员修改Host
@@ -31,7 +31,7 @@ pip3 install -r requirements.txt
 
 请将`config.json.template`复制为`config.json`，并修改其中的参数和规则。
 
-PS: 修改了pictureChange的`host`和`port`和`sd_model_checkpoint`
+PS: 修改了pictureChange的`host`和`port`和`sd_model_checkpoint`和 `api_key` ,`secret_key`
 
 ### 图生图请求格式
 

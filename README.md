@@ -39,24 +39,27 @@ PS: 修改了pictureChange的`host`和`port`和`sd_model_checkpoint`和 `api_key
 - 群聊 
 1. 需要发送"开启图生图"之后自动识别群聊里的每一张图
 2. 不需要则发送"关闭图生图"之后关闭功能
-![image](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/bfb66026-6e43-4157-b08d-9d7b20568ef6)
-![image](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/57096c68-2f68-4cf3-823b-88fb309664e1)
+![image](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/1813d361-242f-4ac1-8cbf-c0282e95f34e)
+
 - 单聊
 直接发照片即可
 ## 公众号和企业微信 
 - 直接发图即可使用功能
-![image](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/d6f4943c-3399-4c2d-8cb5-578aa55de509)
+![image](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/6a3559ff-f538-469d-84b8-4446bf814207)
+
 
 
 ## godcmd添加功能
 - 个人号使用一键开启或关闭图生图功能
 - 更改Host(更改地址,由于本地部署内网穿透，每次的ip不同，需要更改)
-![image](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/3a4f34d2-917d-4928-98dc-2d7e1d6dd766)
+![image](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/722ad22c-ef26-47e0-a105-86b8ffc02a08)
+
 
 
 ## 实现分流控制
 - 当请求数超过3的时候，会发送消息，需要用户等待一会，直至前面用户完成任务之后再进行
-![image](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/16234431-bbd9-4c5d-ad79-d545c10606e3)
+![image](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/8f56227b-e8b2-49a1-902b-1812f8336765)
+
 
 
 ### 画图请求格式
@@ -247,8 +250,10 @@ PS: 如果你下载了多个模型，就可以根据实际需要，填入你想�
 1. 直接把[godcmd.py](https://github.com/Yanyutin753/wechat_pictureChange/blob/main/%E5%85%AC%E4%BC%97%E5%8F%B7%E5%92%8C%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1/godcmd.py)覆盖你的chatgpt-on-wechat\plugins\godcmd\godcmd.py
 
 ### 使用实例
-![d000a9e07c71a4585bfdf7978316650](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/38979d24-ac07-4611-8b53-0cbae550f6a8)
-![1d132547ec8e743f6d2dd8aa5526699](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/acdcceea-2d2d-4f24-86cb-e846759c05a9)
+![d000a9e07c71a4585bfdf7978316650](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/b83b5548-a397-4460-945d-23d360a15f42)
+![1d132547ec8e743f6d2dd8aa5526699](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/f224c8b4-19ee-43f1-a43a-2915b8d4800b)
+https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/c6763e9b-76d1-428d-83c9-3fdd9f98a809
+
 
 
 

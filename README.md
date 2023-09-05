@@ -249,7 +249,7 @@ PS: 如果你下载了多个模型，就可以根据实际需要，填入你想�
 ### 使用实例
 ![d000a9e07c71a4585bfdf7978316650](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/38979d24-ac07-4611-8b53-0cbae550f6a8)
 ![1d132547ec8e743f6d2dd8aa5526699](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/acdcceea-2d2d-4f24-86cb-e846759c05a9)
-<video src="https://github-production-user-asset-6210df.s3.amazonaws.com/132346501/265570567-535998bb-77ab-45bc-9564-a7539549bb30.MP4" controls></video>
+http://www.yyandywt99.love/790d5a0ba99950b0a92b386cd7f022fe.MP4
 
 
 

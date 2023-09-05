@@ -42,7 +42,7 @@ PS: 修改了pictureChange的`host`和`port`和`sd_model_checkpoint`和 `api_key
 ![image](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/bfb66026-6e43-4157-b08d-9d7b20568ef6)
 ![image](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/57096c68-2f68-4cf3-823b-88fb309664e1)
 - 单聊
-- 直接发照片即可
+直接发照片即可
 ## 公众号和企业微信 
 - 直接发图即可使用功能
 ![image](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/d6f4943c-3399-4c2d-8cb5-578aa55de509)

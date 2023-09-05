@@ -37,13 +37,13 @@ PS: 修改了pictureChange的`host`和`port`
 
 ## 个人号
 -群聊 
-1、需要发送"开启图生图"之后自动识别群聊里的每一张图
-2、不需要则发送"关闭图生图"之后关闭功能
+1. 需要发送"开启图生图"之后自动识别群聊里的每一张图
+2. 不需要则发送"关闭图生图"之后关闭功能
 ![image](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/bfb66026-6e43-4157-b08d-9d7b20568ef6)
 ![image](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/57096c68-2f68-4cf3-823b-88fb309664e1)
 
 ## 公众号和企业微信 
-直接发图即可使用功能
+- 直接发图即可使用功能
 ![image](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/d6f4943c-3399-4c2d-8cb5-578aa55de509)
 
 
@@ -78,8 +78,8 @@ PS: 实际参数分为两部分:
 
 
 ### 部署操作
-1.确保stable diffusion webui部署成功且能访问
-2.把`config.json.template`复制为`config.json`，并修改其中的参数和规则。
+1. 确保stable diffusion webui部署成功且能访问
+2. 把`config.json.template`复制为`config.json`，并修改其中的参数和规则。
 具体如下
 ```bash
 # config.json文件内容示例
@@ -237,7 +237,7 @@ PS: 实际参数分为两部分:
 ```
 PS: 如果你下载了多个模型，就可以根据实际需要，填入你想要的模型
 
-3.修改文件
+3. 修改文件
 ## 个人号
 1.直接把[chat_channel.py]()覆盖你的chatgpt-on-wechat\channel\chat_channel.py
 2.直接把[godcmd.py]()覆盖你的chatgpt-on-wechat\plugins\godcmd\godcmd.py

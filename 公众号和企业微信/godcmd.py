@@ -75,33 +75,9 @@ ADMIN_COMMANDS = {
         "alias": ["stop", "暂停服务"],
         "desc": "暂停服务",
     },
-    "loginSong": {
-        "alias": ["loginSong", "登录网易云音乐"],
-        "desc": "点击链接，扫描链接里的二维码，登录网易云音乐",
-    },
-    "setKey": {
-        "alias": ["setKey", "更改默认api_key"],
-        "desc": "更改默认api_key",
-    },
     "setHost": {
         "alias": ["setHost", "更改默认sd_Host"],
         "desc": "更改默认sd_Host",
-    },
-    "user": {
-        "alias": ["user", "用户"],
-        "desc": "获取用户id",
-    },
-    "enableUser": {
-        "alias": ["enableUser", "用户"],
-        "desc": "启动用户",
-    },
-    "disableUser": {
-        "alias": ["disableUser", "用户"],
-        "desc": "禁用用户",
-    },
-    "deleteDisUser": {
-        "alias": ["deleteDisUser", "未被认证的用户"],
-        "desc": "删除未被认证的用户",
     },
     "reconf": {
         "alias": ["reconf", "重载配置"],
@@ -351,33 +327,7 @@ class Godcmd(Plugin):
                             ok, result = True, "服务已恢复"
                         elif cmd == "reconf":
                             load_config()
-                            ok, result = True, "配置已重载"
-                        elif cmd == "loginSong":
-                            ok, result = True, "https://www.yang-music.fun/qrlogin.html"
-                        elif cmd == "setKey":
-                            if len(args) != 1:
-                                ok, result = False, "请提供正确的api_key"
-                            else:
-                                # 设置配置文件路径
-                                config_path = os.path.join(curdir, "../../config.json")
-                                
-                                # 加载配置文件
-                                with open(config_path, "r", encoding="utf-8") as config_file:
-                                    config_data = json.load(config_file)
-                                
-                                # 修改 open_ai_api_key 的值
-                                new_api_key = "your_new_api_key"
-                                config_data["open_ai_api_key"] = args[0]
-                                
-                                # 保存修改后的配置
-                                with open(config_path, "w", encoding="utf-8") as config_file:
-                                    json.dump(config_data, config_file, indent=4, ensure_ascii=False)
-                                bot = ChatGPTBot()
-                                bot.initialize_gpt()
-                                print("open_ai_api_key 已经更新为:", args[0])
-                                
-                            ok, result = True, "修改成功"
-                            
+                            ok, result = True, "配置已重载"                         
                         elif cmd == "setHost":
                             if len(args) != 1:
                                 ok, result = False, "请提供正确的Host"
@@ -400,25 +350,6 @@ class Godcmd(Plugin):
                                 print("Host已成功更新为:",args[0])
                                 
                             ok, result = True, "Host已成功更新"
-                            
-                        elif cmd == "user":
-                            ok, result = True, storage.get_users_as_string()
-                        elif cmd == "enableUser":
-                            if len(args) != 1:
-                                ok, result = False, "请提供用户id"
-                            else:
-                                storage.set_user_enabled(str(args[0]))
-                                ok, result = True, "启动成功"
-                        elif cmd == "disableUser":
-                            if len(args) != 1:
-                                ok, result = False, "请提供用户id"
-                            else:
-                                storage.set_user_enabled(str(args[0]))
-                                ok, result = True, "禁用成功"     
-                                
-                        elif cmd == "deleteDisUser":
-                                storage.remove_disabled_users()
-                                ok, result = True, "删除成功"        
                         elif cmd == "resetall":
                             if bottype in [const.OPEN_AI, const.CHATGPT, const.CHATGPTONAZURE, const.LINKAI]:
                                 channel.cancel_all_session()

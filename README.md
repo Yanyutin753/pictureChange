@@ -83,7 +83,7 @@ PS: 实际参数分为两部分:
 
 ### 部署操作
 1. 确保stable diffusion webui部署成功且能访问
-2. 把`config.json.template`复制为`config.json`，并修改其中的参数和规则。
+2. 安装包解压，并确保只把pictureChange文件夹plugins目录里面，之后把`config.json.template`复制为`config.json`，并修改其中的参数和规则。
 具体如下
 ```bash
 # config.json文件内容示例

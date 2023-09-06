@@ -346,7 +346,7 @@ class Godcmd(Plugin):
                                 with open(config_path, "w", encoding="utf-8") as config_file:
                                     json.dump(config_data, config_file, indent=4, ensure_ascii=False)
                                 
-                                PluginManager().reload_plugin("sdwebui")
+                                PluginManager().reload_plugin("pictureChange")
                                 print("Host已成功更新为:",args[0])
                                 
                             ok, result = True, "Host已成功更新"

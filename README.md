@@ -264,5 +264,6 @@ https://github-production-user-asset-6210df.s3.amazonaws.com/132346501/265583323
 ### 贡献与支持
 - 欢迎贡献代码，提出问题和建议。如果你发现了bug或者有新的功能想法，请提交一个Issue让我知道。你也可以通过Fork项目并提交Pull Request来贡献代码。 如果你想部署这个项目，给我一个星星⭐，这是对我最大的支持！
 - 敲代码不易，希望客官给点赞助，让我更好修改代码！
-![91257fbc87ddb46574a4395abbb1820](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/9591e04b-7bf3-46b1-9266-7704add71fc9)
+![91257fbc87ddb46574a4395abbb1820](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/713eb69e-6e00-46ad-bec5-0b3926305ef0)
+
 

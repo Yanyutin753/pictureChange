@@ -250,8 +250,8 @@ PS: 如果你下载了多个模型，就可以根据实际需要，填入你想�
 1. 直接把[godcmd.py](https://github.com/Yanyutin753/wechat_pictureChange/blob/main/%E5%85%AC%E4%BC%97%E5%8F%B7%E5%92%8C%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1/godcmd.py)覆盖你的chatgpt-on-wechat\plugins\godcmd\godcmd.py
 
 ### 使用实例
-![image](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/8f56227b-e8b2-49a1-902b-1812f8336765)
 ![image](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/b83b5548-a397-4460-945d-23d360a15f42)
+![image](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/c7252b6c-aee9-4f12-88b8-156b5374fa35)
 https://github-production-user-asset-6210df.s3.amazonaws.com/132346501/265583323-c6763e9b-76d1-428d-83c9-3fdd9f98a809.mp4
 
 

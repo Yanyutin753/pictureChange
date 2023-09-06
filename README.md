@@ -252,7 +252,7 @@ PS: 如果你下载了多个模型，就可以根据实际需要，填入你想�
 ### 使用实例
 ![d000a9e07c71a4585bfdf7978316650](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/b83b5548-a397-4460-945d-23d360a15f42)
 ![1d132547ec8e743f6d2dd8aa5526699](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/f224c8b4-19ee-43f1-a43a-2915b8d4800b)
-https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/c6763e9b-76d1-428d-83c9-3fdd9f98a809
+https://github-production-user-asset-6210df.s3.amazonaws.com/132346501/265583323-c6763e9b-76d1-428d-83c9-3fdd9f98a809.mp4
 
 
 
@@ -264,7 +264,5 @@ https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/c6763e9b-76
 ### 贡献与支持
 - 欢迎贡献代码，提出问题和建议。如果你发现了bug或者有新的功能想法，请提交一个Issue让我知道。你也可以通过Fork项目并提交Pull Request来贡献代码。 如果你想部署这个项目，给我一个星星⭐，这是对我最大的支持！
 - 敲代码不易，希望客官给点赞助，让我更好修改代码！
-![91257fbc87ddb46574a4395abbb1820](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/df148cef-57f9-44b4-8961-4dc97d15e422)
-
-
+![91257fbc87ddb46574a4395abbb1820](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/9591e04b-7bf3-46b1-9266-7704add71fc9)
 

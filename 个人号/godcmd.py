@@ -365,7 +365,7 @@ class Godcmd(Plugin):
                                 ok, result = False, "请提供正确的Host"
                             else:
                                 # 设置配置文件路径
-                                config_path = os.path.join(curdir, "../sdwebui/config.json")
+                                config_path = os.path.join(curdir, "../picturechange/config.json")
                                 
                                 # 加载配置文件
                                 with open(config_path, "r", encoding="utf-8") as config_file:

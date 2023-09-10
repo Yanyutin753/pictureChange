@@ -265,6 +265,7 @@ PS: 如果你下载了多个模型，就可以根据实际需要，填入你想�
 ```
 ### 使用实例
 ![image](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/b83b5548-a397-4460-945d-23d360a15f42)
+![c67e2ed8503d312f087987fbe0466a5](https://github.com/Yanyutin753/pictureChange/assets/132346501/6f7eab3c-74bb-4955-8565-adc37f60fe0f)
 ![245e7dd52082cb5ee23da10f53e7684](https://github.com/Yanyutin753/pictureChange/assets/132346501/02dd4d11-ff7d-46f6-ad75-35a94cd87c91)
 ![59842123760da4d4be968804730b2e2](https://github.com/Yanyutin753/pictureChange/assets/132346501/abe03251-67c0-4d47-93dc-b62eda6ffdb7)
 https://github-production-user-asset-6210df.s3.amazonaws.com/132346501/265583323-c6763e9b-76d1-428d-83c9-3fdd9f98a809.mp4

@@ -258,6 +258,11 @@ PS: 如果你下载了多个模型，就可以根据实际需要，填入你想�
 ### 公众号和企业微信
 1. 直接把[godcmd.py](https://github.com/Yanyutin753/wechat_pictureChange/blob/main/%E5%85%AC%E4%BC%97%E5%8F%B7%E5%92%8C%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1/godcmd.py)覆盖你的chatgpt-on-wechat\plugins\godcmd\godcmd.py
 
+4. 安装依赖
+```
+    #进入pictureChange文件夹安装依赖
+    pip3 install -r requirements.txt
+```
 ### 使用实例
 ![image](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/b83b5548-a397-4460-945d-23d360a15f42)
 ![image](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/c7252b6c-aee9-4f12-88b8-156b5374fa35)

@@ -1,4 +1,3 @@
-# encoding:utf-8
 import io
 import json
 import os
@@ -20,7 +19,7 @@ from plugins import *
 from PIL import Image
 import urllib.parse
 
-@plugins.register(name="pictureChange", desc="利用百度云AI和stable-diffusion webui来画图,图生图", version="1.5", author="yangyang")
+@plugins.register(name="pictureChange", desc="利用百度云AI和stable-diffusion webui来画图,图生图", version="1.6.1", author="yangyang")
 class pictureChange(Plugin):
     def __init__(self):
         super().__init__()
@@ -218,7 +217,7 @@ class pictureChange(Plugin):
 
             elif context["msg"].other_user_id in self.other_user_id:
                 try:
-                    if any(ext in content for ext in ["jpg", "jpeg", "png", "gif", "webp"]) and content.startswith("tmp"):
+                    if e_context['context'].type == ContextType.IMAGE:
                         if self.use_number >= self.max_number:
                             reply.type = ReplyType.TEXT
                             replyText = f"🧸当前排队人数为{str(self.use_number - self.max_number + 1)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"
@@ -269,17 +268,22 @@ class pictureChange(Plugin):
                             reply.content = replyText
                             e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
                             return
+                        
                     elif content.startswith("❎ 暂不处理 "):
                         file_content = content[len("❎ 暂不处理 "):]
                         # 删除文件
+                        reply.type = ReplyType.TEXT
+                        replyText = ""
                         if os.path.isfile(file_content):
                             os.remove(file_content)
-                            logger.info("文件已成功删除")
+                            replyText = "🥰文件已成功删除"
                         else:
-                            logger.error("文件不存在")
+                            replyText = "😭文件不存在或已删除"
+                        reply.content = replyText
                         e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
                         self.use_number -= 1
                         return
+                    
                     elif content.startswith("🌈 图像动漫化 "):
                         file_content = content[len("🌈 图像动漫化 "):]
                         if os.path.isfile(file_content):
@@ -590,9 +594,7 @@ class pictureChange(Plugin):
                 
         else:
             try:
-                if any(ext in content for ext in ["jpg", "jpeg", "png", "gif", "webp"]) and content.startswith("tmp"):
-                    logger.info(self.use_number)
-                    logger.info(self.max_number)
+                if e_context['context'].type == ContextType.IMAGE:
                     if self.use_number >= self.max_number:
                         reply.type = ReplyType.TEXT
                         replyText = f"🧸当前排队人数为{str(self.use_number - self.max_number + 1)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"
@@ -604,20 +606,12 @@ class pictureChange(Plugin):
                         self.use_number += 1
                         msg.prepare()
                         reply.type = ReplyType.TEXT
-                        # 对 role['title'] 和 file_content 进行 URL 编码
-                        file_content_encoded = urllib.parse.quote(file_content)
-                        role_1 = urllib.parse.quote("🌈 图像动漫化")
-                        role_2 = urllib.parse.quote("🤖 图像修复")
-                        role_3 = urllib.parse.quote("❎ 暂不处理")
-                        replyText = f"🥰点击或输入指令，让我为您进行图片操作\n✅ 支持指令"
-                        replyText += "\n\n<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent={} {}\">{}</a>".format(role_1, file_content_encoded, "🌈 图像动漫化")
-                        replyText += "\n\n<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent={} {}\">{}</a>".format(role_2, file_content_encoded, "🤖 图像修复")
+                        replyText = f"🥰 您的图片编号:\n💖 {file_content}\n\n❗ 请输入指令,以进行图片操作\n✅ 支持指令\n\n@羊羊 🌈 图像动漫化 {file_content}\n\n@羊羊🤖 图像修复 {file_content}"
                         for role in self.role_options:
-                            role_title_encoded = urllib.parse.quote(role['title'])
-                            replyText += "\n\n<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent={} {}\">{}</a>".format(role_title_encoded, file_content_encoded, role['title'])
-                        replyText += "\n\n<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent={} {}\">{}</a>".format(role_3, file_content_encoded, "❎ 暂不处理")
-                        replyText += f"\n\n🎡 自定义 {file_content} [关键词] 例如 黑色头发 白色短袖 等关键词"
-                        replyText += "\n\n🚀 发送指令后，请耐心等待一至两分钟！"
+                            replyText += f"\n\n@羊羊 {role['title']} {file_content}"
+                        replyText += f"\n\n@羊羊 🎡 自定义 {file_content} [关键词] 例如 黑色头发 白色短袖 等关键词"
+                        replyText += f"\n\n@羊羊 ❎ 暂不处理 {file_content}"
+                        replyText += "\n\n🚀 发送指令后，请耐心等待一至两分钟，作品将很快呈现出来！"
                         reply.content = replyText
                         e_context["reply"] = reply
                         e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
@@ -641,19 +635,12 @@ class pictureChange(Plugin):
                         else:
                             print("下载失败")
                         reply.type = ReplyType.TEXT
-                        file_content_encoded = urllib.parse.quote(file_content)
-                        role_1 = urllib.parse.quote("🌈 图像动漫化")
-                        role_2 = urllib.parse.quote("🤖 图像修复")
-                        role_3 = urllib.parse.quote("❎ 暂不处理")
-                        replyText = f"🥰点击或输入指令，让我为您进行图片操作\n✅ 支持指令"
-                        replyText += "\n\n<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent={} {}\">{}</a>".format(role_1, file_content_encoded, "🌈 图像动漫化")
-                        replyText += "\n\n<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent={} {}\">{}</a>".format(role_2, file_content_encoded, "🤖 图像修复")
+                        replyText = f"🥰 您的图片编号:\n💖 {file_content}\n\n❗ 请输入指令,以进行图片操作\n✅ 支持指令\n\n@羊羊 🌈 图像动漫化 {file_content}\n\n@羊羊🤖 图像修复 {file_content}"
                         for role in self.role_options:
-                            role_title_encoded = urllib.parse.quote(role['title'])
-                            replyText += "\n\n<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent={} {}\">{}</a>".format(role_title_encoded, file_content_encoded, role['title'])
-                        replyText += "\n\n<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent={} {}\">{}</a>".format(role_3, file_content_encoded, "❎ 暂不处理")
-                        replyText += f"\n\n🎡 自定义 {file_content} [关键词] 例如 黑色头发 白色短袖 等关键词"
-                        replyText += "\n\n🚀 发送指令后，请耐心等待一至两分钟！"
+                            replyText += f"\n\n@羊羊 {role['title']} {file_content}"
+                        replyText += f"\n\n@羊羊 🎡 自定义 {file_content} [关键词] 例如 黑色头发 白色短袖 等关键词"
+                        replyText += f"\n\n@羊羊 ❎ 暂不处理 {file_content}"
+                        replyText += "\n\n🚀 发送指令后，请耐心等待一至两分钟，作品将很快呈现出来！"
                         reply.content = replyText
                         e_context["reply"] = reply
                         e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
@@ -880,11 +867,14 @@ class pictureChange(Plugin):
                 elif content.startswith("❎ 暂不处理 "):
                     file_content = content[len("❎ 暂不处理 "):]
                     # 删除文件
+                    reply.type = ReplyType.TEXT
+                    replyText = ""
                     if os.path.isfile(file_content):
                         os.remove(file_content)
-                        logger.info("文件已成功删除")
+                        replyText = "🥰文件已成功删除"
                     else:
-                        logger.error("文件不存在")
+                        replyText = "😭文件不存在或已删除"
+                    reply.content = replyText
                     e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
                     self.use_number -= 1
                     return

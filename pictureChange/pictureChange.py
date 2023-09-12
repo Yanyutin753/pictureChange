@@ -280,6 +280,7 @@ class pictureChange(Plugin):
                         else:
                             replyText = "😭文件不存在或已删除"
                         reply.content = replyText
+                        e_context["reply"] = reply
                         e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
                         self.use_number -= 1
                         return
@@ -873,6 +874,7 @@ class pictureChange(Plugin):
                     else:
                         replyText = "😭文件不存在或已删除"
                     reply.content = replyText
+                    e_context["reply"] = reply
                     e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
                     self.use_number -= 1
                     return

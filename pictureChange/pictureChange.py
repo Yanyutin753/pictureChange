@@ -218,7 +218,7 @@ class pictureChange(Plugin):
 
             elif context["msg"].other_user_id in self.other_user_id:
                 try:
-                    if any(ext in content for ext in ["jpg", "jpeg", "png", "gif", "webp"]) and content.startswith("tmp"):
+                    if e_context['context'].type == ContextType.IMAGE:
                         if self.use_number >= self.max_number:
                             reply.type = ReplyType.TEXT
                             replyText = f"🧸当前排队人数为{str(self.use_number - self.max_number + 1)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"
@@ -230,7 +230,6 @@ class pictureChange(Plugin):
                             self.use_number += 1
                             msg.prepare()
                             reply.type = ReplyType.TEXT
-    
                             replyText = f"🥰 您的图片编号:\n💖 {file_content}\n\n❗ 请输入指令,以进行图片操作\n✅ 支持指令\n\n@羊羊 🌈 图像动漫化 {file_content}\n\n@羊羊🤖 图像修复 {file_content}"
                             for role in self.role_options:
                                 replyText += f"\n\n@羊羊 {role['title']} {file_content}"
@@ -590,9 +589,7 @@ class pictureChange(Plugin):
                 
         else:
             try:
-                if any(ext in content for ext in ["jpg", "jpeg", "png", "gif", "webp"]) and content.startswith("tmp"):
-                    logger.info(self.use_number)
-                    logger.info(self.max_number)
+                if e_context['context'].type == ContextType.IMAGE:
                     if self.use_number >= self.max_number:
                         reply.type = ReplyType.TEXT
                         replyText = f"🧸当前排队人数为{str(self.use_number - self.max_number + 1)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"

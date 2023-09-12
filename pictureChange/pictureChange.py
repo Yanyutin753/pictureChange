@@ -572,22 +572,20 @@ class pictureChange(Plugin):
                             return
                         
                 except Exception as e:
-                        reply.content = "[webui] "+str(e)
-                        reply = Reply(ReplyType.ERROR, reply.content)
-                        logger.error("[webui] exception: %s" % e)
-                        channel = e_context["channel"]
-                        channel._send(reply, e_context["context"])
-                        if os.path.isfile(file_content):
-                            os.remove(file_content)
-                            logger.info("文件已成功删除")
-                        if e_context['context'].type != ContextType.IMAGE_CREATE:
-                            e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                            self.use_number -= 1
-                            return
-                        else:
-                            e_context.action = EventAction.CONTINUE  # 事件继续，交付给下个插件或默认逻辑'
-                            self.use_number -= 1
-                            return
+                    reply.content = "[pictureChange画图失败] "+str(e)
+                    reply = Reply(ReplyType.ERROR, reply.content)
+                    logger.error("[pictureChange画图失败] exception: %s" % e)
+                    channel._send(reply, e_context["context"])
+                    if os.path.isfile(file_content):
+                        os.remove(file_content)
+                        logger.info("文件已成功删除")
+                    if e_context['context'].type == ContextType.IMAGE_CREATE:
+                        e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
+                        self.use_number -= 1
+                    else:
+                        e_context.action = EventAction.CONTINUE  # 事件继续，交付给下个插件或默认逻辑
+                        self.use_number -= 1
+                        return
             else:
                 e_context.action = EventAction.CONTINUE  # 事件继续，交付给下个插件或默认逻辑'
                 return
@@ -1027,14 +1025,14 @@ class pictureChange(Plugin):
                     e_context.action = EventAction.CONTINUE  # 事件继续，交付给下个插件或默认逻辑
                     return
             except Exception as e:
-                    reply.content = "[webui] "+str(e)
+                    reply.content = "[pictureChange画图失败] "+str(e)
                     reply = Reply(ReplyType.ERROR, reply.content)
-                    logger.error("[webui] exception: %s" % e)
+                    logger.error("[pictureChange画图失败] exception: %s" % e)
                     channel._send(reply, e_context["context"])
                     if os.path.isfile(file_content):
                         os.remove(file_content)
                         logger.info("文件已成功删除")
-                    if e_context['context'].type != ContextType.IMAGE_CREATE:
+                    if e_context['context'].type == ContextType.IMAGE_CREATE:
                         e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
                         self.use_number -= 1
                     else:

@@ -40,7 +40,7 @@ class ChatChannel(Channel):
         print(context)
         context.kwargs = kwargs
         curdir = os.path.dirname(__file__)
-        config_path = os.path.join(curdir, "../plugins/pictureChange/config.json")
+        config_path = os.path.join(curdir, "../plugins/sdwebui/config.json")
         with open(config_path, "r", encoding="utf-8") as f:
             config_Sd = json.load(f)
             use_group = config_Sd["use_group"]
@@ -96,7 +96,7 @@ class ChatChannel(Channel):
                 return None
 
         # 消息内容匹配过程，并处理content
-        if ctype == ContextType.TEXT or context.type == ContextType.IMAGE:
+        if ctype == ContextType.TEXT:
             if first_in and "」\n- - - - - - -" in content:  # 初次匹配 过滤引用消息
                 logger.debug("[WX]reference query skipped")
                 return None
@@ -106,8 +106,6 @@ class ChatChannel(Channel):
                 match_prefix = check_prefix(content, conf().get("group_chat_prefix"))
                 match_contain = check_contain(content, conf().get("group_chat_keyword"))
                 flag = False
-                if context.type == ContextType.IMAGE and conf().get("group_imageChange") and cmsg.other_user_id in use_group:
-                    flag = True
                 if match_prefix is not None or match_contain is not None:
                     flag = True
                     if match_prefix:
@@ -144,7 +142,12 @@ class ChatChannel(Channel):
         elif context.type == ContextType.VOICE:
             if "desire_rtype" not in context and conf().get("voice_reply_voice") and ReplyType.VOICE not in self.NOT_SUPPORT_REPLYTYPE:
                 context["desire_rtype"] = ReplyType.VOICE
-            
+        elif context.type == ContextType.IMAGE:
+            if context["msg"].is_group:
+                if conf().get("group_imageChange") and cmsg.other_user_id in use_group:
+                    return context
+                else:
+                    return None
         return context
 
     def _handle(self, context: Context):
@@ -371,3 +374,4 @@ def check_contain(content, keyword_list):
         if content.find(ky) != -1:
             return True
     return None
+

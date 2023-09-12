@@ -40,7 +40,7 @@ class ChatChannel(Channel):
         print(context)
         context.kwargs = kwargs
         curdir = os.path.dirname(__file__)
-        config_path = os.path.join(curdir, "../plugins/sdwebui/config.json")
+        config_path = os.path.join(curdir, "../plugins/pictureChange/config.json")
         with open(config_path, "r", encoding="utf-8") as f:
             config_Sd = json.load(f)
             use_group = config_Sd["use_group"]

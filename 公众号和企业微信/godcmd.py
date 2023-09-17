@@ -77,7 +77,16 @@ ADMIN_COMMANDS = {
     },
     "setHost": {
         "alias": ["setHost", "更改默认sd_Host"],
+        "args": ["sd_Host"],
         "desc": "更改默认sd_Host",
+    },
+    "enpictureChange": {
+        "alias": ["enpictureChange", "开启SDwebui"],
+        "desc": "开启SDwebui",
+    },
+    "dispictureChange": {
+        "alias": ["dispictureChange", "关闭SDwebui"],
+        "desc": "关闭SDwebui",
     },
     "reconf": {
         "alias": ["reconf", "重载配置"],
@@ -350,6 +359,43 @@ class Godcmd(Plugin):
                                 print("Host已成功更新为:",args[0])
                                 
                             ok, result = True, "Host已成功更新"
+                        elif cmd == "enpictureChange":
+                            # 设置配置文件路径
+                            config_path = os.path.join(curdir, "../pictureChange/config.json")
+                            
+                            # 加载配置文件
+                            with open(config_path, "r", encoding="utf-8") as config_file:
+                                config_data = json.load(config_file)
+                            
+                            # 修改 use_pictureChange 的值
+                            config_data["use_pictureChange"] = True
+                            
+                            # 保存修改后的配置
+                            with open(config_path, "w", encoding="utf-8") as config_file:
+                                json.dump(config_data, config_file, indent=4, ensure_ascii=False)
+                            
+                            PluginManager().reload_plugin("pictureChange")
+                            print("use_pictureChange已成功更新为:",True)
+                            ok, result = True, "use_pictureChange已成功开启"  
+                        
+                        elif cmd == "dispictureChange":
+                            # 设置配置文件路径
+                            config_path = os.path.join(curdir, "../pictureChange/config.json")
+                            
+                            # 加载配置文件
+                            with open(config_path, "r", encoding="utf-8") as config_file:
+                                config_data = json.load(config_file)
+                            
+                            # 修改 use_pictureChange 的值
+                            config_data["use_pictureChange"] = False
+                            
+                            # 保存修改后的配置
+                            with open(config_path, "w", encoding="utf-8") as config_file:
+                                json.dump(config_data, config_file, indent=4, ensure_ascii=False)
+                            
+                            PluginManager().reload_plugin("pictureChange")
+                            print("use_pictureChange已成功更新为:",False)
+                            ok, result = True, "use_pictureChange已成功关闭"  
                         elif cmd == "resetall":
                             if bottype in [const.OPEN_AI, const.CHATGPT, const.CHATGPTONAZURE, const.LINKAI]:
                                 channel.cancel_all_session()

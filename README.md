@@ -265,14 +265,26 @@ PS: 如果你下载了多个模型，就可以根据实际需要，填入你想�
 ```
 ### 使用实例
 - 图生图
+![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/ce60641c-1d69-4987-aa24-ca4fbbaaf6d2)
+![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/61dfea58-f03f-47f4-b484-ab9466bf041e)
 
-![c67e2ed8503d312f087987fbe0466a5](https://github.com/Yanyutin753/pictureChange/assets/132346501/6f7eab3c-74bb-4955-8565-adc37f60fe0f)
 
 - 画图
   
-![245e7dd52082cb5ee23da10f53e7684](https://github.com/Yanyutin753/pictureChange/assets/132346501/02dd4d11-ff7d-46f6-ad75-35a94cd87c91)
-![59842123760da4d4be968804730b2e2](https://github.com/Yanyutin753/pictureChange/assets/132346501/abe03251-67c0-4d47-93dc-b62eda6ffdb7)
-https://github-production-user-asset-6210df.s3.amazonaws.com/132346501/265583323-c6763e9b-76d1-428d-83c9-3fdd9f98a809.mp4
+![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/428a2333-1589-42fd-88df-a1b182f8b3f6)
+![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/89782b7c-8f28-42af-8c16-a588539219a3)
+![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/7fb3d66f-cb92-44d9-99df-d472a5caff4b)
+
+
+- 支持放大 变换操作
+![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/1ab662b2-bd3c-490f-9981-404dcb1ca0e3)
+![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/32949ac2-93fc-4b7c-8387-f5cd7b1cb139)
+
+
+
+
+
+
 
 
 
@@ -285,5 +297,8 @@ https://github-production-user-asset-6210df.s3.amazonaws.com/132346501/265583323
 - 欢迎贡献代码，提出问题和建议。如果你发现了bug或者有新的功能想法，请提交一个Issue让我知道。你也可以通过Fork项目并提交Pull Request来贡献代码。 如果你想部署这个项目，给我一个星星⭐，这是对我最大的支持！
 - 敲代码不易，希望客官给点赞助，让我更好修改代码！
 ![image](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/713eb69e-6e00-46ad-bec5-0b3926305ef0)
+
+- 欢迎加入群聊讨论
+![2045e6eec4d1feebab7159b200154bd](https://github.com/Yanyutin753/pictureChange/assets/132346501/3a3fac14-086a-4622-9cb6-4c9c3e20596e)
 
 

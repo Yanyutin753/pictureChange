@@ -31,7 +31,7 @@ pip3 install -r requirements.txt
 
 请将`config.json.template`复制为`config.json`，并修改其中的参数和规则。
 
-PS: 修改了pictureChange的`host`和`port`和`sd_model_checkpoint`和 `api_key` ,`secret_key`
+PS: 修改了pictureChange的`host`和`port`和`sd_model_checkpoint`和 `api_key` ,`secret_key`，并填充相应的模型名称
 
 ### 图生图请求格式
 

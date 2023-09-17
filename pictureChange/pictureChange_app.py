@@ -22,7 +22,7 @@ from enum import Enum
 
 @plugins.register(name="pictureChange", desc="利用百度云AI和stable-diffusion webui来画图,图生图", version="1.8.1", author="yangyang")
 class pictureChange(Plugin):
-    # 定义了模型枚举类型
+    # 定义了模型枚举类型  需要填入自己的模型，有几个填几个
     class Model(Enum):
         MODEL_1 = "anything-v5-PrtRE.safetensors [7f96a1a9ca]"
         MODEL_2 = "absolutereality_v181.safetensors [463d6a9fe8]"

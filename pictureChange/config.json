@@ -1,11 +1,11 @@
 {
     "use_pictureChange": true,
-    "max_number": 3,
-    "api_key": "0fqG8cVm4GDlvYnyyrG04FDU",
-    "secret_key": "RQXZgD9j7hZqgse6x4NbxSU2GowiMiMk",
-    "use_group": [],
+    "max_number":3, 
+    "api_key" : "你的百度云api_key",
+    "secret_key" : "你的百度云secret_key",
+    "use_group": [], 
     "start": {
-        "host": "1c8fad88.r1.cpolar.top",
+        "host": "你的sd画图的ip",
         "port": 80,
         "use_https": false
     },

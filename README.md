@@ -265,8 +265,20 @@ PS: 如果你下载了多个模型，就可以根据实际需要，填入你想�
 ```
 ### 使用实例
 - 图生图
+
+
+
 ![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/4d6f16b0-136a-48d6-991e-482ce3bbc701)
+
+
+
+
 ![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/783d6f22-c18e-4368-bc91-aa62a24c0c78)
+
+
+
+
+
 ![9d3c926daec3b69ef1f2e1b38e4ad7e](https://github.com/Yanyutin753/pictureChange/assets/132346501/cc5f8843-6a42-422c-bbeb-1c073ffa651b)
 
 
@@ -284,11 +296,21 @@ PS: 如果你下载了多个模型，就可以根据实际需要，填入你想�
 
   
 ![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/428a2333-1589-42fd-88df-a1b182f8b3f6)
+
+
+
+
+
 ![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/89782b7c-8f28-42af-8c16-a588539219a3)
 
 
 - 支持放大 变换操作
+
+
+
 ![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/1ab662b2-bd3c-490f-9981-404dcb1ca0e3)
+
+
 ![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/32949ac2-93fc-4b7c-8387-f5cd7b1cb139)
 
 

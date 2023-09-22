@@ -267,13 +267,17 @@ PS: 如果你下载了多个模型，就可以根据实际需要，填入你想�
 - 图生图
 ![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/ce60641c-1d69-4987-aa24-ca4fbbaaf6d2)
 ![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/61dfea58-f03f-47f4-b484-ab9466bf041e)
+![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/919705cb-7e77-4b28-9767-22c7ab252ea5)
+
+![9d3c926daec3b69ef1f2e1b38e4ad7e](https://github.com/Yanyutin753/pictureChange/assets/132346501/bde58451-ece0-4802-b277-90243c340e79)
 
 
 - 画图
   
 ![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/428a2333-1589-42fd-88df-a1b182f8b3f6)
 ![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/89782b7c-8f28-42af-8c16-a588539219a3)
-![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/7fb3d66f-cb92-44d9-99df-d472a5caff4b)
+![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/4d6f16b0-136a-48d6-991e-482ce3bbc701)
+![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/783d6f22-c18e-4368-bc91-aa62a24c0c78)
 
 
 - 支持放大 变换操作

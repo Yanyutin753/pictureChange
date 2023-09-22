@@ -265,11 +265,8 @@ PS: 如果你下载了多个模型，就可以根据实际需要，填入你想�
 ```
 ### 使用实例
 - 图生图
-![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/ce60641c-1d69-4987-aa24-ca4fbbaaf6d2)
-![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/61dfea58-f03f-47f4-b484-ab9466bf041e)
-![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/919705cb-7e77-4b28-9767-22c7ab252ea5)
-
-![9d3c926daec3b69ef1f2e1b38e4ad7e](https://github.com/Yanyutin753/pictureChange/assets/132346501/bde58451-ece0-4802-b277-90243c340e79)
+- ![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/72be31ae-0ff6-45eb-84cc-9c161f3ce4d9)
+- ![9d3c926daec3b69ef1f2e1b38e4ad7e](https://github.com/Yanyutin753/pictureChange/assets/132346501/bde58451-ece0-4802-b277-90243c340e79)
 
 
 - 画图

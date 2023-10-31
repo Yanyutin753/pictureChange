@@ -1295,7 +1295,7 @@ class pictureChange(Plugin):
                         channel._send(reply, e_context["context"])
                         e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
                         return
-                    elif self.use_number >= self.max_number
+                    elif self.use_number >= self.max_number:
                         self.out_number += 1 
                         reply.type = ReplyType.TEXT
                         replyText = f"🧸当前排队人数为 {str(self.out_number)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"

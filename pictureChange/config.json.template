@@ -1,6 +1,8 @@
 {
     "use_pictureChange": true,
-    "max_number":3, 
+    "max_number":3,
+    "request_bot_name" : "群聊请求机器人的名称，和config.json环境变量一致（只限一个）"
+    "file_url": "file=F:/sd-webui-aki_v4.7/outputs/"
     "api_key" : "你的百度云api_key",
     "secret_key" : "你的百度云secret_key",
     "use_group": [], 

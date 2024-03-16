@@ -34,10 +34,15 @@ class ChatChannel(Channel):
         _thread.setDaemon(True)
         _thread.start()
 
-    # 根据消息构造context，消息内容相关的触发项写在这里
     def _compose_context(self, ctype: ContextType, content, **kwargs):
         context = Context(ctype, content)
+        print(context)
         context.kwargs = kwargs
+        curdir = os.path.dirname(__file__)
+        config_path = os.path.join(curdir, "../plugins/pictureChange/config.json")
+        with open(config_path, "r", encoding="utf-8") as f:
+            config_Sd = json.load(f)
+            use_group = config_Sd["use_group"]
         # context首次传入时，origin_ctype是None,
         # 引入的起因是：当输入语音时，会嵌套生成两个context，第一步语音转文本，第二步通过文本生成文字回复。
         # origin_ctype用于第二步文本回复时，判断是否需要匹配前缀，如果是私聊的语音，就不需要匹配前缀

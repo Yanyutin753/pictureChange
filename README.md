@@ -94,7 +94,8 @@ PS: 实际参数分为两部分:
      #申请地址https://ai.baidu.com/ai-doc
     "api_key" : "你的百度云api_key",
     "secret_key" : "你的百度云secret_key",
-    "use_group": [],#不用填 
+    "use_group": [],#不用填
+    "max_size": 1150,
     "start": {
         "host": "你的sd画图的ip",#填上你的ip
         "port": 80,#填上你的ip的端口号

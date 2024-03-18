@@ -46,9 +46,10 @@ class pictureChange(Plugin):
                 self.start_args = config["start"]
                 self.host = config["start"]["host"]
                 self.port = config["start"]["port"]
-                self.request_bot_name = config["request_bot_name",""]
-                self.file_url = config["file_url",""]
-                self.other_user_id = config["use_group",[]]
+                self.use_https = config["start"]["use_https"]
+                self.request_bot_name = config["request_bot_name"]
+                self.file_url = config["file_url"]
+                self.other_user_id = config["use_group"]
                 try:
                     self.max_number = config["max_number"]
                 except KeyError:

@@ -21,7 +21,7 @@ import urllib.parse
 from enum import Enum
 
 
-@plugins.register(name="pictureChange", desc="利用百度云AI和stable-diffusion webui来画图,图生图", version="1.7.1",
+@plugins.register(name="pictureChange", desc="利用百度云AI和stable-diffusion webui来画图,图生图", version="1.8.1",
                   author="yangyang")
 class pictureChange(Plugin):
     # 定义了模型枚举类型

@@ -354,7 +354,7 @@ class pictureChange(Plugin):
                             else:
                                 print("下载失败")
                             reply.type = ReplyType.TEXT
-                            replyText = f"🥰 您的图片编号:\n💖 {file_content}\n\n❗ 请输入指令,以进行图片操作\n✅ 支持指令\n\n{}🤖 图像修复 {file_content}"
+                            replyText = f"🥰 您的图片编号:\n💖 {file_content}\n\n❗ 请输入指令,以进行图片操作\n✅ 支持指令\n\n{self.request_bot_name} 🤖 图像修复 {file_content}"
                             for role in self.role_options:
                                 replyText += f"\n\n{self.request_bot_name} {role['title']} {file_content}"
                             replyText += f"\n\n{self.request_bot_name} 🎡 自定义 {file_content} [关键词] 例如 黑色头发 白色短袖 等关键词"

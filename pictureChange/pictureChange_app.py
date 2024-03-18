@@ -49,8 +49,14 @@ class pictureChange(Plugin):
                 self.request_bot_name = config["request_bot_name",""]
                 self.file_url = config["file_url",""]
                 self.other_user_id = config["use_group",[]]
-                self.max_number = config["max_number",3]
-                self.max_size = config["max_size",1150]
+                try:
+                    self.max_number = config["max_number"]
+                except KeyError:
+                    self.max_number = 3
+                try:
+                    self.max_size = config["max_size"]
+                except KeyError:
+                    self.max_size = 1150
                 self.use_pictureChange = config["use_pictureChange"]
                 try:
                     if self.use_https:

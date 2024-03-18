@@ -46,17 +46,17 @@ class pictureChange(Plugin):
                 self.start_args = config["start"]
                 self.host = config["start"]["host"]
                 self.port = config["start"]["port"]
-                self.request_bot_name = config["start"]["request_bot_name"]
-                self.file_url = config["start"]["file_url"]
+                self.request_bot_name = config["request_bot_name"]
+                self.file_url = config["file_url"]
                 self.other_user_id = config["use_group"]
                 self.max_number = config["max_number"]
+                self.max_size = config["max_size"]
                 self.use_pictureChange = config["use_pictureChange"]
                 try:
                     if self.use_https:
                         response = requests.get(f"https://{self.host}:{self.port}")
                     else:
                         response = requests.get(f"http://{self.host}:{self.port}")
-                    response = requests.get(f"http://{self.host}:{self.port}")
                     if response.status_code != 200:
                         self.use_pictureChange = False
                         print("由于sd没开启self.use_pictureChange变为", False)
@@ -565,7 +565,12 @@ class pictureChange(Plugin):
                 else:
                     try:
                         file_content = content[len("🔍 放大 "):]
-                        image_url = "http://{}:{}/{}{}".format(self.host, self.port, self.file_url, file_content)
+                        if self.use_https:
+                            image_url = "https://{}:{}/{}{}".format(self.host, self.port, self.file_url,
+                                                                    file_content)
+                        else:
+                            image_url = "http://{}:{}/{}{}".format(self.host, self.port, self.file_url,
+                                                                   file_content)
                         response = requests.get(image_url)
                         if response.status_code == 200:
                             text = f"🚀放大图片生成中～～～\n⏳请您耐心等待1-2分钟\n✨请稍等片刻✨✨\n❤️感谢您的耐心与支持"
@@ -606,7 +611,12 @@ class pictureChange(Plugin):
                 else:
                     file_content = content.split()[2]
                     sdModel = getattr(self.Model, content.split()[3]).value
-                    image_url = "http://{}:{}/{}{}".format(self.host, self.port, self.file_url, file_content)
+                    if self.use_https:
+                        image_url = "https://{}:{}/{}{}".format(self.host, self.port, self.file_url,
+                                                                file_content)
+                    else:
+                        image_url = "http://{}:{}/{}{}".format(self.host, self.port, self.file_url,
+                                                               file_content)
                     # 发送 GET 请求获取图像数据
                     response = requests.get(image_url)
                     # 检查响应状态码是否为 200，表示请求成功
@@ -619,7 +629,7 @@ class pictureChange(Plugin):
                         width, height = image.size
                         temwidth = width
                         temheight = height
-                        if width < 1150 or height < 1150:
+                        if width < self.max_size or height < self.max_size:
                             temwidth = 1.05 * width
                             temheight = 1.05 * height
                         text = f"🚀图片生成中～～～\n⏳请您耐心等待1-2分钟\n----------\n💨图宽:{int(temwidth)} 图高:{int(temheight)}\n✨感谢您的耐心与支持"

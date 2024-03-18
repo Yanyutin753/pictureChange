@@ -50,6 +50,7 @@ class pictureChange(Plugin):
                 self.file_url = config["file_url"]
                 self.other_user_id = config["use_group"]
                 self.max_number = config["max_number"]
+                self.max_size = config["max_size"]
                 self.use_pictureChange = config["use_pictureChange"]
                 try:
                     if self.use_https:
@@ -269,12 +270,14 @@ class pictureChange(Plugin):
                         temposition_2 = 0
                         for seed in all_seeds:
                             temposition_1 += 1
-                            reply.content += "\n\n{} 🤖 放大 {}.png {}".format(self.request_bot_name, f"txt2img-images/{seed}",
-                                                                                    temposition_1)
+                            reply.content += "\n\n{} 🤖 放大 {}.png {}".format(self.request_bot_name,
+                                                                             f"txt2img-images/{seed}",
+                                                                             temposition_1)
                         for seed in all_seeds:
                             temposition_2 += 1
-                            reply.content += "\n\n{} 🎡 变换 {}.png {} {}".format(self.request_bot_name, f"txt2img-images/{seed}",
-                                                                                       modelname, temposition_2)
+                            reply.content += "\n\n{} 🎡 变换 {}.png {} {}".format(self.request_bot_name,
+                                                                                f"txt2img-images/{seed}",
+                                                                                modelname, temposition_2)
                         reply.content += "\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n🌈 图片不满意的话，点击变换指令\n🐏 帮你再画一幅吧!\n💖 感谢您的使用！"
                         reply.content = reply.content
                         e_context["reply"] = reply
@@ -561,12 +564,14 @@ class pictureChange(Plugin):
                             temposition_2 = 0
                             for seed in all_seeds:
                                 temposition_1 += 1
-                                reply.content += "\n\n{} 🤖 放大 {}.png {}".format(self.request_bot_name, f"img2img-images/{seed}",
-                                                                                        temposition_1)
+                                reply.content += "\n\n{} 🤖 放大 {}.png {}".format(self.request_bot_name,
+                                                                                 f"img2img-images/{seed}",
+                                                                                 temposition_1)
                             for seed in all_seeds:
                                 temposition_2 += 1
-                                reply.content += "\n\n{} 🎡 变换 {}.png {} {}".format(self.request_bot_name, f"img2img-images/{seed}",
-                                                                                           modelname, temposition_2)
+                                reply.content += "\n\n{} 🎡 变换 {}.png {} {}".format(self.request_bot_name,
+                                                                                    f"img2img-images/{seed}",
+                                                                                    modelname, temposition_2)
                             reply.content += "\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n🌈 图片不满意的话，点击变换指令\n🐏 Bot帮你再画一幅吧!\n💖 感谢您的使用！"
                             reply.content = reply.content
                             e_context["reply"] = reply
@@ -676,12 +681,14 @@ class pictureChange(Plugin):
                             temposition_2 = 0
                             for seed in all_seeds:
                                 temposition_1 += 1
-                                reply.content += "\n\n{} 🤖 放大 {}.png {}".format(self.request_bot_name, f"img2img-images/{seed}",
-                                                                                        temposition_1)
+                                reply.content += "\n\n{} 🤖 放大 {}.png {}".format(self.request_bot_name,
+                                                                                 f"img2img-images/{seed}",
+                                                                                 temposition_1)
                             for seed in all_seeds:
                                 temposition_2 += 1
-                                reply.content += "\n\n{} 🎡 变换 {}.png {} {}".format(self.request_bot_name, f"img2img-images/{seed}",
-                                                                                           modelname, temposition_2)
+                                reply.content += "\n\n{} 🎡 变换 {}.png {} {}".format(self.request_bot_name,
+                                                                                    f"img2img-images/{seed}",
+                                                                                    modelname, temposition_2)
                             reply.content += "\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n🌈 图片不满意的话，点击变换指令\n🐏 Bot帮你再画一幅吧!\n💖 感谢您的使用！"
                             reply.content = reply.content
                             e_context["reply"] = reply
@@ -721,7 +728,12 @@ class pictureChange(Plugin):
                         else:
                             file_content = content.split()[2]
                             sdModel = getattr(self.Model, content.split()[3]).value
-                            image_url = "http://{}:{}/{}{}".format(self.host,self.port,self.file_url, file_content)
+                            if self.use_https:
+                                image_url = "https://{}:{}/{}{}".format(self.host, self.port, self.file_url,
+                                                                        file_content)
+                            else:
+                                image_url = "http://{}:{}/{}{}".format(self.host, self.port, self.file_url,
+                                                                       file_content)
                             # 发送 GET 请求获取图像数据
                             response = requests.get(image_url)
                             # 检查响应状态码是否为 200，表示请求成功
@@ -737,7 +749,7 @@ class pictureChange(Plugin):
                                 width, height = image.size
                                 temwidth = width
                                 temheight = height
-                                if width < 1150 or height < 1150:
+                                if width < self.max_size or height < self.max_size:
                                     temwidth = 1.05 * width
                                     temheight = 1.05 * height
                                 # 将PIL Image对象添加到images列表中
@@ -778,13 +790,15 @@ class pictureChange(Plugin):
                                 temposition_2 = 0
                                 for seed in all_seeds:
                                     temposition_1 += 1
-                                    reply.content += "\n\n{} 🤖 放大 {}.png {}".format(self.request_bot_name, f"img2img-images/{seed}",
-                                                                                            temposition_1)
+                                    reply.content += "\n\n{} 🤖 放大 {}.png {}".format(self.request_bot_name,
+                                                                                     f"img2img-images/{seed}",
+                                                                                     temposition_1)
                                 for seed in all_seeds:
                                     temposition_2 += 1
-                                    reply.content += "\n\n{} 🎡 变换 {}.png {} {}".format(self.request_bot_name, f"img2img-images/{seed}",
-                                                                                               content.split()[3],
-                                                                                               temposition_2)
+                                    reply.content += "\n\n{} 🎡 变换 {}.png {} {}".format(self.request_bot_name,
+                                                                                        f"img2img-images/{seed}",
+                                                                                        content.split()[3],
+                                                                                        temposition_2)
                                 reply.content += "\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n🌈 图片不满意的话，点击变换指令\n🐏 Bot帮你再画一幅吧!\n💖 感谢您的使用！"
                                 reply.content = reply.content
                                 e_context["reply"] = reply
@@ -817,8 +831,12 @@ class pictureChange(Plugin):
                         else:
                             try:
                                 file_content = content[len("🔍 放大 "):]
-                                image_url = "http://{}:{}/{}{}".format(self.host, self.port, self.file_url,
-                                                                       file_content)
+                                if self.use_https:
+                                    image_url = "https://{}:{}/{}{}".format(self.host, self.port, self.file_url,
+                                                                            file_content)
+                                else:
+                                    image_url = "http://{}:{}/{}{}".format(self.host, self.port, self.file_url,
+                                                                           file_content)
                                 response = requests.get(image_url)
                                 if response.status_code == 200:
                                     text = f"🚀放大图片生成中～～～\n⏳请您耐心等待1-2分钟\n✨请稍等片刻✨✨\n❤️感谢您的耐心与支持"
@@ -1292,7 +1310,12 @@ class pictureChange(Plugin):
                     else:
                         try:
                             file_content = content[len("🔍 放大 "):]
-                            image_url = "http://{}:{}/{}{}".format(self.host,self.port,self.file_url, file_content)
+                            if self.use_https:
+                                image_url = "https://{}:{}/{}{}".format(self.host, self.port, self.file_url,
+                                                                        file_content)
+                            else:
+                                image_url = "http://{}:{}/{}{}".format(self.host, self.port, self.file_url,
+                                                                       file_content)
                             response = requests.get(image_url)
                             if response.status_code == 200:
                                 text = f"🚀放大图片生成中～～～\n⏳请您耐心等待1-2分钟\n✨请稍等片刻✨✨\n❤️感谢您的耐心与支持"
@@ -1332,7 +1355,12 @@ class pictureChange(Plugin):
                     else:
                         file_content = content.split()[2]
                         sdModel = getattr(self.Model, content.split()[3]).value
-                        image_url = "http://{}:{}/{}{}".format(self.host, self.port, self.file_url, file_content)
+                        if self.use_https:
+                            image_url = "https://{}:{}/{}{}".format(self.host, self.port, self.file_url,
+                                                                    file_content)
+                        else:
+                            image_url = "http://{}:{}/{}{}".format(self.host, self.port, self.file_url,
+                                                                   file_content)
                         # 发送 GET 请求获取图像数据
                         response = requests.get(image_url)
                         # 检查响应状态码是否为 200，表示请求成功
@@ -1348,7 +1376,7 @@ class pictureChange(Plugin):
                             width, height = image.size
                             temwidth = width
                             temheight = height
-                            if width < 1150 or height < 1150:
+                            if width < self.max_size or height < self.max_size:
                                 temwidth = 1.05 * width
                                 temheight = 1.05 * height
                             # 将PIL Image对象添加到images列表中

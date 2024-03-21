@@ -13,7 +13,8 @@
 
 ## 环境要求
 
-使用前先安装stable diffusion webui，并在它的启动参数中添加 "--api"。
+使用前先安装stable diffusion webui，并在它的启动参数中添加 "--api",并开启种子数。
+![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/7c58fde5-832c-4e8d-b822-0117cd77814f)
 
 安装具体信息，请参考[视频](https://www.youtube.com/watch?v=Z6FmiaWBbAE&t=3s)。
 

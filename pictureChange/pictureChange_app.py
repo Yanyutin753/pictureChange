@@ -23,15 +23,15 @@ from bot import bot_factory
 from bridge.bridge import Bridge
 
 
-@plugins.register(name="pictureChange", desc="利用百度云AI和stable-diffusion webui来画图,图生图", version="1.8.3", author="yangyang")
+@plugins.register(name="pictureChange", desc="利用百度云AI和stable-diffusion webui来画图,图生图", version="1.8.3",
+                  author="yangyang")
 class pictureChange(Plugin):
     # 定义了模型枚举类型  需要填入自己的模型，有几个填几个
     class Model(Enum):
         MODEL_1 = "anything-v5-PrtRE.safetensors [7f96a1a9ca]"
         MODEL_2 = "absolutereality_v181.safetensors [463d6a9fe8]"
         MODEL_3 = "QteaMix-fp16.safetensors [0c1efcbbd6]"
-        
-    
+
     def __init__(self):
         super().__init__()
         curdir = os.path.dirname(__file__)
@@ -93,8 +93,7 @@ class pictureChange(Plugin):
             else:
                 logger.warn("[SD] init failed.")
             raise e
-    
-            
+
     def on_handle_context(self, e_context: EventContext):
         reply = Reply()
         start_time = time.time()  # 记录开始时间
@@ -113,13 +112,14 @@ class pictureChange(Plugin):
         denoising_strength = 0
         cfg_scale = 0
         prompt = "masterpiece, best quality, "
-        negative_prompt = ""  
-        title = "" 
+        negative_prompt = ""
+        title = ""
         roleRule_options = {}
-        isgroup = context["msg"].is_group
-        channel = e_context["channel"]    
+        channel = e_context["channel"]
+        cmsg: ChatMessage = e_context['context']['msg']
+        session_id = cmsg.from_user_id
         for role in self.role_options:
-            if content.startswith(role['title']+" "):
+            if content.startswith(role['title'] + " "):
                 title = role['title']
                 denoising_strength = role['denoising_strength']
                 cfg_scale = role['cfg_scale']
@@ -155,11 +155,14 @@ class pictureChange(Plugin):
                     role_2 = urllib.parse.quote("🤖 图像修复")
                     role_3 = urllib.parse.quote("❎ 暂不处理")
                     replyText = f"🥰 点击或输入指令\n✨ 让我为您进行图片操作\n\n✅ 支持指令"
-                    replyText += "\n\n<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent={} {}\">{}</a>".format(role_2, file_content_encoded, "🤖 图像修复")
+                    replyText += "\n\n<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent={} {}\">{}</a>".format(
+                        role_2, file_content_encoded, "🤖 图像修复")
                     for role in self.role_options:
                         role_title_encoded = urllib.parse.quote(role['title'])
-                        replyText += "\n\n<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent={} {}\">{}</a>".format(role_title_encoded, file_content_encoded, role['title'])
-                    replyText += "\n\n<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent={} {}\">{}</a>".format(role_3, file_content_encoded, "❎ 暂不处理")
+                        replyText += "\n\n<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent={} {}\">{}</a>".format(
+                            role_title_encoded, file_content_encoded, role['title'])
+                    replyText += "\n\n<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent={} {}\">{}</a>".format(
+                        role_3, file_content_encoded, "❎ 暂不处理")
                     replyText += f"\n\n🎡 自定义 {file_content} MODEL_1 [关键词] 例如 黑色头发 白色短袖 等关键词"
                     replyText += "\n\n🥰 温馨提示\n👑 MODEL_1 : 动漫\n🏆 MODEL_2 : 现实\n🧩 MODEL_3 : Q版"
                     replyText += "\n\n🚀 发送指令后，请耐心等待一至两分钟！\n💖 感谢您的使用！"
@@ -167,8 +170,9 @@ class pictureChange(Plugin):
                     e_context["reply"] = reply
                     e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
                     return
-            
-            elif any(ext in content for ext in ["jpg", "jpeg", "png", "gif", "webp"]) and (content.startswith("http://") or content.startswith("https://")):
+
+            elif any(ext in content for ext in ["jpg", "jpeg", "png", "gif", "webp"]) and (
+                    content.startswith("http://") or content.startswith("https://")):
                 if self.use_pictureChange == False:
                     reply.type = ReplyType.TEXT
                     replyText = f"😭图生图关闭了，快联系小羊管理员开启图生图吧🥰🥰🥰"
@@ -198,11 +202,14 @@ class pictureChange(Plugin):
                     role_2 = urllib.parse.quote("🤖 图像修复")
                     role_3 = urllib.parse.quote("❎ 暂不处理")
                     replyText = f"🥰 点击或输入指令\n✨ 让我为您进行图片操作\n\n✅ 支持指令"
-                    replyText += "\n\n<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent={} {}\">{}</a>".format(role_2, file_content_encoded, "🤖 图像修复")
+                    replyText += "\n\n<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent={} {}\">{}</a>".format(
+                        role_2, file_content_encoded, "🤖 图像修复")
                     for role in self.role_options:
                         role_title_encoded = urllib.parse.quote(role['title'])
-                        replyText += "\n\n<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent={} {}\">{}</a>".format(role_title_encoded, file_content_encoded, role['title'])
-                    replyText += "\n\n<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent={} {}\">{}</a>".format(role_3, file_content_encoded, "❎ 暂不处理")
+                        replyText += "\n\n<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent={} {}\">{}</a>".format(
+                            role_title_encoded, file_content_encoded, role['title'])
+                    replyText += "\n\n<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent={} {}\">{}</a>".format(
+                        role_3, file_content_encoded, "❎ 暂不处理")
                     replyText += f"\n\n🎡 自定义 {file_content} MODEL_1 [关键词] 例如 黑色头发 白色短袖 等关键词"
                     replyText += "\n\n🥰 温馨提示\n👑 MODEL_1 : 动漫\n🏆 MODEL_2 : 现实\n🧩 MODEL_3 : Q版"
                     replyText += "\n\n🚀 发送指令后，请耐心等待一至两分钟！\n💖 感谢您的使用！"
@@ -210,7 +217,7 @@ class pictureChange(Plugin):
                     e_context["reply"] = reply
                     e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
                     return
-            
+
             elif e_context['context'].type == ContextType.IMAGE_CREATE:
                 if self.use_pictureChange == False:
                     reply.content = f"😭SD画图关闭了，快联系小羊管理员开启SD画图吧🥰🥰🥰"
@@ -235,7 +242,7 @@ class pictureChange(Plugin):
                     else:
                         keywords = content
                         prompt = ""
-        
+
                     keywords = keywords.split()
                     unused_keywords = []
                     text = f"🚀图片生成中～～～\n⏳请您耐心等待1-2分钟\n✨请稍等片刻✨✨\n❤️感谢您的耐心与支持"
@@ -243,7 +250,7 @@ class pictureChange(Plugin):
                     channel._send(temreply, e_context["context"])
                     if "help" in keywords or "帮助" in keywords:
                         reply.type = ReplyType.INFO
-                        reply.content = self.get_help_text(verbose = True)
+                        reply.content = self.get_help_text(verbose=True)
                     else:
                         rule_params = {}
                         rule_options = {}
@@ -261,7 +268,7 @@ class pictureChange(Plugin):
                             if not matched:
                                 unused_keywords.append(keyword)
                                 logger.info("[SD] keyword not matched: %s" % keyword)
-                        
+
                         params = {**self.default_params, **rule_params}
                         options = {**self.default_options, **rule_options}
                         params["prompt"] = params.get("prompt", "")
@@ -275,7 +282,7 @@ class pictureChange(Plugin):
                             if lang != "en":
                                 logger.info("[SD] translate prompt from {} to en".format(lang))
                                 try:
-                                    if self.is_use_fanyi:
+                                    if not self.is_use_fanyi:
                                         btype = Bridge().btype['chat']
                                         bot = bot_factory.create_bot(Bridge().btype['chat'])
                                         session = bot.sessions.build_session(session_id, self.bot_prompt)
@@ -293,14 +300,14 @@ class pictureChange(Plugin):
                             api.set_options(options)
                         logger.info("[SD] params={}".format(params))
                         result = api.txt2img(
-                            batch_size= 4,
-                            n_iter= 1,
-                            do_not_save_samples = True,
-                            do_not_save_grid= True,
-                            save_images = True,
+                            batch_size=4,
+                            n_iter=1,
+                            do_not_save_samples=True,
+                            do_not_save_grid=True,
+                            save_images=True,
                             **params
                         )
-                        
+
                         model = options["sd_model_checkpoint"]
                         modelname = ""
                         for member in self.Model:
@@ -309,23 +316,23 @@ class pictureChange(Plugin):
                                 break
                         else:
                             print("使用了其他模型")
-                            
+
                         # 发送图片
                         b_img = io.BytesIO()
                         result.image.save(b_img, format="PNG")
                         reply.content = b_img
                         reply = Reply(ReplyType.IMAGE, reply.content)
                         channel._send(reply, e_context["context"])
-                        
+
                         # 发送放大和转换指令
                         reply.type = ReplyType.TEXT
                         all_seeds = result.info['all_seeds']
                         end_time = time.time()  # 记录结束时间
                         elapsed_time = end_time - start_time  # 计算经过的时间
-                    
+
                         minutes = int(elapsed_time // 60)  # 计算分钟数
                         seconds = int(elapsed_time % 60)  # 计算秒数
-                    
+
                         reply.content = f"🔥 图片创作成功!\n⏱ 图片处理耗时：{minutes}分钟 {seconds}秒\n🧸点击指令，我将为您进行图片操作！\n\n✅ 支持指令"
                         temposition_1 = 0
                         temposition_2 = 0
@@ -335,24 +342,26 @@ class pictureChange(Plugin):
                                 reply.content += "\t\t"
                             else:
                                 reply.content += "\n\n"
-                            reply.content += "<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent=🔍 放大 {}.png\">{}</a>".format(f"txt2img-images/{seed}",f"🤖 放大 {temposition_1}")
+                            reply.content += "<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent=🔍 放大 {}.png\">{}</a>".format(
+                                f"txt2img-images/{seed}", f"🤖 放大 {temposition_1}")
                         for seed in all_seeds:
                             temposition_2 += 1
                             if temposition_2 % 2 == 0:
                                 reply.content += "\t\t"
                             else:
                                 reply.content += "\n\n"
-                            reply.content += "<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent=🎡 变换 {}.png {}\">{}</a>".format(f"txt2img-images/{seed}",modelname,f"🎡 变换 {temposition_2}") 
+                            reply.content += "<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent=🎡 变换 {}.png {}\">{}</a>".format(
+                                f"txt2img-images/{seed}", modelname, f"🎡 变换 {temposition_2}")
                         reply.content += "\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n👑 MODEL_1 : 动漫\n🏆 MODEL_2 : 现实\n🧩 MODEL_3 : Q版\n🌈 图片不满意的话，点击变换\n🐏 小羊帮你再画一幅吧!\n💖 感谢您的使用！"
                         reply.content = reply.content
                         e_context["reply"] = reply
                         e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
                         self.use_number -= 1
                         self.out_number = 0
-                        
+
                         return
-                    
-            elif content.startswith("🤖 图像修复 ") :
+
+            elif content.startswith("🤖 图像修复 "):
                 if self.use_pictureChange == False:
                     reply.type = ReplyType.TEXT
                     replyText = f"😭图生图关闭了，快联系小羊管理员开启图生图吧🥰🥰🥰"
@@ -378,20 +387,21 @@ class pictureChange(Plugin):
                         return
                     # 获取百度AI接口访问令牌
                     token_url = "https://aip.baidubce.com/oauth/2.0/token"
-                    token_params = {"grant_type": "client_credentials", "client_id": self.API_KEY, "client_secret": self.SECRET_KEY}
+                    token_params = {"grant_type": "client_credentials", "client_id": self.API_KEY,
+                                    "client_secret": self.SECRET_KEY}
                     access_token = requests.post(token_url, params=token_params).json().get("access_token")
                     if not access_token:
                         logger.error("无法获取百度AI接口访问令牌")
                         return
-                    
+
                     process_url = f"https://aip.baidubce.com/rest/2.0/image-process/v1/image_definition_enhance?access_token={access_token}"
                     headers = {
                         'Content-Type': 'application/x-www-form-urlencoded',
                         'Accept': 'application/json'
                     }
-        
+
                     response = requests.post(process_url, headers=headers, data=payload)
-        
+
                     if response.status_code == 200:
                         base64_image_data = response.json().get('image')
                         if base64_image_data:
@@ -401,29 +411,29 @@ class pictureChange(Plugin):
                             image_storage = io.BytesIO()
                             image_storage.write(image_data)
                             image_storage.seek(0)
-                            
+
                             reply.type = ReplyType.IMAGE
                             reply.content = image_storage
                             e_context["reply"] = reply
-        
+
                             e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                            self.use_number -= 1    
+                            self.use_number -= 1
                             self.out_number = 0
-                                
+
                             return
                         else:
                             logger.error("未找到转换后的图像数据")
                     else:
                         logger.error("API请求失败")
                 else:
-                    
+
                     reply.type = ReplyType.TEXT
                     replyText = f"🥰请先发送图片给我,我将为您进行图像修复"
                     reply.content = replyText
                     e_context["reply"] = reply
                     e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
                     return
-                
+
             elif content.startswith("❎ 暂不处理 "):
                 file_content = content[len("❎ 暂不处理 "):]
                 # 删除文件
@@ -439,9 +449,9 @@ class pictureChange(Plugin):
                 e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
                 self.use_number -= 1
                 self.out_number = 0
-                    
+
                 return
-            
+
             elif content.startswith("🎡 自定义 "):
                 if self.use_pictureChange == False:
                     reply.type = ReplyType.TEXT
@@ -450,7 +460,7 @@ class pictureChange(Plugin):
                     e_context["reply"] = reply
                     e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
                     return
-                
+
                 parts = content.split(" ")
                 # 提取所需内容
                 # 文件
@@ -467,7 +477,7 @@ class pictureChange(Plugin):
                     # 非英文，进行翻译
                     logger.info("[SD] Translating prompt from {} to en".format(lang))
                     try:
-                        if self.is_use_fanyi:
+                        if not self.is_use_fanyi:
                             btype = Bridge().btype['chat']
                             bot = bot_factory.create_bot(Bridge().btype['chat'])
                             session = bot.sessions.build_session(session_id, self.bot_prompt)
@@ -511,10 +521,10 @@ class pictureChange(Plugin):
                     if temwidth > 1024 or temheight > 1024:
                         if temwidth < temheight:
                             temwidth = 1024 * (temwidth / temheight)
-                            temheight = 1024 
+                            temheight = 1024
                         else:
                             temheight = 1024 * (temheight / temwidth)
-                            temwidth = 1024 
+                            temwidth = 1024
                     text = f"🚀图片生成中～～～\n⏳请您耐心等待1-2分钟\n----------\n💨图宽:{int(temwidth)} 图高:{int(temheight)}\n✨感谢您的耐心与支持"
                     temreply = Reply(ReplyType.TEXT, text)
                     channel._send(temreply, e_context["context"])
@@ -526,29 +536,29 @@ class pictureChange(Plugin):
                     api.set_options(default_options)
                     # 调用img2img函数，并传递修改后的images列表作为参数
                     result = api.img2img(
-                        images = temimages,
-                        steps = 20,
-                        denoising_strength = 0.6,
-                        cfg_scale = 7.0,
-                        batch_size= 4,
-                        n_iter= 1,
-                        do_not_save_samples = True,
-                        do_not_save_grid= True,
-                        save_images = True,
-                        width = temwidth,
-                        height = temheight,
-                        prompt = prompt,
-                        negative_prompt = "(((nsfw))),EasyNegative,badhandv4,ng_deepnegative_v1_75t,(worst quality:2), (low quality:2), (normal quality:2), lowres, ((monochrome)), ((grayscale)), bad anatomy,DeepNegative, skin spots, acnes, skin blemishes,(fat:1.2),facing away, looking away,tilted head, lowres,bad anatomy,bad hands, missing fingers,extra digit, fewer digits,bad feet,poorly drawn hands,poorly drawn face,mutation,deformed,extra fingers,extra limbs,extra arms,extra legs,malformed limbs,fused fingers,too many fingers,long neck,cross-eyed,mutated hands,polar lowres,bad body,bad proportions,gross proportions,missing arms,missing legs,extra digit, extra arms, extra leg, extra foot,teethcroppe,signature, watermark, username,blurry,cropped,jpeg artifacts,text,error,Lower body exposure,",
-                        
+                        images=temimages,
+                        steps=20,
+                        denoising_strength=0.6,
+                        cfg_scale=7.0,
+                        batch_size=4,
+                        n_iter=1,
+                        do_not_save_samples=True,
+                        do_not_save_grid=True,
+                        save_images=True,
+                        width=temwidth,
+                        height=temheight,
+                        prompt=prompt,
+                        negative_prompt="(((nsfw))),EasyNegative,badhandv4,ng_deepnegative_v1_75t,(worst quality:2), (low quality:2), (normal quality:2), lowres, ((monochrome)), ((grayscale)), bad anatomy,DeepNegative, skin spots, acnes, skin blemishes,(fat:1.2),facing away, looking away,tilted head, lowres,bad anatomy,bad hands, missing fingers,extra digit, fewer digits,bad feet,poorly drawn hands,poorly drawn face,mutation,deformed,extra fingers,extra limbs,extra arms,extra legs,malformed limbs,fused fingers,too many fingers,long neck,cross-eyed,mutated hands,polar lowres,bad body,bad proportions,gross proportions,missing arms,missing legs,extra digit, extra arms, extra leg, extra foot,teethcroppe,signature, watermark, username,blurry,cropped,jpeg artifacts,text,error,Lower body exposure,",
+
                     )
-                    
+
                     # 发送图片
                     b_img = io.BytesIO()
                     result.image.save(b_img, format="PNG")
                     reply.content = b_img
                     reply = Reply(ReplyType.IMAGE, reply.content)
                     channel._send(reply, e_context["context"])
-                    
+
                     # 发送放大和转换指令
                     reply.type = ReplyType.TEXT
                     all_seeds = result.info['all_seeds']
@@ -565,21 +575,23 @@ class pictureChange(Plugin):
                             reply.content += "\t\t"
                         else:
                             reply.content += "\n\n"
-                        reply.content += "<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent=🔍 放大 {}.png\">{}</a>".format(f"img2img-images/{seed}",f"🤖 放大 {temposition_1}")
+                        reply.content += "<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent=🔍 放大 {}.png\">{}</a>".format(
+                            f"img2img-images/{seed}", f"🤖 放大 {temposition_1}")
                     for seed in all_seeds:
                         temposition_2 += 1
                         if temposition_2 % 2 == 0:
                             reply.content += "\t\t"
                         else:
                             reply.content += "\n\n"
-                        reply.content += "<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent=🎡 变换 {}.png {}\">{}</a>".format(f"img2img-images/{seed}",parts[3],f"🎡 变换 {temposition_2}")   
+                        reply.content += "<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent=🎡 变换 {}.png {}\">{}</a>".format(
+                            f"img2img-images/{seed}", parts[3], f"🎡 变换 {temposition_2}")
                     reply.content += "\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n👑 MODEL_1 : 动漫\n🏆 MODEL_2 : 现实\n🧩 MODEL_3 : Q版\n🌈 图片不满意的话，点击变换\n🐏 小羊帮你再画一幅吧!\n💖 感谢您的使用！"
                     reply.content = reply.content
                     e_context["reply"] = reply
                     e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
                     self.use_number -= 1
                     self.out_number = 0
-                        
+
                     return
                 else:
                     reply.type = ReplyType.TEXT
@@ -588,7 +600,7 @@ class pictureChange(Plugin):
                     e_context["reply"] = reply
                     e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
                     return
-                
+
             elif content.startswith("🔍 放大 "):
                 if self.use_pictureChange == False:
                     reply.content = f"😭pictureChange插件被管理员关闭了\n快联系小羊管理员开启pictureChange插件吧🥰🥰🥰"
@@ -622,11 +634,11 @@ class pictureChange(Plugin):
                             e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
                     except Exception as e:
                         reply.type = ReplyType.TEXT
-                        reply.content = "[😭放大图片失败]"+ str(e) +"❌图片只会保存一天\n😂图片可能已被删除\n🥰快联系小羊解决问题吧！"
+                        reply.content = "[😭放大图片失败]" + str(e) + "❌图片只会保存一天\n😂图片可能已被删除\n🥰快联系小羊解决问题吧！"
                         e_context["reply"] = reply
                         e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-            
-            
+
+
             elif content.startswith("🎡 变换 "):
                 if self.use_pictureChange == False:
                     reply.content = f"😭pictureChange插件被管理员关闭了\n快联系小羊管理员开启pictureChange插件吧🥰🥰🥰"
@@ -657,7 +669,7 @@ class pictureChange(Plugin):
                     if response.status_code == 200:
                         # 获取图像的二进制数据
                         image_data = response.content
-                        
+
                         # 将二进制图像数据转换为 PIL Image 对象
                         image = Image.open(io.BytesIO(image_data))
                         width, height = image.size
@@ -677,20 +689,20 @@ class pictureChange(Plugin):
                         api.set_options(default_options)
                         # 调用img2img函数，并传递修改后的images列表作为参数
                         result = api.img2img(
-                            images = temimages,
-                            steps = 20,
-                            denoising_strength = 0.6,
-                            cfg_scale = 7.0,
-                            batch_size= 4,
-                            n_iter= 1,
-                            do_not_save_samples = True,
-                            do_not_save_grid= True,
-                            save_images = True,
-                            width = temwidth,
-                            height = temheight,
-                            prompt = prompt,
-                            negative_prompt = "(((nsfw))),EasyNegative,badhandv4,ng_deepnegative_v1_75t,(worst quality:2), (low quality:2), (normal quality:2), lowres, ((monochrome)), ((grayscale)), bad anatomy,DeepNegative, skin spots, acnes, skin blemishes,(fat:1.2),facing away, looking away,tilted head, lowres,bad anatomy,bad hands, missing fingers,extra digit, fewer digits,bad feet,poorly drawn hands,poorly drawn face,mutation,deformed,extra fingers,extra limbs,extra arms,extra legs,malformed limbs,fused fingers,too many fingers,long neck,cross-eyed,mutated hands,polar lowres,bad body,bad proportions,gross proportions,missing arms,missing legs,extra digit, extra arms, extra leg, extra foot,teethcroppe,signature, watermark, username,blurry,cropped,jpeg artifacts,text,error,Lower body exposure,",
-                            
+                            images=temimages,
+                            steps=20,
+                            denoising_strength=0.6,
+                            cfg_scale=7.0,
+                            batch_size=4,
+                            n_iter=1,
+                            do_not_save_samples=True,
+                            do_not_save_grid=True,
+                            save_images=True,
+                            width=temwidth,
+                            height=temheight,
+                            prompt=prompt,
+                            negative_prompt="(((nsfw))),EasyNegative,badhandv4,ng_deepnegative_v1_75t,(worst quality:2), (low quality:2), (normal quality:2), lowres, ((monochrome)), ((grayscale)), bad anatomy,DeepNegative, skin spots, acnes, skin blemishes,(fat:1.2),facing away, looking away,tilted head, lowres,bad anatomy,bad hands, missing fingers,extra digit, fewer digits,bad feet,poorly drawn hands,poorly drawn face,mutation,deformed,extra fingers,extra limbs,extra arms,extra legs,malformed limbs,fused fingers,too many fingers,long neck,cross-eyed,mutated hands,polar lowres,bad body,bad proportions,gross proportions,missing arms,missing legs,extra digit, extra arms, extra leg, extra foot,teethcroppe,signature, watermark, username,blurry,cropped,jpeg artifacts,text,error,Lower body exposure,",
+
                         )
                         # 发送图片
                         b_img = io.BytesIO()
@@ -698,7 +710,7 @@ class pictureChange(Plugin):
                         reply.content = b_img
                         reply = Reply(ReplyType.IMAGE, reply.content)
                         channel._send(reply, e_context["context"])
-                        
+
                         # 发送放大和转换指令
                         reply.type = ReplyType.TEXT
                         all_seeds = result.info['all_seeds']
@@ -715,16 +727,19 @@ class pictureChange(Plugin):
                                 reply.content += "\t\t"
                             else:
                                 reply.content += "\n\n"
-                            reply.content += "<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent=🔍 放大 {}.png\">{}</a>".format(f"img2img-images/{seed}",f"🤖 放大 {temposition_1}")
+                            reply.content += "<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent=🔍 放大 {}.png\">{}</a>".format(
+                                f"img2img-images/{seed}", f"🤖 放大 {temposition_1}")
                         for seed in all_seeds:
                             temposition_2 += 1
                             if temposition_2 % 2 == 0:
                                 reply.content += "\t\t"
                             else:
                                 reply.content += "\n\n"
-                            reply.content += "<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent=🎡 变换 {}.png {}\">{}</a>".format(f"img2img-images/{seed}",content.split()[3],f"🎡 变换 {temposition_2}")
+                            reply.content += "<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent=🎡 变换 {}.png {}\">{}</a>".format(
+                                f"img2img-images/{seed}", content.split()[3], f"🎡 变换 {temposition_2}")
                         reply.content += "\n\n"
-                        reply.content += "<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent=🎡 变换 {} {}\">{}</a>".format(f"{file_content}",content.split()[3],f"🎡 变换 原图")
+                        reply.content += "<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent=🎡 变换 {} {}\">{}</a>".format(
+                            f"{file_content}", content.split()[3], f"🎡 变换 原图")
                         reply.content += "\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n👑 MODEL_1 : 动漫\n🏆 MODEL_2 : 现实\n🧩 MODEL_3 : Q版\n🌈 图片不满意的话，点击变换\n🐏 小羊帮你再画一幅吧!\n💖 感谢您的使用！"
                         reply.content = reply.content
                         e_context["reply"] = reply
@@ -735,14 +750,14 @@ class pictureChange(Plugin):
                         reply.content = "[😭转换图片失败]\n快联系小羊解决问题吧🥰🥰🥰"
                         e_context["reply"] = reply
                         e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                        
+
                     self.use_number -= 1
                     self.out_number = 0
-                        
+
                     return
-                        
-                        
-                    
+
+
+
             elif check_exist:
                 if self.use_pictureChange == False:
                     reply.type = ReplyType.TEXT
@@ -751,7 +766,7 @@ class pictureChange(Plugin):
                     e_context["reply"] = reply
                     e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
                     return
-                file_content = content[len(title+" "):]
+                file_content = content[len(title + " "):]
                 if os.path.isfile(file_content):
                     try:
                         # 从文件中读取数据
@@ -782,38 +797,37 @@ class pictureChange(Plugin):
                     if temwidth > 1024 or temheight > 1024:
                         if temwidth < temheight:
                             temwidth = 1024 * (temwidth / temheight)
-                            temheight = 1024 
+                            temheight = 1024
                         else:
                             temheight = 1024 * (temheight / temwidth)
-                            temwidth = 1024 
+                            temwidth = 1024
 
                     text = f"🚀图片生成中～～～\n⏳请您耐心等待1-2分钟\n----------\n💨图宽:{int(temwidth)} 图高:{int(temheight)}\n✨感谢您的耐心与支持"
                     temreply = Reply(ReplyType.TEXT, text)
                     channel._send(temreply, e_context["context"])
-                        
 
                     # 将PIL Image对象添加到images列表中
                     temimages.append(image)
-                    options = {**self.default_options,**roleRule_options}
+                    options = {**self.default_options, **roleRule_options}
                     # 更改固定模型
                     api.set_options(options)
                     # 调用img2img函数，并传递修改后的images列表作为参数
                     result = api.img2img(
-                        images = temimages,
-                        steps = 20,
-                        denoising_strength = denoising_strength,
-                        cfg_scale = cfg_scale,
-                        width = temwidth,
-                        height = temheight,
-                        batch_size= 4,
-                        n_iter= 1,
-                        do_not_save_samples = True,
-                        do_not_save_grid= True,
-                        save_images = True,
-                        prompt = prompt,
-                        negative_prompt = negative_prompt,
+                        images=temimages,
+                        steps=20,
+                        denoising_strength=denoising_strength,
+                        cfg_scale=cfg_scale,
+                        width=temwidth,
+                        height=temheight,
+                        batch_size=4,
+                        n_iter=1,
+                        do_not_save_samples=True,
+                        do_not_save_grid=True,
+                        save_images=True,
+                        prompt=prompt,
+                        negative_prompt=negative_prompt,
                     )
-                    
+
                     model = options["sd_model_checkpoint"]
                     modelname = ""
                     for member in self.Model:
@@ -822,7 +836,7 @@ class pictureChange(Plugin):
                             break
                     else:
                         print("使用了其他模型")
-                
+
                     # 发送图片
                     b_img = io.BytesIO()
                     result.image.save(b_img, format="PNG")
@@ -845,22 +859,25 @@ class pictureChange(Plugin):
                             reply.content += "\t\t"
                         else:
                             reply.content += "\n\n"
-                        reply.content += "<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent=🔍 放大 {}.png\">{}</a>".format(f"img2img-images/{seed}",f"🤖 放大 {temposition_1}")
+                        reply.content += "<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent=🔍 放大 {}.png\">{}</a>".format(
+                            f"img2img-images/{seed}", f"🤖 放大 {temposition_1}")
                     for seed in all_seeds:
                         temposition_2 += 1
                         if temposition_2 % 2 == 0:
                             reply.content += "\t\t"
                         else:
                             reply.content += "\n\n"
-                        reply.content += "<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent=🎡 变换 {}.png {}\">{}</a>".format(f"img2img-images/{seed}",modelname,f"🎡 变换 {temposition_2}")    
-                    reply.content += "\n\n<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent={} {}\">{}</a>".format(title, file_content, "🎡 变换 原图")
+                        reply.content += "<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent=🎡 变换 {}.png {}\">{}</a>".format(
+                            f"img2img-images/{seed}", modelname, f"🎡 变换 {temposition_2}")
+                    reply.content += "\n\n<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent={} {}\">{}</a>".format(
+                        title, file_content, "🎡 变换 原图")
                     reply.content += "\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n👑 MODEL_1 : 动漫\n🏆 MODEL_2 : 现实\n🧩 MODEL_3 : Q版\n🌈 图片不满意的话，点击变换\n🐏 小羊帮你再画一幅吧!\n💖 感谢您的使用！"
                     reply.content = reply.content
                     e_context["reply"] = reply
                     e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
                     self.use_number -= 1
                     self.out_number = 0
-                        
+
                     return
                 else:
                     reply.type = ReplyType.TEXT
@@ -869,21 +886,19 @@ class pictureChange(Plugin):
                     e_context["reply"] = reply
                     e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
                     return
-            
+
             else:
                 e_context.action = EventAction.CONTINUE  # 事件继续，交付给下个插件或默认逻辑
                 return
         except Exception as e:
-                reply.content = "[😭pictureChange画图失败] "+str(e) +"\n快联系小羊解决问题吧🥰🥰🥰"
-                reply = Reply(ReplyType.ERROR, reply.content)
-                logger.error("[pictureChange画图失败] exception: %s" % e)
-                channel._send(reply, e_context["context"])
-                e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                self.use_number -= 1
-                self.out_number = 0
-                    
+            reply.content = "[😭pictureChange画图失败] " + str(e) + "\n快联系小羊解决问题吧🥰🥰🥰"
+            reply = Reply(ReplyType.ERROR, reply.content)
+            logger.error("[pictureChange画图失败] exception: %s" % e)
+            channel._send(reply, e_context["context"])
+            e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
+            self.use_number -= 1
+            self.out_number = 0
 
-            
     def get_help_text(self, **kwargs):
         if not conf().get('image_create_prefix'):
             return "画图功能未启用"

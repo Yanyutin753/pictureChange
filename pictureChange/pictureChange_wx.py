@@ -248,7 +248,7 @@ class pictureChange(Plugin):
                             if lang != "en":
                                 logger.info("[SD] translate prompt from {} to en".format(lang))
                                 try:
-                                    if self.is_use_fanyi:
+                                    if not self.is_use_fanyi:
                                         btype = Bridge().btype['chat']
                                         bot = bot_factory.create_bot(Bridge().btype['chat'])
                                         session = bot.sessions.build_session(session_id, self.bot_prompt)
@@ -501,7 +501,7 @@ class pictureChange(Plugin):
                             # 非英文，进行翻译
                             logger.info("[SD] Translating prompt from {} to en".format(lang))
                             try:
-                                if self.is_use_fanyi:
+                                if not self.is_use_fanyi:
                                     btype = Bridge().btype['chat']
                                     bot = bot_factory.create_bot(Bridge().btype['chat'])
                                     session = bot.sessions.build_session(session_id, self.bot_prompt)
@@ -1049,7 +1049,7 @@ class pictureChange(Plugin):
                                 if lang != "en":
                                     logger.info("[SD] translate prompt from {} to en".format(lang))
                                     try:
-                                        if self.is_use_fanyi:
+                                        if not self.is_use_fanyi:
                                             btype = Bridge().btype['chat']
                                             bot = bot_factory.create_bot(Bridge().btype['chat'])
                                             session = bot.sessions.build_session(session_id, self.bot_prompt)
@@ -1229,7 +1229,7 @@ class pictureChange(Plugin):
                         # 非英文，进行翻译
                         logger.info("[SD] Translating prompt from {} to en".format(lang))
                         try:
-                            if self.is_use_fanyi:
+                            if not self.is_use_fanyi:
                                 btype = Bridge().btype['chat']
                                 bot = bot_factory.create_bot(Bridge().btype['chat'])
                                 session = bot.sessions.build_session(session_id, self.bot_prompt)

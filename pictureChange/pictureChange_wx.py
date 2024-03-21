@@ -19,9 +19,11 @@ from plugins import *
 from PIL import Image
 import urllib.parse
 from enum import Enum
+from bot import bot_factory
+from bridge.bridge import Bridge
 
 
-@plugins.register(name="pictureChange", desc="利用百度云AI和stable-diffusion webui来画图,图生图", version="1.8.1",
+@plugins.register(name="pictureChange", desc="利用百度云AI和stable-diffusion webui来画图,图生图", version="1.8.3",
                   author="yangyang")
 class pictureChange(Plugin):
     # 定义了模型枚举类型
@@ -49,6 +51,14 @@ class pictureChange(Plugin):
                 self.use_https = config["start"]["use_https"]
                 self.file_url = config["file_url"]
                 self.other_user_id = config["use_group"]
+                self.is_use_fanyi = config["is_use_fanyi"]
+                self.bot_prompt = '''作为 Stable Diffusion Prompt 提示词专家，您将从关键词中创建提示，通常来自 Danbooru 
+                等数据库。提示通常描述图像，使用常见词汇，按重要性排列，并用逗号分隔。避免使用"-"或"."，但可以接受空格和自然语言。避免词汇重复。为了强调关键词，请将其放在括号中以增加其权重。例如，"( 
+                flowers)"将'flowers'的权重增加1.1倍，而"(((flowers)))"将其增加1.331倍。使用"( 
+                flowers:1.5)"将'flowers'的权重增加1.5倍。只为重要的标签增加权重。提示包括三个部分：前缀（质量标签+风格词+效果器）+ 主题（图像的主要焦点）+ 
+                场景（背景、环境）。前缀影响图像质量。像"masterpiece"、"best 
+                quality"、"4k"这样的标签可以提高图像的细节。像"illustration"、"lensflare"这样的风格词定义图像的风格。像"bestlighting"、"lensflare 
+                "、"depthoffield"这样的效果器会影响光照和深度。主题是图像的主要焦点，如角色或场景。对主题进行详细描述可以确保图像丰富而详细。增加主题的权重以增强其清晰度。对于角色，描述面部、头发、身体、服装、姿势等特征。场景描述环境。没有场景，图像的背景是平淡的，主题显得过大。某些主题本身包含场景（例如建筑物、风景）。像"花草草地"、"阳光"、"河流"这样的环境词可以丰富场景。你的任务是设计图像生成的提示。请按照以下步骤进行操作：我会发送给您一个图像场景。生成详细的图像描述，输出 Positive Prompt ,并确保用英文回复我。示例：我发送：二战时期的护士。 您回复：A WWII-era nurse in a German uniform, holding a wine bottle and stethoscope, sitting at a table in white attire, with a table in the background, masterpiece, best quality, 4k, illustration style, best lighting, depth of field, detailed character, detailed environment. '''
                 try:
                     self.max_number = config["max_number"]
                 except KeyError:
@@ -104,6 +114,8 @@ class pictureChange(Plugin):
         roleRule_options = {}
         isgroup = context["msg"].is_group
         channel = e_context["channel"]
+        cmsg: ChatMessage = e_context['context']['msg']
+        session_id = cmsg.from_user_id
         for role in self.role_options:
             if content.startswith(role['title'] + " "):
                 title = role['title']
@@ -236,7 +248,15 @@ class pictureChange(Plugin):
                             if lang != "en":
                                 logger.info("[SD] translate prompt from {} to en".format(lang))
                                 try:
-                                    prompt = Bridge().fetch_translate(prompt, to_lang="en")
+                                    if self.is_use_fanyi:
+                                        btype = Bridge().btype['chat']
+                                        bot = bot_factory.create_bot(Bridge().btype['chat'])
+                                        session = bot.sessions.build_session(session_id, self.bot_prompt)
+                                        session.add_query(prompt)
+                                        result = bot.reply_text(session)
+                                        prompt = result['content']
+                                    else:
+                                        prompt = Bridge().fetch_translate(prompt, to_lang="en")
                                 except Exception as e:
                                     logger.info("[SD] translate failed: {}".format(e))
                                 logger.info("[SD] translated prompt={}".format(prompt))
@@ -251,6 +271,7 @@ class pictureChange(Plugin):
                             do_not_save_samples=True,
                             do_not_save_grid=True,
                             save_images=True,
+                            negative_prompt = "(((nsfw))),EasyNegative,badhandv4,ng_deepnegative_v1_75t,(worst quality:2), (low quality:2), (normal quality:2), lowres, ((monochrome)), ((grayscale)), bad anatomy,DeepNegative, skin spots, acnes, skin blemishes,(fat:1.2),facing away, looking away,tilted head, lowres,bad anatomy,bad hands, missing fingers,extra digit, fewer digits,bad feet,poorly drawn hands,poorly drawn face,mutation,deformed,extra fingers,extra limbs,extra arms,extra legs,malformed limbs,fused fingers,too many fingers,long neck,cross-eyed,mutated hands,polar lowres,bad body,bad proportions,gross proportions,missing arms,missing legs,extra digit, extra arms, extra leg, extra foot,teethcroppe,signature, watermark, username,blurry,cropped,jpeg artifacts,text,error,Lower body exposure,",
                             **params
                         )
                         model = options["sd_model_checkpoint"]
@@ -480,7 +501,15 @@ class pictureChange(Plugin):
                             # 非英文，进行翻译
                             logger.info("[SD] Translating prompt from {} to en".format(lang))
                             try:
-                                prompt = Bridge().fetch_translate(prompt, to_lang="en")
+                                if self.is_use_fanyi:
+                                    btype = Bridge().btype['chat']
+                                    bot = bot_factory.create_bot(Bridge().btype['chat'])
+                                    session = bot.sessions.build_session(session_id, self.bot_prompt)
+                                    session.add_query(prompt)
+                                    result = bot.reply_text(session)
+                                    prompt = result['content']
+                                else:
+                                    prompt = Bridge().fetch_translate(prompt, to_lang="en")
                             except Exception as e:
                                 logger.error("Translation failed: {}".format(str(e)))
                         else:
@@ -1020,7 +1049,15 @@ class pictureChange(Plugin):
                                 if lang != "en":
                                     logger.info("[SD] translate prompt from {} to en".format(lang))
                                     try:
-                                        prompt = Bridge().fetch_translate(prompt, to_lang="en")
+                                        if self.is_use_fanyi:
+                                            btype = Bridge().btype['chat']
+                                            bot = bot_factory.create_bot(Bridge().btype['chat'])
+                                            session = bot.sessions.build_session(session_id, self.bot_prompt)
+                                            session.add_query(prompt)
+                                            result = bot.reply_text(session)
+                                            prompt = result['content']
+                                        else:
+                                            prompt = Bridge().fetch_translate(prompt, to_lang="en")
                                     except Exception as e:
                                         logger.info("[SD] translate failed: {}".format(e))
                                     logger.info("[SD] translated prompt={}".format(prompt))
@@ -1192,7 +1229,15 @@ class pictureChange(Plugin):
                         # 非英文，进行翻译
                         logger.info("[SD] Translating prompt from {} to en".format(lang))
                         try:
-                            prompt = Bridge().fetch_translate(prompt, to_lang="en")
+                            if self.is_use_fanyi:
+                                btype = Bridge().btype['chat']
+                                bot = bot_factory.create_bot(Bridge().btype['chat'])
+                                session = bot.sessions.build_session(session_id, self.bot_prompt)
+                                session.add_query(prompt)
+                                result = bot.reply_text(session)
+                                prompt = result['content']
+                            else:
+                                prompt = Bridge().fetch_translate(prompt, to_lang="en")
                         except Exception as e:
                             logger.error("Translation failed: {}".format(str(e)))
                     else:

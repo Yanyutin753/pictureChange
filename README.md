@@ -90,8 +90,9 @@ PS: 实际参数分为两部分:
 # config.json文件内容示例
 {
     "max_number":3, #最大并行人数量
-    "request_bot_name" : "群聊请求机器人的名称，和config.json环境变量一致（只限一个）"
-    "file_url": "file=F:/sd-webui-aki_v4.7/outputs/  这个地址是你图片生成的地址" 
+    "request_bot_name" : "群聊请求机器人的名称，和config.json环境变量一致（只限一个）",
+    "file_url": "file=F:/sd-webui-aki_v4.7/outputs/,  #这个地址是你图片生成的地址"
+    "is_use_fanyi":false, #是否使用翻译，true就直接使用百度翻译，false使用gpt优化提示词
      #申请地址https://ai.baidu.com/ai-doc
     "api_key" : "你的百度云api_key",
     "secret_key" : "你的百度云secret_key",

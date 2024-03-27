@@ -271,7 +271,7 @@ class pictureChange(Plugin):
                             do_not_save_samples=True,
                             do_not_save_grid=True,
                             save_images=True,
-                            negative_prompt = "(((nsfw))),EasyNegative,badhandv4,ng_deepnegative_v1_75t,(worst quality:2), (low quality:2), (normal quality:2), lowres, ((monochrome)), ((grayscale)), bad anatomy,DeepNegative, skin spots, acnes, skin blemishes,(fat:1.2),facing away, looking away,tilted head, lowres,bad anatomy,bad hands, missing fingers,extra digit, fewer digits,bad feet,poorly drawn hands,poorly drawn face,mutation,deformed,extra fingers,extra limbs,extra arms,extra legs,malformed limbs,fused fingers,too many fingers,long neck,cross-eyed,mutated hands,polar lowres,bad body,bad proportions,gross proportions,missing arms,missing legs,extra digit, extra arms, extra leg, extra foot,teethcroppe,signature, watermark, username,blurry,cropped,jpeg artifacts,text,error,Lower body exposure,",
+                            negative_prompt="(((nsfw))),EasyNegative,badhandv4,ng_deepnegative_v1_75t,(worst quality:2), (low quality:2), (normal quality:2), lowres, ((monochrome)), ((grayscale)), bad anatomy,DeepNegative, skin spots, acnes, skin blemishes,(fat:1.2),facing away, looking away,tilted head, lowres,bad anatomy,bad hands, missing fingers,extra digit, fewer digits,bad feet,poorly drawn hands,poorly drawn face,mutation,deformed,extra fingers,extra limbs,extra arms,extra legs,malformed limbs,fused fingers,too many fingers,long neck,cross-eyed,mutated hands,polar lowres,bad body,bad proportions,gross proportions,missing arms,missing legs,extra digit, extra arms, extra leg, extra foot,teethcroppe,signature, watermark, username,blurry,cropped,jpeg artifacts,text,error,Lower body exposure,",
                             **params
                         )
                         model = options["sd_model_checkpoint"]
@@ -389,7 +389,6 @@ class pictureChange(Plugin):
                         file_content = content[len("❎ 暂不处理 "):]
                         # 删除文件
                         reply.type = ReplyType.TEXT
-                        replyText = ""
                         if os.path.isfile(file_content):
                             os.remove(file_content)
                             replyText = "🥰图片已成功删除\n🧸感谢您的使用！"
@@ -770,6 +769,7 @@ class pictureChange(Plugin):
                                 image_url = "http://{}:{}/{}{}".format(self.host, self.port, self.file_url,
                                                                        file_content)
                             # 发送 GET 请求获取图像数据
+
                             response = requests.get(image_url)
                             # 检查响应状态码是否为 200，表示请求成功
                             if response.status_code == 200:
@@ -855,7 +855,6 @@ class pictureChange(Plugin):
                             return
 
 
-
                     elif content.startswith("🤖 放大 "):
                         if self.use_pictureChange == False:
                             reply.content = f"😭SD插件被管理员关闭了，快联系管理员开启SD插件吧🥰🥰🥰"
@@ -939,8 +938,8 @@ class pictureChange(Plugin):
                         replyText = f"🥰 您的图片编号:\n💖 {file_content}\n\n❗ 请输入指令,以进行图片操作\n✅ 支持指令\n\n🤖 图像修复 {file_content}"
                         for role in self.role_options:
                             replyText += f"\n\n {role['title']} {file_content}"
-                        replyText += f"\n\n 🎡 自定义 {file_content} [关键词] 例如 黑色头发 白色短袖 等关键词"
-                        replyText += f"\n\n ❎ 暂不处理 {file_content}"
+                        replyText += f"\n\n🎡 自定义 {file_content} [关键词] 例如 黑色头发 白色短袖 等关键词"
+                        replyText += f"\n\n❎ 暂不处理 {file_content}"
                         replyText += "\n\n🚀 发送指令后，请耐心等待一至两分钟，作品将很快呈现出来！"
                         reply.content = replyText
                         e_context["reply"] = reply
@@ -977,8 +976,8 @@ class pictureChange(Plugin):
                         replyText = f"🥰 您的图片编号:\n💖 {file_content}\n\n❗ 请输入指令,以进行图片操作\n✅ 支持指令\n\n🤖 图像修复 {file_content}"
                         for role in self.role_options:
                             replyText += f"\n\n {role['title']} {file_content}"
-                        replyText += f"\n\n 🎡 自定义 {file_content} [关键词] 例如 黑色头发 白色短袖 等关键词"
-                        replyText += f"\n\n ❎ 暂不处理 {file_content}"
+                        replyText += f"\n\n🎡 自定义 {file_content} [关键词] 例如 黑色头发 白色短袖 等关键词"
+                        replyText += f"\n\n❎ 暂不处理 {file_content}"
                         replyText += "\n\n🚀 发送指令后，请耐心等待一至两分钟，作品将很快呈现出来！"
                         reply.content = replyText
                         e_context["reply"] = reply
@@ -1184,7 +1183,6 @@ class pictureChange(Plugin):
                         else:
                             logger.error("API请求失败")
                     else:
-
                         reply.type = ReplyType.TEXT
                         replyText = f"🥰请先发送图片给我,我将为您进行图像修复"
                         reply.content = replyText
@@ -1196,7 +1194,6 @@ class pictureChange(Plugin):
                     file_content = content[len("❎ 暂不处理 "):]
                     # 删除文件
                     reply.type = ReplyType.TEXT
-                    replyText = ""
                     if os.path.isfile(file_content):
                         os.remove(file_content)
                         replyText = "🥰图片已成功删除\n🧸感谢您的使用！"

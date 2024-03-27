@@ -353,7 +353,7 @@ class Godcmd(Plugin):
                         elif cmd == "reconf":
                             load_config()
                             ok, result = True, "配置已重载"
-                             elif cmd == "setKey":
+                        elif cmd == "setKey":
                             if len(args) != 1:
                                 ok, result = False, "请提供正确的api_key"
                             else:
@@ -372,7 +372,6 @@ class Godcmd(Plugin):
                                 bot = ChatGPTBot()
                                 bot.initialize_gpt()
                                 print("open_ai_api_key 已经更新为:", args[0])
-                                
                                 
                             ok, result = True, "修改成功"
                             

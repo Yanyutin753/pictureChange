@@ -81,7 +81,7 @@ class pictureChange(Plugin):
                     self.use_pictureChange = False
                     print("由于连接错误，self.use_pictureChange变为", False)
                 self.use_number = 0
-                self.out_number = 0
+                self.wait_number = 0
             self.handlers[Event.ON_HANDLE_CONTEXT] = self.on_handle_context
             logger.info("[pictureChange] inited")
         except Exception as e:
@@ -93,15 +93,19 @@ class pictureChange(Plugin):
 
     def on_handle_context(self, e_context: EventContext):
         reply = Reply()
+        if not self.use_pictureChange:
+            reply.type = ReplyType.TEXT
+            replyText = f"😭图生图关闭了，快联系{self.request_bot_name}管理员开启图生图吧🥰🥰🥰"
+            reply.content = replyText
+            e_context["reply"] = reply
+            e_context.action = EventAction.CONTINUE  # 事件继续，交付给下个插件或默认逻辑
+            return
         temimages = []
         api = webuiapi.WebUIApi(**self.start_args)
-        # if e_context['context'].type != ContextType.IMAGE_CREATE:
-        #     return
         channel = e_context['channel']
         if ReplyType.IMAGE in channel.NOT_SUPPORT_REPLYTYPE:
             return
         context = e_context['context']
-        logger.info("[SD] asdasdasdasd ={}".format(context))
         msg: ChatMessage = context["msg"]
         content = context.content
         file_content = content
@@ -135,7 +139,7 @@ class pictureChange(Plugin):
                     replyText = f"🤖图生图模式已开启，请勿重复开启"
                     reply.content = replyText
                     e_context["reply"] = reply
-                    e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
+                    e_context.action = EventAction.BREAK_PASS  
                 else:
                     self.other_user_id.append(context["msg"].other_user_id)
                     curdir = os.path.dirname(__file__)
@@ -149,7 +153,7 @@ class pictureChange(Plugin):
                     replyText = f"🥰图生图模式已开启，请发送图片给我,我将为您进行图像处理"
                     reply.content = replyText
                     e_context["reply"] = reply
-                    e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
+                    e_context.action = EventAction.BREAK_PASS  
                 return
 
             elif content == "关闭图生图":
@@ -167,37 +171,31 @@ class pictureChange(Plugin):
                         replyText = "🥰图生图模式已关闭"
                         reply.content = replyText
                         e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
+                        e_context.action = EventAction.BREAK_PASS  
                     except Exception as e:
                         # 处理异常情况的代码
                         reply.type = ReplyType.TEXT
                         replyText = "😭关闭失败：" + str(e)
                         reply.content = replyText
                         e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
+                        e_context.action = EventAction.BREAK_PASS  
                 else:
                     # 处理异常情况的代码
                     reply.type = ReplyType.TEXT
                     replyText = "😭请检查图生图是否开启"
                     reply.content = replyText
                     e_context["reply"] = reply
-                    e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
+                    e_context.action = EventAction.BREAK_PASS  
                 return
 
             elif e_context['context'].type == ContextType.IMAGE_CREATE:
-                if self.use_pictureChange == False:
-                    reply.content = f"😭SD画图关闭了，快联系管理员开启SD画图吧🥰🥰🥰"
-                    reply = Reply(ReplyType.ERROR, reply.content)
-                    channel._send(reply, e_context["context"])
-                    e_context.action = EventAction.CONTINUE  # 事件继续，交付给下个插件或默认逻辑
-                    return
-                elif self.use_number >= self.max_number:
-                    self.out_number += 1
+                if self.use_number >= self.max_number:
+                    self.wait_number += 1
                     reply.type = ReplyType.TEXT
-                    replyText = f"🧸当前排队人数为 {str(self.out_number)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"
+                    replyText = f"🧸当前排队人数为 {str(self.wait_number)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"
                     reply.content = replyText
                     e_context["reply"] = reply
-                    e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
+                    e_context.action = EventAction.BREAK_PASS  
                     return
                 else:
                     self.use_number += 1
@@ -208,7 +206,6 @@ class pictureChange(Plugin):
                     else:
                         keywords = content
                         prompt = ""
-
                     keywords = keywords.split()
                     unused_keywords = []
                     text = f"🚀图片生成中～～～\n⏳请您耐心等待1-2分钟\n✨请稍等片刻✨✨\n❤️感谢您的耐心与支持"
@@ -313,29 +310,22 @@ class pictureChange(Plugin):
                             logger.info("文件已成功删除")
                         else:
                             logger.error("文件不存在")
-                        e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                        self.use_number -= 1
-                        self.out_number = 0
-                        return
+                        e_context.action = EventAction.BREAK_PASS
+
+                    self.use_number -= 1
+                    self.wait_number = 0
 
             elif context["msg"].other_user_id in self.other_user_id:
                 try:
                     if e_context['context'].type == ContextType.IMAGE:
-                        if self.use_pictureChange == False:
-                            reply.content = f"😭SD画图关闭了，快联系管理员开启SD画图吧🥰🥰🥰"
-                            reply = Reply(ReplyType.ERROR, reply.content)
-                            channel._send(reply, e_context["context"])
-                            e_context.action = EventAction.CONTINUE  # 事件继续，交付给下个插件或默认逻辑
-                            return
                         if self.use_number >= self.max_number:
+                            self.wait_number += 1
                             reply.type = ReplyType.TEXT
-                            replyText = f"🧸当前排队人数为 {str(self.out_number)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"
+                            replyText = f"🧸当前排队人数为 {str(self.wait_number)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"
                             reply.content = replyText
                             e_context["reply"] = reply
-                            e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                            return
+                            e_context.action = EventAction.BREAK_PASS  
                         else:
-                            self.use_number += 1
                             msg.prepare()
                             reply.type = ReplyType.TEXT
 
@@ -347,26 +337,18 @@ class pictureChange(Plugin):
                             replyText += "\n\n🚀 发送指令后，请耐心等待一至两分钟，作品将很快呈现出来！"
                             reply.content = replyText
                             e_context["reply"] = reply
-                            e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                            return
+                            e_context.action = EventAction.BREAK_PASS  
 
                     elif any(ext in content for ext in ["jpg", "jpeg", "png", "gif", "webp"]) and (
                             content.startswith("http://") or content.startswith("https://")):
-                        if self.use_pictureChange == False:
-                            reply.content = f"😭SD画图关闭了，快联系管理员开启SD画图吧🥰🥰🥰"
-                            reply = Reply(ReplyType.ERROR, reply.content)
-                            channel._send(reply, e_context["context"])
-                            e_context.action = EventAction.CONTINUE  # 事件继续，交付给下个插件或默认逻辑
-                            return
                         if self.use_number >= self.max_number:
+                            self.wait_number += 1
                             reply.type = ReplyType.TEXT
-                            replyText = f"🧸当前排队人数为 {str(self.out_number)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"
+                            replyText = f"🧸当前排队人数为 {str(self.wait_number)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"
                             reply.content = replyText
                             e_context["reply"] = reply
-                            e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                            return
+                            e_context.action = EventAction.BREAK_PASS  
                         else:
-                            self.use_number += 1
                             response = requests.get(content)
                             file_content = str(int(time.time())) + ".jpg"
                             if response.status_code == 200:
@@ -382,8 +364,7 @@ class pictureChange(Plugin):
                             replyText += f"\n\n{self.request_bot_name} ❎ 暂不处理 {file_content}"
                             replyText += "\n\n🚀 发送指令后，请耐心等待一至两分钟，作品将很快呈现出来！"
                             reply.content = replyText
-                            e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                            return
+                            e_context.action = EventAction.BREAK_PASS  
 
                     elif content.startswith("❎ 暂不处理 "):
                         file_content = content[len("❎ 暂不处理 "):]
@@ -396,19 +377,9 @@ class pictureChange(Plugin):
                             replyText = "😭图片不存在或已删除"
                         reply.content = replyText
                         e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                        self.use_number -= 1
-                        self.out_number = 0
-                        return
-
+                        e_context.action = EventAction.BREAK_PASS  
 
                     elif content.startswith("🤖 图像修复 "):
-                        if self.use_pictureChange == False:
-                            reply.content = f"😭SD画图关闭了，快联系管理员开启SD画图吧🥰🥰🥰"
-                            reply = Reply(ReplyType.ERROR, reply.content)
-                            channel._send(reply, e_context["context"])
-                            e_context.action = EventAction.CONTINUE  # 事件继续，交付给下个插件或默认逻辑
-                            return
                         file_content = content[len("🤖 图像修复 "):]
                         if os.path.isfile(file_content):
                             try:
@@ -430,17 +401,15 @@ class pictureChange(Plugin):
                             token_params = {"grant_type": "client_credentials", "client_id": self.API_KEY,
                                             "client_secret": self.SECRET_KEY}
                             access_token = requests.post(token_url, params=token_params).json().get("access_token")
-
                             if not access_token:
                                 logger.error("无法获取百度AI接口访问令牌")
                                 return
-
-                            process_url = f"https://aip.baidubce.com/rest/2.0/image-process/v1/image_definition_enhance?access_token={access_token}"
+                            process_url = f"https://aip.baidubce.com/rest/2.0/image-process/v1" \
+                                          f"/image_definition_enhance?access_token={access_token} "
                             headers = {
                                 'Content-Type': 'application/x-www-form-urlencoded',
                                 'Accept': 'application/json'
                             }
-
                             response = requests.post(process_url, headers=headers, data=payload)
 
                             if response.status_code == 200:
@@ -463,303 +432,295 @@ class pictureChange(Plugin):
                                         logger.info("文件已成功删除")
                                     else:
                                         logger.error("文件不存在")
-                                    e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                                    self.use_number -= 1
-                                    self.out_number = 0
+                                    e_context.action = EventAction.BREAK_PASS  
                                     return
                                 else:
                                     logger.error("未找到转换后的图像数据")
                             else:
                                 logger.error("API请求失败")
                         else:
-
                             reply.type = ReplyType.TEXT
                             replyText = f"🥰请先发送图片给我,我将为您进行图像修复"
                             reply.content = replyText
                             e_context["reply"] = reply
-                            e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
+                            e_context.action = EventAction.BREAK_PASS  
                             return
 
                     elif content.startswith("🎡 自定义 "):
-                        if self.use_pictureChange == False:
-                            reply.content = f"😭SD画图关闭了，快联系管理员开启SD画图吧🥰🥰🥰"
-                            reply = Reply(ReplyType.ERROR, reply.content)
-                            channel._send(reply, e_context["context"])
-                            e_context.action = EventAction.CONTINUE  # 事件继续，交付给下个插件或默认逻辑
-                            return
-                        # Extracting the filename
-                        start_index = content.find("tmp/")
-                        end_index = content.find(".png")
-                        file_content = content[start_index:end_index + 4]  # Adding 4 to include the extension
-                        start_index = content.find("[关键词]") + 5  # Adding 3 to skip the space
-                        keywords = content[start_index:].split()
-                        keywords_string = ' '.join(keywords)
-                        prompt += keywords_string
-                        lang = langid.classify(prompt)[0]
-                        if lang != "en":
-                            # 非英文，进行翻译
-                            logger.info("[SD] Translating prompt from {} to en".format(lang))
-                            try:
-                                if not self.is_use_fanyi:
-                                    btype = Bridge().btype['chat']
-                                    bot = bot_factory.create_bot(Bridge().btype['chat'])
-                                    session = bot.sessions.build_session(session_id, self.bot_prompt)
-                                    session.add_query(prompt)
-                                    result = bot.reply_text(session)
-                                    prompt = result['content']
-                                else:
-                                    prompt = Bridge().fetch_translate(prompt, to_lang="en")
-                            except Exception as e:
-                                logger.error("Translation failed: {}".format(str(e)))
-                        else:
-                            # 英文，无需翻译
-                            logger.info("[SD] Prompt is already in English")
-                        if os.path.isfile(file_content):
-                            try:
-                                # 从文件中读取数据
-                                with open(file_content, 'rb') as file:
-                                    image_data = file.read()
-                                    logger.info("图片读取成功")
-                            except Exception as e:
-                                logger.error(f"读取图片数据时出现错误：{e}")
-                                return
-                            # print("匹配的标题:", title)
-                            # print("Prompt:", prompt)
-                            # print("Negative Prompt:", negative_prompt)
-                            # print("Denoising Strength:", denoising_strength)
-                            # print("Cfg Scale:", cfg_scale)
-                            # 调用img2img函数，并传递修改后的images列表作为参数
-                            # 将二进制图像数据转换为PIL Image对象
-                            text = f"🚀图片生成中～～～\n⏳请您耐心等待1-2分钟\n✨请稍等片刻✨✨\n❤️感谢您的耐心与支持"
-                            temreply = Reply(ReplyType.TEXT, text)
-                            channel._send(temreply, e_context["context"])
-                            image = Image.open(io.BytesIO(image_data))
-                            width, height = image.size
-                            temwidth = width
-                            temheight = height
-                            if temwidth < 768 or temheight < 768:
-                                if temwidth < temheight:
-                                    temheight = 768 * (temheight / temwidth)
-                                    temwidth = 768
-                                else:
-                                    temwidth = 768 * (temwidth / temheight)
-                                    temheight = 768
-                            if temwidth > 1024 or temheight > 1024:
-                                if temwidth < temheight:
-                                    temwidth = 1024 * (temwidth / temheight)
-                                    temheight = 1024
-                                else:
-                                    temheight = 1024 * (temheight / temwidth)
-                                    temwidth = 1024
-                                    # 将PIL Image对象添加到images列表中
-                            temimages.append(image)
-                            default_options = {
-                                "sd_model_checkpoint": "revAnimated_v1.2.2"
-                            }
-                            # 更改固定模型
-                            api.set_options(default_options)
-                            # 调用img2img函数，并传递修改后的images列表作为参数
-                            result = api.img2img(
-                                images=temimages,
-                                steps=20,
-                                denoising_strength=0.45,
-                                cfg_scale=7.0,
-                                batch_size=4,
-                                n_iter=1,
-                                do_not_save_samples=True,
-                                do_not_save_grid=True,
-                                save_images=True,
-                                width=temwidth,
-                                height=temheight,
-                                prompt=prompt,
-                                negative_prompt="(((nsfw))),EasyNegative,badhandv4,ng_deepnegative_v1_75t,(worst quality:2), (low quality:2), (normal quality:2), lowres, ((monochrome)), ((grayscale)), bad anatomy,DeepNegative, skin spots, acnes, skin blemishes,(fat:1.2),facing away, looking away,tilted head, lowres,bad anatomy,bad hands, missing fingers,extra digit, fewer digits,bad feet,poorly drawn hands,poorly drawn face,mutation,deformed,extra fingers,extra limbs,extra arms,extra legs,malformed limbs,fused fingers,too many fingers,long neck,cross-eyed,mutated hands,polar lowres,bad body,bad proportions,gross proportions,missing arms,missing legs,extra digit, extra arms, extra leg, extra foot,teethcroppe,signature, watermark, username,blurry,cropped,jpeg artifacts,text,error,Lower body exposure,",
-
-                            )
-                            model = default_options["sd_model_checkpoint"]
-                            modelname = ""
-                            for member in self.Model:
-                                if model == member.value:
-                                    modelname = member.name
-                                    break
-                            else:
-                                print("使用了其他模型")
-                            # 发送图片
-                            b_img = io.BytesIO()
-                            result.image.save(b_img, format="PNG")
-                            reply.content = b_img
-                            reply = Reply(ReplyType.IMAGE, reply.content)
-                            channel._send(reply, e_context["context"])
-
-                            # 发送放大和转换指令
+                        if self.use_number >= self.max_number:
+                            self.wait_number += 1
                             reply.type = ReplyType.TEXT
-                            all_seeds = result.info['all_seeds']
-                            reply.content = f"🔥 图片创作成功!\n🧸 复制指令，我将为您进行图片操作！\n\n✅ 支持指令"
-                            temposition_1 = 0
-                            temposition_2 = 0
-                            for seed in all_seeds:
-                                temposition_1 += 1
-                                reply.content += "\n\n{} 🤖 放大 {}.png {}".format(self.request_bot_name,
-                                                                                 f"img2img-images/{seed}",
-                                                                                 temposition_1)
-                            for seed in all_seeds:
-                                temposition_2 += 1
-                                reply.content += "\n\n{} 🎡 变换 {}.png {} {}".format(self.request_bot_name,
-                                                                                    f"img2img-images/{seed}",
-                                                                                    modelname, temposition_2)
-                            reply.content += "\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n🌈 图片不满意的话，点击变换指令\n🐏 Bot帮你再画一幅吧!\n💖 感谢您的使用！"
-                            reply.content = reply.content
-                            e_context["reply"] = reply
-                            if os.path.isfile(file_content):
-                                os.remove(file_content)
-                                logger.info("文件已成功删除")
-                            else:
-                                logger.error("文件不存在")
-                            e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                            self.use_number -= 1
-                            self.out_number = 0
-                            return
-                        else:
-                            reply.type = ReplyType.TEXT
-                            replyText = f"🥰请先发送图片给我,我将为您进行{role['title']}"
+                            replyText = f"🧸当前排队人数为 {str(self.wait_number)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"
                             reply.content = replyText
                             e_context["reply"] = reply
-                            e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
+                            e_context.action = EventAction.BREAK_PASS  
                             return
+                        else:
+                            self.use_number += 1
+                            start_index = content.find("tmp/")
+                            end_index = content.find(".png")
+                            file_content = content[start_index:end_index + 4]  # Adding 4 to include the extension
+                            start_index = content.find("[关键词]") + 5  # Adding 3 to skip the space
+                            keywords = content[start_index:].split()
+                            keywords_string = ' '.join(keywords)
+                            prompt += keywords_string
+                            lang = langid.classify(prompt)[0]
+                            if lang != "en":
+                                # 非英文，进行翻译
+                                logger.info("[SD] Translating prompt from {} to en".format(lang))
+                                try:
+                                    if not self.is_use_fanyi:
+                                        btype = Bridge().btype['chat']
+                                        bot = bot_factory.create_bot(Bridge().btype['chat'])
+                                        session = bot.sessions.build_session(session_id, self.bot_prompt)
+                                        session.add_query(prompt)
+                                        result = bot.reply_text(session)
+                                        prompt = result['content']
+                                    else:
+                                        prompt = Bridge().fetch_translate(prompt, to_lang="en")
+                                except Exception as e:
+                                    logger.error("Translation failed: {}".format(str(e)))
+                            else:
+                                logger.info("[SD] Prompt is already in English")
+                            if os.path.isfile(file_content):
+                                try:
+                                    # 从文件中读取数据
+                                    with open(file_content, 'rb') as file:
+                                        image_data = file.read()
+                                        logger.info("图片读取成功")
+                                except Exception as e:
+                                    logger.error(f"读取图片数据时出现错误：{e}")
+                                    return
+                                text = f"🚀图片生成中～～～\n⏳请您耐心等待1-2分钟\n✨请稍等片刻✨✨\n❤️感谢您的耐心与支持"
+                                temreply = Reply(ReplyType.TEXT, text)
+                                channel._send(temreply, e_context["context"])
+                                image = Image.open(io.BytesIO(image_data))
+                                width, height = image.size
+                                temwidth = width
+                                temheight = height
+                                if temwidth < 768 or temheight < 768:
+                                    if temwidth < temheight:
+                                        temheight = 768 * (temheight / temwidth)
+                                        temwidth = 768
+                                    else:
+                                        temwidth = 768 * (temwidth / temheight)
+                                        temheight = 768
+                                if temwidth > 1024 or temheight > 1024:
+                                    if temwidth < temheight:
+                                        temwidth = 1024 * (temwidth / temheight)
+                                        temheight = 1024
+                                    else:
+                                        temheight = 1024 * (temheight / temwidth)
+                                        temwidth = 1024
+                                        # 将PIL Image对象添加到images列表中
+                                temimages.append(image)
+                                default_options = {
+                                    "sd_model_checkpoint": "revAnimated_v1.2.2"
+                                }
+                                # 更改固定模型
+                                api.set_options(default_options)
+                                # 调用img2img函数，并传递修改后的images列表作为参数
+                                result = api.img2img(
+                                    images=temimages,
+                                    steps=20,
+                                    denoising_strength=0.45,
+                                    cfg_scale=7.0,
+                                    batch_size=4,
+                                    n_iter=1,
+                                    do_not_save_samples=True,
+                                    do_not_save_grid=True,
+                                    save_images=True,
+                                    width=temwidth,
+                                    height=temheight,
+                                    prompt=prompt,
+                                    negative_prompt="(((nsfw))),EasyNegative,badhandv4,ng_deepnegative_v1_75t,(worst "
+                                                    "quality:2), (low quality:2), (normal quality:2), lowres, "
+                                                    "((monochrome)), ((grayscale)), bad anatomy,DeepNegative, skin spots, "
+                                                    "acnes, skin blemishes,(fat:1.2),facing away, looking away,"
+                                                    "tilted head, lowres,bad anatomy,bad hands, missing fingers,"
+                                                    "extra digit, fewer digits,bad feet,poorly drawn hands,poorly drawn "
+                                                    "face,mutation,deformed,extra fingers,extra limbs,extra arms,"
+                                                    "extra legs,malformed limbs,fused fingers,too many fingers,long neck,"
+                                                    "cross-eyed,mutated hands,polar lowres,bad body,bad proportions,"
+                                                    "gross proportions,missing arms,missing legs,extra digit, extra arms, "
+                                                    "extra leg, extra foot,teethcroppe,signature, watermark, username,"
+                                                    "blurry,cropped,jpeg artifacts,text,error,Lower body exposure,",
+                                )
+                                model = default_options["sd_model_checkpoint"]
+                                modelname = ""
+                                for member in self.Model:
+                                    if model == member.value:
+                                        modelname = member.name
+                                        break
+                                else:
+                                    print("使用了其他模型")
+                                # 发送图片
+                                b_img = io.BytesIO()
+                                result.image.save(b_img, format="PNG")
+                                reply.content = b_img
+                                reply = Reply(ReplyType.IMAGE, reply.content)
+                                channel._send(reply, e_context["context"])
+
+                                # 发送放大和转换指令
+                                reply.type = ReplyType.TEXT
+                                all_seeds = result.info['all_seeds']
+                                reply.content = f"🔥 图片创作成功!\n🧸 复制指令，我将为您进行图片操作！\n\n✅ 支持指令"
+                                temposition_1 = 0
+                                temposition_2 = 0
+                                for seed in all_seeds:
+                                    temposition_1 += 1
+                                    reply.content += "\n\n{} 🤖 放大 {}.png {}".format(self.request_bot_name,
+                                                                                     f"img2img-images/{seed}",
+                                                                                     temposition_1)
+                                for seed in all_seeds:
+                                    temposition_2 += 1
+                                    reply.content += "\n\n{} 🎡 变换 {}.png {} {}".format(self.request_bot_name,
+                                                                                        f"img2img-images/{seed}",
+                                                                                        modelname, temposition_2)
+                                reply.content += "\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n🌈 图片不满意的话，点击变换指令\n🐏 " \
+                                                 "Bot帮你再画一幅吧!\n💖 感谢您的使用！ "
+                                reply.content = reply.content
+                                e_context["reply"] = reply
+                                if os.path.isfile(file_content):
+                                    os.remove(file_content)
+                                    logger.info("文件已成功删除")
+                                else:
+                                    logger.error("文件不存在")
+                                e_context.action = EventAction.BREAK_PASS  
+                            else:
+                                reply.type = ReplyType.TEXT
+                                replyText = f"🥰请先发送图片给我,我将为您进行{role['title']}"
+                                reply.content = replyText
+                                e_context["reply"] = reply
+                                e_context.action = EventAction.BREAK_PASS
+
+                            self.use_number -= 1
+                            self.wait_number = 0
 
                     elif check_exist:
-                        if self.use_pictureChange == False:
-                            reply.content = f"😭SD画图关闭了，快联系管理员开启SD画图吧🥰🥰🥰"
-                            reply = Reply(ReplyType.ERROR, reply.content)
-                            channel._send(reply, e_context["context"])
-                            e_context.action = EventAction.CONTINUE  # 事件继续，交付给下个插件或默认逻辑
-                            return
-                        file_content = content[len(title + " "):]
-                        if os.path.isfile(file_content):
-                            try:
-                                # 从文件中读取数据
-                                with open(file_content, 'rb') as file:
-                                    image_data = file.read()
-                                    logger.info("图片读取成功")
-                            except Exception as e:
-                                logger.error(f"读取图片数据时出现错误：{e}")
-                                return
-                            # print("匹配的标题:", title)
-                            # print("Prompt:", prompt)
-                            # print("Negative Prompt:", negative_prompt)
-                            # print("Denoising Strength:", denoising_strength)
-                            # print("Cfg Scale:", cfg_scale)
-                            # 调用img2img函数，并传递修改后的images列表作为参数
-                            # 将二进制图像数据转换为PIL Image对象
-                            text = f"🚀图片生成中～～～\n⏳请您耐心等待1-2分钟\n✨请稍等片刻✨✨\n❤️感谢您的耐心与支持"
-                            temreply = Reply(ReplyType.TEXT, text)
-                            channel._send(temreply, e_context["context"])
-                            image = Image.open(io.BytesIO(image_data))
-                            width, height = image.size
-                            temwidth = width
-                            temheight = height
-                            if temwidth < 768 or temheight < 768:
-                                if temwidth < temheight:
-                                    temheight = 768 * (temheight / temwidth)
-                                    temwidth = 768
-                                else:
-                                    temwidth = 768 * (temwidth / temheight)
-                                    temheight = 768
-                            if temwidth > 1024 or temheight > 1024:
-                                if temwidth < temheight:
-                                    temwidth = 1024 * (temwidth / temheight)
-                                    temheight = 1024
-                                else:
-                                    temheight = 1024 * (temheight / temwidth)
-                                    temwidth = 1024
-                                    # 将PIL Image对象添加到images列表中
-                            temimages.append(image)
-                            options = {**self.default_options, **roleRule_options}
-                            # 更改固定模型
-                            api.set_options(options)
-                            # 调用img2img函数，并传递修改后的images列表作为参数
-                            result = api.img2img(
-                                images=temimages,
-                                steps=20,
-                                denoising_strength=denoising_strength,
-                                cfg_scale=cfg_scale,
-                                width=temwidth,
-                                height=temheight,
-                                batch_size=4,
-                                n_iter=1,
-                                do_not_save_samples=True,
-                                do_not_save_grid=True,
-                                save_images=True,
-                                prompt=prompt,
-                                negative_prompt=negative_prompt,
-                            )
-                            model = options["sd_model_checkpoint"]
-                            modelname = ""
-                            for member in self.Model:
-                                if model == member.value:
-                                    modelname = member.name
-                                    break
-                            else:
-                                print("使用了其他模型")
-                            # 发送图片
-                            b_img = io.BytesIO()
-                            result.image.save(b_img, format="PNG")
-                            reply.content = b_img
-                            reply = Reply(ReplyType.IMAGE, reply.content)
-                            channel._send(reply, e_context["context"])
-
-                            # 发送放大和转换指令
+                        if self.use_number >= self.max_number:
+                            self.wait_number += 1
                             reply.type = ReplyType.TEXT
-                            all_seeds = result.info['all_seeds']
-                            reply.content = f"🔥 图片创作成功!\n🧸 复制指令，我将为您进行图片操作！\n\n✅ 支持指令"
-                            temposition_1 = 0
-                            temposition_2 = 0
-                            for seed in all_seeds:
-                                temposition_1 += 1
-                                reply.content += "\n\n{} 🤖 放大 {}.png {}".format(self.request_bot_name,
-                                                                                 f"img2img-images/{seed}",
-                                                                                 temposition_1)
-                            for seed in all_seeds:
-                                temposition_2 += 1
-                                reply.content += "\n\n{} 🎡 变换 {}.png {} {}".format(self.request_bot_name,
-                                                                                    f"img2img-images/{seed}",
-                                                                                    modelname, temposition_2)
-                            reply.content += "\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n🌈 图片不满意的话，点击变换指令\n🐏 Bot帮你再画一幅吧!\n💖 感谢您的使用！"
-                            reply.content = reply.content
-                            e_context["reply"] = reply
-                            if os.path.isfile(file_content):
-                                os.remove(file_content)
-                                logger.info("文件已成功删除")
-                            else:
-                                logger.error("文件不存在")
-                            e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                            self.use_number -= 1
-                            self.out_number = 0
-                            return
-                        else:
-                            reply.type = ReplyType.TEXT
-                            replyText = f"🥰请先发送图片给我,我将为您进行{role['title']}"
+                            replyText = f"🧸当前排队人数为 {str(self.wait_number)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"
                             reply.content = replyText
                             e_context["reply"] = reply
-                            e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
+                            e_context.action = EventAction.BREAK_PASS  
                             return
+                        else:
+                            self.use_number += 1
+                            file_content = content[len(title + " "):]
+                            if os.path.isfile(file_content):
+                                try:
+                                    # 从文件中读取数据
+                                    with open(file_content, 'rb') as file:
+                                        image_data = file.read()
+                                        logger.info("图片读取成功")
+                                except Exception as e:
+                                    logger.error(f"读取图片数据时出现错误：{e}")
+                                    return
+                                text = f"🚀图片生成中～～～\n⏳请您耐心等待1-2分钟\n✨请稍等片刻✨✨\n❤️感谢您的耐心与支持"
+                                temreply = Reply(ReplyType.TEXT, text)
+                                channel._send(temreply, e_context["context"])
+                                image = Image.open(io.BytesIO(image_data))
+                                width, height = image.size
+                                temwidth = width
+                                temheight = height
+                                if temwidth < 768 or temheight < 768:
+                                    if temwidth < temheight:
+                                        temheight = 768 * (temheight / temwidth)
+                                        temwidth = 768
+                                    else:
+                                        temwidth = 768 * (temwidth / temheight)
+                                        temheight = 768
+                                if temwidth > 1024 or temheight > 1024:
+                                    if temwidth < temheight:
+                                        temwidth = 1024 * (temwidth / temheight)
+                                        temheight = 1024
+                                    else:
+                                        temheight = 1024 * (temheight / temwidth)
+                                        temwidth = 1024
+                                        # 将PIL Image对象添加到images列表中
+                                temimages.append(image)
+                                options = {**self.default_options, **roleRule_options}
+                                # 更改固定模型
+                                api.set_options(options)
+                                # 调用img2img函数，并传递修改后的images列表作为参数
+                                result = api.img2img(
+                                    images=temimages,
+                                    steps=20,
+                                    denoising_strength=denoising_strength,
+                                    cfg_scale=cfg_scale,
+                                    width=temwidth,
+                                    height=temheight,
+                                    batch_size=4,
+                                    n_iter=1,
+                                    do_not_save_samples=True,
+                                    do_not_save_grid=True,
+                                    save_images=True,
+                                    prompt=prompt,
+                                    negative_prompt=negative_prompt,
+                                )
+                                model = options["sd_model_checkpoint"]
+                                modelname = ""
+                                for member in self.Model:
+                                    if model == member.value:
+                                        modelname = member.name
+                                        break
+                                else:
+                                    print("使用了其他模型")
+                                # 发送图片
+                                b_img = io.BytesIO()
+                                result.image.save(b_img, format="PNG")
+                                reply.content = b_img
+                                reply = Reply(ReplyType.IMAGE, reply.content)
+                                channel._send(reply, e_context["context"])
 
+                                # 发送放大和转换指令
+                                reply.type = ReplyType.TEXT
+                                all_seeds = result.info['all_seeds']
+                                reply.content = f"🔥 图片创作成功!\n🧸 复制指令，我将为您进行图片操作！\n\n✅ 支持指令"
+                                temposition_1 = 0
+                                temposition_2 = 0
+                                for seed in all_seeds:
+                                    temposition_1 += 1
+                                    reply.content += "\n\n{} 🤖 放大 {}.png {}".format(self.request_bot_name,
+                                                                                     f"img2img-images/{seed}",
+                                                                                     temposition_1)
+                                for seed in all_seeds:
+                                    temposition_2 += 1
+                                    reply.content += "\n\n{} 🎡 变换 {}.png {} {}".format(self.request_bot_name,
+                                                                                        f"img2img-images/{seed}",
+                                                                                        modelname, temposition_2)
+                                reply.content += "\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n🌈 图片不满意的话，点击变换指令\n🐏 " \
+                                                 "Bot帮你再画一幅吧!\n💖 感谢您的使用！ "
+                                reply.content = reply.content
+                                e_context["reply"] = reply
+                                if os.path.isfile(file_content):
+                                    os.remove(file_content)
+                                    logger.info("文件已成功删除")
+                                else:
+                                    logger.error("文件不存在")
+                                e_context.action = EventAction.BREAK_PASS  
+                            else:
+                                reply.type = ReplyType.TEXT
+                                replyText = f"🥰请先发送图片给我,我将为您进行{role['title']}"
+                                reply.content = replyText
+                                e_context["reply"] = reply
+                                e_context.action = EventAction.BREAK_PASS
+
+                            self.use_number -= 1
+                            self.wait_number = 0
 
                     elif content.startswith("🎡 变换 "):
-                        if self.use_pictureChange == False:
-                            reply.content = f"😭SD插件被管理员关闭了\n快联系管理员开启插件吧🥰🥰🥰"
-                            reply = Reply(ReplyType.ERROR, reply.content)
-                            channel._send(reply, e_context["context"])
-                            e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                            return
-                        elif self.use_number >= self.max_number:
-                            self.out_number += 1
+                        if self.use_number >= self.max_number:
+                            self.wait_number += 1
                             reply.type = ReplyType.TEXT
-                            replyText = f"🧸当前排队人数为 {str(self.out_number)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"
+                            replyText = f"🧸当前排队人数为 {str(self.wait_number)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"
                             reply.content = replyText
                             e_context["reply"] = reply
-                            e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                            return
+                            e_context.action = EventAction.BREAK_PASS  
                         else:
+                            self.use_number += 1
                             file_content = content.split()[2]
                             sdModel = getattr(self.Model, content.split()[3]).value
                             if self.use_https:
@@ -842,55 +803,46 @@ class pictureChange(Plugin):
                                     logger.info("文件已成功删除")
                                 else:
                                     logger.error("文件不存在")
-                                e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
+                                e_context.action = EventAction.BREAK_PASS  
 
                             else:
                                 reply.type = ReplyType.TEXT
                                 reply.content = "[😭转换图片失败]\n快联系管理员解决问题吧🥰🥰🥰"
                                 e_context["reply"] = reply
-                                e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
+                                e_context.action = EventAction.BREAK_PASS
 
                             self.use_number -= 1
-                            self.out_number = 0
-                            return
-
+                            self.wait_number = 0
 
                     elif content.startswith("🤖 放大 "):
-                        if self.use_pictureChange == False:
-                            reply.content = f"😭SD插件被管理员关闭了，快联系管理员开启SD插件吧🥰🥰🥰"
-                            reply = Reply(ReplyType.ERROR, reply.content)
-                            channel._send(reply, e_context["context"])
-                            e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                            return
-                        else:
-                            try:
-                                file_content = content[len("🔍 放大 "):]
-                                if self.use_https:
-                                    image_url = "https://{}:{}/{}{}".format(self.host, self.port, self.file_url,
-                                                                            file_content)
-                                else:
-                                    image_url = "http://{}:{}/{}{}".format(self.host, self.port, self.file_url,
-                                                                           file_content)
-                                response = requests.get(image_url)
-                                if response.status_code == 200:
-                                    text = f"🚀放大图片生成中～～～\n⏳请您耐心等待1-2分钟\n✨请稍等片刻✨✨\n❤️感谢您的耐心与支持"
-                                    temreply = Reply(ReplyType.TEXT, text)
-                                    channel._send(temreply, e_context["context"])
-                                    reply.type = ReplyType.IMAGE_URL
-                                    reply.content = image_url
-                                    e_context["reply"] = reply
-                                    e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                                    return
-                                else:
-                                    reply.type = ReplyType.TEXT
-                                    reply.content = "[😭放大图片失败]\n快联系管理员解决问题吧🥰🥰🥰"
-                                    e_context["reply"] = reply
-                                    e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                            except Exception as e:
-                                reply.type = ReplyType.TEXT
-                                reply.content = "[😭转换图片失败]" + str(e) + "\n快联系管理员解决问题吧🥰🥰🥰"
+                        try:
+                            file_content = content[len("🔍 放大 "):]
+                            if self.use_https:
+                                image_url = "https://{}:{}/{}{}".format(self.host, self.port, self.file_url,
+                                                                        file_content)
+                            else:
+                                image_url = "http://{}:{}/{}{}".format(self.host, self.port, self.file_url,
+                                                                       file_content)
+                            response = requests.get(image_url)
+                            if response.status_code == 200:
+                                text = f"🚀放大图片生成中～～～\n⏳请您耐心等待1-2分钟\n✨请稍等片刻✨✨\n❤️感谢您的耐心与支持"
+                                temreply = Reply(ReplyType.TEXT, text)
+                                channel._send(temreply, e_context["context"])
+                                reply.type = ReplyType.IMAGE_URL
+                                reply.content = image_url
                                 e_context["reply"] = reply
-                                e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
+                                e_context.action = EventAction.BREAK_PASS
+                                return
+                            else:
+                                reply.type = ReplyType.TEXT
+                                reply.content = "[😭放大图片失败]\n快联系管理员解决问题吧🥰🥰🥰"
+                                e_context["reply"] = reply
+                                e_context.action = EventAction.BREAK_PASS
+                        except Exception as e:
+                            reply.type = ReplyType.TEXT
+                            reply.content = "[😭转换图片失败]" + str(e) + "\n快联系管理员解决问题吧🥰🥰🥰"
+                            e_context["reply"] = reply
+                            e_context.action = EventAction.BREAK_PASS
 
                     else:
                         e_context.action = EventAction.CONTINUE  # 事件继续，交付给下个插件或默认逻辑'
@@ -905,33 +857,19 @@ class pictureChange(Plugin):
                         os.remove(file_content)
                         logger.info("文件已成功删除")
                     e_context.action = EventAction.BREAK_PASS  # 事件继续，交付给下个插件或默认逻辑
-                    self.use_number -= 1
-                    self.out_number = 0
-                    return
             else:
                 e_context.action = EventAction.CONTINUE  # 事件继续，交付给下个插件或默认逻辑'
-                return
         else:
-
             try:
                 if e_context['context'].type == ContextType.IMAGE:
-                    if self.use_pictureChange == False:
+                    if self.use_number >= self.max_number:
+                        self.wait_number += 1
                         reply.type = ReplyType.TEXT
-                        replyText = f"😭图生图关闭了，快联系管理员开启图生图吧🥰🥰🥰"
+                        replyText = f"🧸当前排队人数为 {str(self.wait_number)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"
                         reply.content = replyText
                         e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                        return
-                    elif self.use_number >= self.max_number:
-                        self.out_number += 1
-                        reply.type = ReplyType.TEXT
-                        replyText = f"🧸当前排队人数为 {str(self.out_number)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"
-                        reply.content = replyText
-                        e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                        return
+                        e_context.action = EventAction.BREAK_PASS  
                     else:
-                        self.use_number += 1
                         msg.prepare()
                         reply.type = ReplyType.TEXT
                         reply.type = ReplyType.TEXT
@@ -943,28 +881,18 @@ class pictureChange(Plugin):
                         replyText += "\n\n🚀 发送指令后，请耐心等待一至两分钟，作品将很快呈现出来！"
                         reply.content = replyText
                         e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                        return
+                        e_context.action = EventAction.BREAK_PASS  
 
                 elif any(ext in content for ext in ["jpg", "jpeg", "png", "gif", "webp"]) and (
                         content.startswith("http://") or content.startswith("https://")):
-                    if self.use_pictureChange == False:
+                    if self.use_number >= self.max_number:
+                        self.wait_number += 1
                         reply.type = ReplyType.TEXT
-                        replyText = f"😭图生图关闭了，快联系管理员开启图生图吧🥰🥰🥰"
+                        replyText = f"🧸当前排队人数为 {str(self.wait_number)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"
                         reply.content = replyText
                         e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                        return
-                    elif self.use_number >= self.max_number:
-                        self.out_number += 1
-                        reply.type = ReplyType.TEXT
-                        replyText = f"🧸当前排队人数为 {str(self.out_number)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"
-                        reply.content = replyText
-                        e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                        return
+                        e_context.action = EventAction.BREAK_PASS  
                     else:
-                        self.use_number += 1
                         response = requests.get(content)
                         file_content = str(int(time.time())) + ".jpg"
                         if response.status_code == 200:
@@ -981,24 +909,17 @@ class pictureChange(Plugin):
                         replyText += "\n\n🚀 发送指令后，请耐心等待一至两分钟，作品将很快呈现出来！"
                         reply.content = replyText
                         e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                        return
+                        e_context.action = EventAction.BREAK_PASS  
 
                 elif e_context['context'].type == ContextType.IMAGE_CREATE:
-                    if self.use_pictureChange == False:
-                        reply.content = f"😭SD画图关闭了，快联系管理员开启SD画图吧🥰🥰🥰"
-                        reply = Reply(ReplyType.ERROR, reply.content)
-                        channel._send(reply, e_context["context"])
-                        e_context.action = EventAction.CONTINUE  # 事件继续，交付给下个插件或默认逻辑
-                        return
-                    elif self.use_number >= self.max_number:
-                        self.out_number += 1
+                    if self.use_number >= self.max_number:
+                        self.wait_number += 1
                         reply.type = ReplyType.TEXT
-                        replyText = f"🧸当前排队人数为 {str(self.out_number)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"
+                        replyText = f"🧸当前排队人数为 {str(self.wait_number)}\n🚀 请耐心等待一至两分钟，再发送 " \
+                                    f"'一张图片'，让我为您进行图片操作 "
                         reply.content = replyText
                         e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                        return
+                        e_context.action = EventAction.BREAK_PASS  
                     else:
                         self.use_number += 1
                         content = e_context['context'].content[:]
@@ -1101,7 +1022,8 @@ class pictureChange(Plugin):
                                 temposition_2 += 1
                                 reply.content += "\n\n🎡 变换 {}.png {} {}".format(f"txt2img-images/{seed}", modelname,
                                                                                  temposition_2)
-                            reply.content += "\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n🌈 图片不满意的话，点击变换指令\n🐏 Bot帮你再画一幅吧!\n💖 感谢您的使用！"
+                            reply.content += "\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n🌈 图片不满意的话，点击变换指令\n🐏 " \
+                                             "Bot帮你再画一幅吧!\n💖 感谢您的使用！ "
                             reply.content = reply.content
                             e_context["reply"] = reply
                             if os.path.isfile(file_content):
@@ -1109,18 +1031,12 @@ class pictureChange(Plugin):
                                 logger.info("文件已成功删除")
                             else:
                                 logger.error("文件不存在")
-                            e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                            self.use_number -= 1
-                            self.out_number = 0
-                            return
+                            e_context.action = EventAction.BREAK_PASS
+
+                        self.use_number -= 1
+                        self.wait_number = 0
 
                 elif content.startswith("🤖 图像修复 "):
-                    if self.use_pictureChange == False:
-                        reply.content = f"😭SD画图关闭了，快联系管理员开启SD画图吧🥰🥰🥰"
-                        reply = Reply(ReplyType.ERROR, reply.content)
-                        channel._send(reply, e_context["context"])
-                        e_context.action = EventAction.CONTINUE  # 事件继续，交付给下个插件或默认逻辑
-                        return
                     file_content = content[len("🤖 图像修复 "):]
                     if os.path.isfile(file_content):
                         try:
@@ -1146,7 +1062,8 @@ class pictureChange(Plugin):
                             logger.error("无法获取百度AI接口访问令牌")
                             return
 
-                        process_url = f"https://aip.baidubce.com/rest/2.0/image-process/v1/image_definition_enhance?access_token={access_token}"
+                        process_url = f"https://aip.baidubce.com/rest/2.0/image-process/v1/image_definition_enhance" \
+                                      f"?access_token={access_token} "
                         headers = {
                             'Content-Type': 'application/x-www-form-urlencoded',
                             'Accept': 'application/json'
@@ -1174,9 +1091,7 @@ class pictureChange(Plugin):
                                     logger.info("文件已成功删除")
                                 else:
                                     logger.error("文件不存在")
-                                e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                                self.use_number -= 1
-                                self.out_number = 0
+                                e_context.action = EventAction.BREAK_PASS 
                                 return
                             else:
                                 logger.error("未找到转换后的图像数据")
@@ -1187,8 +1102,7 @@ class pictureChange(Plugin):
                         replyText = f"🥰请先发送图片给我,我将为您进行图像修复"
                         reply.content = replyText
                         e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                        return
+                        e_context.action = EventAction.BREAK_PASS  
 
                 elif content.startswith("❎ 暂不处理 "):
                     file_content = content[len("❎ 暂不处理 "):]
@@ -1201,206 +1115,195 @@ class pictureChange(Plugin):
                         replyText = "😭文件不存在或已删除"
                     reply.content = replyText
                     e_context["reply"] = reply
-                    e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                    self.use_number -= 1
-                    self.out_number = 0
-                    return
+                    e_context.action = EventAction.BREAK_PASS  
 
                 elif content.startswith("🎡 自定义 "):
-                    if self.use_pictureChange == False:
-                        reply.content = f"😭SD画图关闭了，快联系管理员开启SD画图吧🥰🥰🥰"
-                        reply = Reply(ReplyType.ERROR, reply.content)
-                        channel._send(reply, e_context["context"])
-                        e_context.action = EventAction.CONTINUE  # 事件继续，交付给下个插件或默认逻辑
-                        return
-                    # Extracting the filename
-                    start_index = content.find("tmp/")
-                    end_index = content.find(".png")
-                    file_content = content[start_index:end_index + 4]  # Adding 4 to include the extension
-                    start_index = content.find("[关键词]") + 5  # Adding 3 to skip the space
-                    keywords = content[start_index:].split()
-                    keywords_string = ' '.join(keywords)
-                    prompt += keywords_string
-                    lang = langid.classify(prompt)[0]
-                    if lang != "en":
-                        # 非英文，进行翻译
-                        logger.info("[SD] Translating prompt from {} to en".format(lang))
-                        try:
-                            if not self.is_use_fanyi:
-                                btype = Bridge().btype['chat']
-                                bot = bot_factory.create_bot(Bridge().btype['chat'])
-                                session = bot.sessions.build_session(session_id, self.bot_prompt)
-                                session.add_query(prompt)
-                                result = bot.reply_text(session)
-                                prompt = result['content']
-                            else:
-                                prompt = Bridge().fetch_translate(prompt, to_lang="en")
-                        except Exception as e:
-                            logger.error("Translation failed: {}".format(str(e)))
-                    else:
-                        # 英文，无需翻译
-                        logger.info("[SD] Prompt is already in English")
-                    if os.path.isfile(file_content):
-                        try:
-                            # 从文件中读取数据
-                            with open(file_content, 'rb') as file:
-                                image_data = file.read()
-                                logger.info("图片读取成功")
-                        except Exception as e:
-                            logger.error(f"读取图片数据时出现错误：{e}")
-                            return
-                        text = f"🚀图片生成中～～～\n⏳请您耐心等待1-2分钟\n✨请稍等片刻✨✨\n❤️感谢您的耐心与支持"
-                        temreply = Reply(ReplyType.TEXT, text)
-                        channel._send(temreply, e_context["context"])
-                        # print("匹配的标题:", title)
-                        # print("Prompt:", prompt)
-                        # print("Negative Prompt:", negative_prompt)
-                        # print("Denoising Strength:", denoising_strength)
-                        # print("Cfg Scale:", cfg_scale)
-                        # 调用img2img函数，并传递修改后的images列表作为参数
-                        # 将二进制图像数据转换为PIL Image对象
-                        image = Image.open(io.BytesIO(image_data))
-                        width, height = image.size
-                        temwidth = width
-                        temheight = height
-                        if temwidth < 768 or temheight < 768:
-                            if temwidth < temheight:
-                                temheight = 768 * (temheight / temwidth)
-                                temwidth = 768
-                            else:
-                                temwidth = 768 * (temwidth / temheight)
-                                temheight = 768
-                        if temwidth > 1024 or temheight > 1024:
-                            if temwidth < temheight:
-                                temwidth = 1024 * (temwidth / temheight)
-                                temheight = 1024
-                            else:
-                                temheight = 1024 * (temheight / temwidth)
-                                temwidth = 1024
-                                # 将PIL Image对象添加到images列表中
-                        temimages.append(image)
-                        default_options = {
-                            "sd_model_checkpoint": "revAnimated_v1.2.2"
-                        }
-                        api.set_options(default_options)
-                        # 调用img2img函数，并传递修改后的images列表作为参数
-                        result = api.img2img(
-                            images=temimages,
-                            steps=20,
-                            denoising_strength=0.45,
-                            cfg_scale=7.0,
-                            batch_size=4,
-                            n_iter=1,
-                            do_not_save_samples=True,
-                            do_not_save_grid=True,
-                            save_images=True,
-                            width=temwidth,
-                            height=temheight,
-                            prompt=prompt,
-                            negative_prompt="(((nsfw))),EasyNegative,badhandv4,ng_deepnegative_v1_75t,(worst quality:2), (low quality:2), (normal quality:2), lowres, ((monochrome)), ((grayscale)), bad anatomy,DeepNegative, skin spots, acnes, skin blemishes,(fat:1.2),facing away, looking away,tilted head, lowres,bad anatomy,bad hands, missing fingers,extra digit, fewer digits,bad feet,poorly drawn hands,poorly drawn face,mutation,deformed,extra fingers,extra limbs,extra arms,extra legs,malformed limbs,fused fingers,too many fingers,long neck,cross-eyed,mutated hands,polar lowres,bad body,bad proportions,gross proportions,missing arms,missing legs,extra digit, extra arms, extra leg, extra foot,teethcroppe,signature, watermark, username,blurry,cropped,jpeg artifacts,text,error,Lower body exposure,",
-
-                        )
-                        model = default_options["sd_model_checkpoint"]
-                        modelname = ""
-                        for member in self.Model:
-                            if model == member.value:
-                                modelname = member.name
-                                break
-                        else:
-                            print("使用了其他模型")
-                        # 发送图片
-                        b_img = io.BytesIO()
-                        result.image.save(b_img, format="PNG")
-                        reply.content = b_img
-                        reply = Reply(ReplyType.IMAGE, reply.content)
-                        channel._send(reply, e_context["context"])
-
-                        # 发送放大和转换指令
+                    if self.use_number >= self.max_number:
+                        self.wait_number += 1
                         reply.type = ReplyType.TEXT
-                        all_seeds = result.info['all_seeds']
-                        reply.content = f"🔥 图片创作成功!\n🧸 复制指令，我将为您进行图片操作！\n\n✅ 支持指令"
-                        temposition_1 = 0
-                        temposition_2 = 0
-                        for seed in all_seeds:
-                            temposition_1 += 1
-                            reply.content += "\n\n🤖 放大 {}.png {}".format(f"img2img-images/{seed}", temposition_1)
-                        for seed in all_seeds:
-                            temposition_2 += 1
-                            reply.content += "\n\n🎡 变换 {}.png {} {}".format(f"img2img-images/{seed}", modelname,
-                                                                             temposition_2)
-                        reply.content += "\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n🌈 图片不满意的话，点击变换指令\n🐏 Bot帮你再画一幅吧!\n💖 感谢您的使用！"
-                        reply.content = reply.content
-                        e_context["reply"] = reply
-                        if os.path.isfile(file_content):
-                            os.remove(file_content)
-                            logger.info("文件已成功删除")
-                        else:
-                            logger.error("文件不存在")
-                        e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                        self.use_number -= 1
-                        self.out_number = 0
-                        return
-                    else:
-                        reply.type = ReplyType.TEXT
-                        replyText = f"🥰请先发送图片给我,我将为您进行{role['title']}"
+                        replyText = f"🧸当前排队人数为 {str(self.wait_number)}\n🚀 请耐心等待一至两分钟，再发送 " \
+                                    f"'一张图片'，让我为您进行图片操作 "
                         reply.content = replyText
                         e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                        return
+                        e_context.action = EventAction.BREAK_PASS  
+                    else:
+                        self.use_number += 1
+                        start_index = content.find("tmp/")
+                        end_index = content.find(".png")
+                        file_content = content[start_index:end_index + 4]
+                        start_index = content.find("[关键词]") + 5
+                        keywords = content[start_index:].split()
+                        keywords_string = ' '.join(keywords)
+                        prompt += keywords_string
+                        lang = langid.classify(prompt)[0]
+                        if lang != "en":
+                            # 非英文，进行翻译
+                            logger.info("[SD] Translating prompt from {} to en".format(lang))
+                            try:
+                                if not self.is_use_fanyi:
+                                    btype = Bridge().btype['chat']
+                                    bot = bot_factory.create_bot(Bridge().btype['chat'])
+                                    session = bot.sessions.build_session(session_id, self.bot_prompt)
+                                    session.add_query(prompt)
+                                    result = bot.reply_text(session)
+                                    prompt = result['content']
+                                else:
+                                    prompt = Bridge().fetch_translate(prompt, to_lang="en")
+                            except Exception as e:
+                                logger.error("Translation failed: {}".format(str(e)))
+                        else:
+                            # 英文，无需翻译
+                            logger.info("[SD] Prompt is already in English")
+                        if os.path.isfile(file_content):
+                            try:
+                                with open(file_content, 'rb') as file:
+                                    image_data = file.read()
+                                    logger.info("图片读取成功")
+                            except Exception as e:
+                                logger.error(f"读取图片数据时出现错误：{e}")
+                                return
+                            text = f"🚀图片生成中～～～\n⏳请您耐心等待1-2分钟\n✨请稍等片刻✨✨\n❤️感谢您的耐心与支持"
+                            temreply = Reply(ReplyType.TEXT, text)
+                            channel._send(temreply, e_context["context"])
+                            image = Image.open(io.BytesIO(image_data))
+                            width, height = image.size
+                            temwidth = width
+                            temheight = height
+                            if temwidth < 768 or temheight < 768:
+                                if temwidth < temheight:
+                                    temheight = 768 * (temheight / temwidth)
+                                    temwidth = 768
+                                else:
+                                    temwidth = 768 * (temwidth / temheight)
+                                    temheight = 768
+                            if temwidth > 1024 or temheight > 1024:
+                                if temwidth < temheight:
+                                    temwidth = 1024 * (temwidth / temheight)
+                                    temheight = 1024
+                                else:
+                                    temheight = 1024 * (temheight / temwidth)
+                                    temwidth = 1024
+                                    # 将PIL Image对象添加到images列表中
+                            temimages.append(image)
+                            default_options = {
+                                "sd_model_checkpoint": "revAnimated_v1.2.2"
+                            }
+                            api.set_options(default_options)
+                            # 调用img2img函数，并传递修改后的images列表作为参数
+                            result = api.img2img(
+                                images=temimages,
+                                steps=20,
+                                denoising_strength=0.45,
+                                cfg_scale=7.0,
+                                batch_size=4,
+                                n_iter=1,
+                                do_not_save_samples=True,
+                                do_not_save_grid=True,
+                                save_images=True,
+                                width=temwidth,
+                                height=temheight,
+                                prompt=prompt,
+                                negative_prompt="(((nsfw))),EasyNegative,badhandv4,ng_deepnegative_v1_75t,(worst "
+                                                "quality:2), (low quality:2), (normal quality:2), lowres, "
+                                                "((monochrome)), ((grayscale)), bad anatomy,DeepNegative, skin spots, "
+                                                "acnes, skin blemishes,(fat:1.2),facing away, looking away,"
+                                                "tilted head, lowres,bad anatomy,bad hands, missing fingers,"
+                                                "extra digit, fewer digits,bad feet,poorly drawn hands,poorly drawn "
+                                                "face,mutation,deformed,extra fingers,extra limbs,extra arms,"
+                                                "extra legs,malformed limbs,fused fingers,too many fingers,long neck,"
+                                                "cross-eyed,mutated hands,polar lowres,bad body,bad proportions,"
+                                                "gross proportions,missing arms,missing legs,extra digit, extra arms, "
+                                                "extra leg, extra foot,teethcroppe,signature, watermark, username,"
+                                                "blurry,cropped,jpeg artifacts,text,error,Lower body exposure,",
+    
+                            )
+                            model = default_options["sd_model_checkpoint"]
+                            modelname = ""
+                            for member in self.Model:
+                                if model == member.value:
+                                    modelname = member.name
+                                    break
+                            else:
+                                print("使用了其他模型")
+                            # 发送图片
+                            b_img = io.BytesIO()
+                            result.image.save(b_img, format="PNG")
+                            reply.content = b_img
+                            reply = Reply(ReplyType.IMAGE, reply.content)
+                            channel._send(reply, e_context["context"])
+    
+                            # 发送放大和转换指令
+                            reply.type = ReplyType.TEXT
+                            all_seeds = result.info['all_seeds']
+                            reply.content = f"🔥 图片创作成功!\n🧸 复制指令，我将为您进行图片操作！\n\n✅ 支持指令"
+                            temposition_1 = 0
+                            temposition_2 = 0
+                            for seed in all_seeds:
+                                temposition_1 += 1
+                                reply.content += "\n\n🤖 放大 {}.png {}".format(f"img2img-images/{seed}", temposition_1)
+                            for seed in all_seeds:
+                                temposition_2 += 1
+                                reply.content += "\n\n🎡 变换 {}.png {} {}".format(f"img2img-images/{seed}", modelname,
+                                                                                 temposition_2)
+                            reply.content += "\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n🌈 图片不满意的话，点击变换指令\n🐏 Bot帮你再画一幅吧!\n💖 感谢您的使用！"
+                            reply.content = reply.content
+                            e_context["reply"] = reply
+                            if os.path.isfile(file_content):
+                                os.remove(file_content)
+                                logger.info("文件已成功删除")
+                            else:
+                                logger.error("文件不存在")
+                            e_context.action = EventAction.BREAK_PASS  
+                        else:
+                            reply.type = ReplyType.TEXT
+                            replyText = f"🥰请先发送图片给我,我将为您进行{role['title']}"
+                            reply.content = replyText
+                            e_context["reply"] = reply
+                            e_context.action = EventAction.BREAK_PASS  
+                        
+                        self.use_number -= 1
+                        self.wait_number = 0
 
                 elif content.startswith("🤖 放大 "):
-                    if self.use_pictureChange == False:
-                        reply.content = f"😭SD插件被管理员关闭了\n快联系管理员开启SD插件吧🥰🥰🥰"
-                        reply = Reply(ReplyType.ERROR, reply.content)
-                        channel._send(reply, e_context["context"])
-                        e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                        return
-                    else:
-                        try:
-                            file_content = content[len("🔍 放大 "):]
-                            if self.use_https:
-                                image_url = "https://{}:{}/{}{}".format(self.host, self.port, self.file_url,
-                                                                        file_content)
-                            else:
-                                image_url = "http://{}:{}/{}{}".format(self.host, self.port, self.file_url,
-                                                                       file_content)
-                            response = requests.get(image_url)
-                            if response.status_code == 200:
-                                text = f"🚀放大图片生成中～～～\n⏳请您耐心等待1-2分钟\n✨请稍等片刻✨✨\n❤️感谢您的耐心与支持"
-                                temreply = Reply(ReplyType.TEXT, text)
-                                channel._send(temreply, e_context["context"])
-                                reply.type = ReplyType.IMAGE_URL
-                                reply.content = image_url
-                                e_context["reply"] = reply
-                                e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                                return
-                            else:
-                                reply.type = ReplyType.TEXT
-                                reply.content = "[😭放大图片失败]\n快联系管理员解决问题吧🥰🥰🥰"
-                                e_context["reply"] = reply
-                                e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                        except Exception as e:
-                            reply.type = ReplyType.TEXT
-                            reply.content = "[😭转换图片失败]" + str(e) + "\n快联系管理员解决问题吧🥰🥰🥰"
+                    try:
+                        file_content = content[len("🔍 放大 "):]
+                        if self.use_https:
+                            image_url = "https://{}:{}/{}{}".format(self.host, self.port, self.file_url,
+                                                                    file_content)
+                        else:
+                            image_url = "http://{}:{}/{}{}".format(self.host, self.port, self.file_url,
+                                                                   file_content)
+                        response = requests.get(image_url)
+                        if response.status_code == 200:
+                            text = f"🚀放大图片生成中～～～\n⏳请您耐心等待1-2分钟\n✨请稍等片刻✨✨\n❤️感谢您的耐心与支持"
+                            temreply = Reply(ReplyType.TEXT, text)
+                            channel._send(temreply, e_context["context"])
+                            reply.type = ReplyType.IMAGE_URL
+                            reply.content = image_url
                             e_context["reply"] = reply
-                            e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
+                            e_context.action = EventAction.BREAK_PASS
+                            return
+                        else:
+                            reply.type = ReplyType.TEXT
+                            reply.content = "[😭放大图片失败]\n快联系管理员解决问题吧🥰🥰🥰"
+                            e_context["reply"] = reply
+                            e_context.action = EventAction.BREAK_PASS 
+                    except Exception as e:
+                        reply.type = ReplyType.TEXT
+                        reply.content = "[😭转换图片失败]" + str(e) + "\n快联系管理员解决问题吧🥰🥰🥰"
+                        e_context["reply"] = reply
+                        e_context.action = EventAction.BREAK_PASS 
 
                 elif content.startswith("🎡 变换 "):
-                    if self.use_pictureChange == False:
-                        reply.content = f"😭SD插件被管理员关闭了\n快联系管理员开启SD插件吧🥰🥰🥰"
-                        reply = Reply(ReplyType.ERROR, reply.content)
-                        channel._send(reply, e_context["context"])
-                        e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                        return
-                    elif self.use_number >= self.max_number:
-                        self.out_number += 1
+                    if self.use_number >= self.max_number:
+                        self.wait_number += 1
                         reply.type = ReplyType.TEXT
-                        replyText = f"🧸当前排队人数为 {str(self.out_number)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"
+                        replyText = f"🧸当前排队人数为 {str(self.wait_number)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"
                         reply.content = replyText
                         e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                        return
+                        e_context.action = EventAction.BREAK_PASS  
                     else:
+                        self.use_number += 1
                         file_content = content.split()[2]
                         sdModel = getattr(self.Model, content.split()[3]).value
                         if self.use_https:
@@ -1418,7 +1321,6 @@ class pictureChange(Plugin):
                             channel._send(temreply, e_context["context"])
                             # 获取图像的二进制数据
                             image_data = response.content
-
                             # 将二进制图像数据转换为 PIL Image 对象
                             image = Image.open(io.BytesIO(image_data))
                             width, height = image.size
@@ -1447,7 +1349,18 @@ class pictureChange(Plugin):
                                 width=temwidth,
                                 height=temheight,
                                 prompt=prompt,
-                                negative_prompt="(((nsfw))),EasyNegative,badhandv4,ng_deepnegative_v1_75t,(worst quality:2), (low quality:2), (normal quality:2), lowres, ((monochrome)), ((grayscale)), bad anatomy,DeepNegative, skin spots, acnes, skin blemishes,(fat:1.2),facing away, looking away,tilted head, lowres,bad anatomy,bad hands, missing fingers,extra digit, fewer digits,bad feet,poorly drawn hands,poorly drawn face,mutation,deformed,extra fingers,extra limbs,extra arms,extra legs,malformed limbs,fused fingers,too many fingers,long neck,cross-eyed,mutated hands,polar lowres,bad body,bad proportions,gross proportions,missing arms,missing legs,extra digit, extra arms, extra leg, extra foot,teethcroppe,signature, watermark, username,blurry,cropped,jpeg artifacts,text,error,Lower body exposure,",
+                                negative_prompt="(((nsfw))),EasyNegative,badhandv4,ng_deepnegative_v1_75t,(worst "
+                                                "quality:2), (low quality:2), (normal quality:2), lowres, "
+                                                "((monochrome)), ((grayscale)), bad anatomy,DeepNegative, skin spots, "
+                                                "acnes, skin blemishes,(fat:1.2),facing away, looking away,"
+                                                "tilted head, lowres,bad anatomy,bad hands, missing fingers,"
+                                                "extra digit, fewer digits,bad feet,poorly drawn hands,poorly drawn "
+                                                "face,mutation,deformed,extra fingers,extra limbs,extra arms,"
+                                                "extra legs,malformed limbs,fused fingers,too many fingers,long neck,"
+                                                "cross-eyed,mutated hands,polar lowres,bad body,bad proportions,"
+                                                "gross proportions,missing arms,missing legs,extra digit, extra arms, "
+                                                "extra leg, extra foot,teethcroppe,signature, watermark, username,"
+                                                "blurry,cropped,jpeg artifacts,text,error,Lower body exposure,", 
 
                             )
                             # 发送图片
@@ -1470,7 +1383,8 @@ class pictureChange(Plugin):
                                 temposition_2 += 1
                                 reply.content += "\n\n🎡 变换 {}.png {} {}".format(f"img2img-images/{seed}",
                                                                                  content.split()[3], temposition_2)
-                            reply.content += "\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n🌈 图片不满意的话，点击变换指令\n🐏 Bot帮你再画一幅吧!\n💖 感谢您的使用！"
+                            reply.content += "\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n🌈 图片不满意的话，点击变换指令\n🐏 " \
+                                             "Bot帮你再画一幅吧!\n💖 感谢您的使用！ "
                             reply.content = reply.content
                             e_context["reply"] = reply
                             if os.path.isfile(file_content):
@@ -1478,127 +1392,128 @@ class pictureChange(Plugin):
                                 logger.info("文件已成功删除")
                             else:
                                 logger.error("文件不存在")
-                            e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
+                            e_context.action = EventAction.BREAK_PASS  
 
                         else:
                             reply.type = ReplyType.TEXT
                             reply.content = "[😭转换图片失败]\n快联系管理员解决问题吧🥰🥰🥰"
                             e_context["reply"] = reply
-                            e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
+                            e_context.action = EventAction.BREAK_PASS  
 
                         self.use_number -= 1
-                        self.out_number = 0
-                        return
+                        self.wait_number = 0
 
                 elif check_exist:
-                    file_content = content[len(title + " "):]
-                    if os.path.isfile(file_content):
-                        try:
-                            # 从文件中读取数据
-                            with open(file_content, 'rb') as file:
-                                image_data = file.read()
-                                logger.info("图片读取成功")
-                        except Exception as e:
-                            logger.error(f"读取图片数据时出现错误：{e}")
-                            return
-                        # print("匹配的标题:", title)
-                        # print("Prompt:", prompt)
-                        # print("Negative Prompt:", negative_prompt)
-                        # print("Denoising Strength:", denoising_strength)
-                        # print("Cfg Scale:", cfg_scale)
-                        # 调用img2img函数，并传递修改后的images列表作为参数
-                        # 将二进制图像数据转换为PIL Image对象
-                        text = f"🚀图片生成中～～～\n⏳请您耐心等待1-2分钟\n✨请稍等片刻✨✨\n❤️感谢您的耐心与支持"
-                        temreply = Reply(ReplyType.TEXT, text)
-                        channel._send(temreply, e_context["context"])
-                        image = Image.open(io.BytesIO(image_data))
-                        width, height = image.size
-                        temwidth = width
-                        temheight = height
-                        if temwidth < 768 or temheight < 768:
-                            if temwidth < temheight:
-                                temheight = 768 * (temheight / temwidth)
-                                temwidth = 768
-                            else:
-                                temwidth = 768 * (temwidth / temheight)
-                                temheight = 768
-                        if temwidth > 1024 or temheight > 1024:
-                            if temwidth < temheight:
-                                temwidth = 1024 * (temwidth / temheight)
-                                temheight = 1024
-                            else:
-                                temheight = 1024 * (temheight / temwidth)
-                                temwidth = 1024
-                                # 将PIL Image对象添加到images列表中
-                        temimages.append(image)
-                        options = {**self.default_options, **roleRule_options}
-                        # 更改固定模型
-                        api.set_options(options)
-                        # 调用img2img函数，并传递修改后的images列表作为参数
-                        result = api.img2img(
-                            images=temimages,
-                            steps=20,
-                            denoising_strength=denoising_strength,
-                            cfg_scale=cfg_scale,
-                            width=temwidth,
-                            height=temheight,
-                            batch_size=4,
-                            n_iter=1,
-                            do_not_save_samples=True,
-                            do_not_save_grid=True,
-                            save_images=True,
-                            prompt=prompt,
-                            negative_prompt=negative_prompt,
-                        )
-                        model = options["sd_model_checkpoint"]
-                        modelname = ""
-                        for member in self.Model:
-                            if model == member.value:
-                                modelname = member.name
-                                break
-                        else:
-                            print("使用了其他模型")
-                        # 发送图片
-                        b_img = io.BytesIO()
-                        result.image.save(b_img, format="PNG")
-                        reply.content = b_img
-                        reply = Reply(ReplyType.IMAGE, reply.content)
-                        channel._send(reply, e_context["context"])
-
-                        # 发送放大和转换指令
+                    if self.use_number >= self.max_number:
+                        self.wait_number += 1
                         reply.type = ReplyType.TEXT
-                        all_seeds = result.info['all_seeds']
-                        reply.content = f"🔥 图片创作成功!\n🧸 复制指令，我将为您进行图片操作！\n\n✅ 支持指令"
-                        temposition_1 = 0
-                        temposition_2 = 0
-                        for seed in all_seeds:
-                            temposition_1 += 1
-                            reply.content += "\n\n🤖 放大 {}.png {}".format(f"img2img-images/{seed}", temposition_1)
-                        for seed in all_seeds:
-                            temposition_2 += 1
-                            reply.content += "\n\n🎡 变换 {}.png {} {}".format(f"img2img-images/{seed}", modelname,
-                                                                             temposition_2)
-                        reply.content += "\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n🌈 图片不满意的话，点击变换指令\n🐏 Bot帮你再画一幅吧!\n💖 感谢您的使用！"
-                        e_context["reply"] = reply
-                        if os.path.isfile(file_content):
-                            os.remove(file_content)
-                            logger.info("文件已成功删除")
-                        else:
-                            logger.error("文件不存在")
-                        e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                        self.use_number -= 1
-                        self.out_number = 0
-                        return
-                    else:
-                        reply.type = ReplyType.TEXT
-                        replyText = f"🥰请先发送图片给我,我将为您进行{role['title']}"
+                        replyText = f"🧸当前排队人数为 {str(self.wait_number)}\n🚀 请耐心等待一至两分钟，再发送 " \
+                                    f"'一张图片'，让我为您进行图片操作 "
                         reply.content = replyText
                         e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
-                        return
+                        e_context.action = EventAction.BREAK_PASS  
+                    else:
+                        self.use_number += 1
+                        file_content = content[len(title + " "):]
+                        if os.path.isfile(file_content):
+                            try:
+                                # 从文件中读取数据
+                                with open(file_content, 'rb') as file:
+                                    image_data = file.read()
+                                    logger.info("图片读取成功")
+                            except Exception as e:
+                                logger.error(f"读取图片数据时出现错误：{e}")
+                                return
+                            text = f"🚀图片生成中～～～\n⏳请您耐心等待1-2分钟\n✨请稍等片刻✨✨\n❤️感谢您的耐心与支持"
+                            temreply = Reply(ReplyType.TEXT, text)
+                            channel._send(temreply, e_context["context"])
+                            image = Image.open(io.BytesIO(image_data))
+                            width, height = image.size
+                            temwidth = width
+                            temheight = height
+                            if temwidth < 768 or temheight < 768:
+                                if temwidth < temheight:
+                                    temheight = 768 * (temheight / temwidth)
+                                    temwidth = 768
+                                else:
+                                    temwidth = 768 * (temwidth / temheight)
+                                    temheight = 768
+                            if temwidth > 1024 or temheight > 1024:
+                                if temwidth < temheight:
+                                    temwidth = 1024 * (temwidth / temheight)
+                                    temheight = 1024
+                                else:
+                                    temheight = 1024 * (temheight / temwidth)
+                                    temwidth = 1024
+                                    # 将PIL Image对象添加到images列表中
+                            temimages.append(image)
+                            options = {**self.default_options, **roleRule_options}
+                            # 更改固定模型
+                            api.set_options(options)
+                            # 调用img2img函数，并传递修改后的images列表作为参数
+                            result = api.img2img(
+                                images=temimages,
+                                steps=20,
+                                denoising_strength=denoising_strength,
+                                cfg_scale=cfg_scale,
+                                width=temwidth,
+                                height=temheight,
+                                batch_size=4,
+                                n_iter=1,
+                                do_not_save_samples=True,
+                                do_not_save_grid=True,
+                                save_images=True,
+                                prompt=prompt,
+                                negative_prompt=negative_prompt,
+                            )
+                            model = options["sd_model_checkpoint"]
+                            modelname = ""
+                            for member in self.Model:
+                                if model == member.value:
+                                    modelname = member.name
+                                    break
+                            else:
+                                print("使用了其他模型")
+                            # 发送图片
+                            b_img = io.BytesIO()
+                            result.image.save(b_img, format="PNG")
+                            reply.content = b_img
+                            reply = Reply(ReplyType.IMAGE, reply.content)
+                            channel._send(reply, e_context["context"])
+    
+                            # 发送放大和转换指令
+                            reply.type = ReplyType.TEXT
+                            all_seeds = result.info['all_seeds']
+                            reply.content = f"🔥 图片创作成功!\n🧸 复制指令，我将为您进行图片操作！\n\n✅ 支持指令"
+                            temposition_1 = 0
+                            temposition_2 = 0
+                            for seed in all_seeds:
+                                temposition_1 += 1
+                                reply.content += "\n\n🤖 放大 {}.png {}".format(f"img2img-images/{seed}", temposition_1)
+                            for seed in all_seeds:
+                                temposition_2 += 1
+                                reply.content += "\n\n🎡 变换 {}.png {} {}".format(f"img2img-images/{seed}", modelname,
+                                                                                 temposition_2)
+                            reply.content += "\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n🌈 图片不满意的话，点击变换指令\n🐏 " \
+                                             "Bot帮你再画一幅吧!\n💖 感谢您的使用！ "
+                            e_context["reply"] = reply
+                            if os.path.isfile(file_content):
+                                os.remove(file_content)
+                                logger.info("文件已成功删除")
+                            else:
+                                logger.error("文件不存在")
+                            e_context.action = EventAction.BREAK_PASS  
+                        else:
+                            reply.type = ReplyType.TEXT
+                            replyText = f"🥰请先发送图片给我,我将为您进行{role['title']}"
+                            reply.content = replyText
+                            e_context["reply"] = reply
+                            e_context.action = EventAction.BREAK_PASS 
+                        self.use_number -= 1
+                        self.wait_number = 0
                 else:
-                    e_context.action = EventAction.CONTINUE  # 事件继续，交付给下个插件或默认逻辑
-                    return
+                    e_context.action = EventAction.CONTINUE 
+
             except Exception as e:
                 reply.content = "[😭SD画图失败] " + str(e) + "\n快联系管理员解决问题吧🥰🥰🥰"
                 reply = Reply(ReplyType.ERROR, reply.content)
@@ -1607,9 +1522,7 @@ class pictureChange(Plugin):
                 if os.path.isfile(file_content):
                     os.remove(file_content)
                     logger.info("文件已成功删除")
-                e_context.action = EventAction.BREAK_PASS  # 事件继续，交付给下个插件或默认逻辑
-                self.use_number -= 1
-                self.out_number = 0
+                e_context.action = EventAction.BREAK_PASS 
 
     def get_help_text(self, **kwargs):
         if not conf().get('image_create_prefix'):

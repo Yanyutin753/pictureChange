@@ -13,8 +13,16 @@
 
 ## 环境要求
 
-使用前先安装stable diffusion webui，并在它的启动参数中添加 "--api",并开启种子数。
+使用前先安装stable diffusion webui，并在它的启动参数中添加 "--api",并开启**种子数**。
+
+**如下图**
 ![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/7c58fde5-832c-4e8d-b822-0117cd77814f)
+
+**请确保图片的文件名字有种子数进行命名**
+![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/5e310369-011d-430c-a85b-ca95946af799)
+
+
+如果你的**chatgpt-on-wechat**是最新版，[请点击查看](https://github.com/Yanyutin753/pictureChange/issues/9#issuecomment-2024305057)
 
 安装具体信息，请参考[视频](https://www.youtube.com/watch?v=Z6FmiaWBbAE&t=3s)。
 

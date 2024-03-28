@@ -23,7 +23,7 @@ from bot import bot_factory
 from bridge.bridge import Bridge
 
 
-@plugins.register(name="pictureChange", desc="利用百度云AI和stable-diffusion webui来画图,图生图", version="1.8.3",
+@plugins.register(name="pictureChange", desc="利用百度云AI和stable-diffusion webui来画图,图生图", version="1.8.4",
                   author="yangyang")
 class pictureChange(Plugin):
     # 定义了模型枚举类型  需要填入自己的模型，有几个填几个
@@ -145,7 +145,7 @@ class pictureChange(Plugin):
                     replyText = f"🧸当前排队人数为 {str(self.wait_number)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"
                     reply.content = replyText
                     e_context["reply"] = reply
-                    e_context.action = EventAction.BREAK_PASS  
+                    e_context.action = EventAction.BREAK_PASS
                 else:
                     msg.prepare()
                     reply.type = ReplyType.TEXT
@@ -166,7 +166,7 @@ class pictureChange(Plugin):
                     replyText += "\n\n🚀 发送指令后，请耐心等待一至两分钟！\n💖 感谢您的使用！"
                     reply.content = replyText
                     e_context["reply"] = reply
-                    e_context.action = EventAction.BREAK_PASS  
+                    e_context.action = EventAction.BREAK_PASS
 
             elif any(ext in content for ext in ["jpg", "jpeg", "png", "gif", "webp"]) and (
                     content.startswith("http://") or content.startswith("https://")):
@@ -176,7 +176,7 @@ class pictureChange(Plugin):
                     replyText = f"🧸当前排队人数为 {str(self.wait_number)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"
                     reply.content = replyText
                     e_context["reply"] = reply
-                    e_context.action = EventAction.BREAK_PASS  
+                    e_context.action = EventAction.BREAK_PASS
                 else:
                     response = requests.get(content)
                     file_content = str(int(time.time())) + ".jpg"
@@ -203,7 +203,7 @@ class pictureChange(Plugin):
                     replyText += "\n\n🚀 发送指令后，请耐心等待一至两分钟！\n💖 感谢您的使用！"
                     reply.content = replyText
                     e_context["reply"] = reply
-                    e_context.action = EventAction.BREAK_PASS  
+                    e_context.action = EventAction.BREAK_PASS
 
             elif e_context['context'].type == ContextType.IMAGE_CREATE:
                 if self.use_number >= self.max_number:
@@ -212,7 +212,7 @@ class pictureChange(Plugin):
                     replyText = f"🧸当前排队人数为 {str(self.wait_number)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"
                     reply.content = replyText
                     e_context["reply"] = reply
-                    e_context.action = EventAction.BREAK_PASS  
+                    e_context.action = EventAction.BREAK_PASS
                 else:
                     self.use_number += 1
                     content = e_context['context'].content[:]
@@ -335,7 +335,7 @@ class pictureChange(Plugin):
                         reply.content += f"\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n👑 MODEL_1 : 动漫\n🏆 MODEL_2 : 现实\n🧩 MODEL_3 : Q版\n🌈 图片不满意的话，点击变换\n{self.request_bot_name}帮你再画一幅吧!\n💖 感谢您的使用！"
                         reply.content = reply.content
                         e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  
+                        e_context.action = EventAction.BREAK_PASS
 
                     self.use_number -= 1
                     self.wait_number = 0
@@ -385,7 +385,7 @@ class pictureChange(Plugin):
                             reply.content = image_storage
                             e_context["reply"] = reply
 
-                            e_context.action = EventAction.BREAK_PASS  
+                            e_context.action = EventAction.BREAK_PASS
                         else:
                             logger.error("未找到转换后的图像数据")
                     else:
@@ -395,7 +395,7 @@ class pictureChange(Plugin):
                     replyText = f"🥰请先发送图片给我,我将为您进行图像修复"
                     reply.content = replyText
                     e_context["reply"] = reply
-                    e_context.action = EventAction.BREAK_PASS  
+                    e_context.action = EventAction.BREAK_PASS
 
             elif content.startswith("❎ 暂不处理 "):
                 file_content = content[len("❎ 暂不处理 "):]
@@ -409,7 +409,7 @@ class pictureChange(Plugin):
                     replyText = "😭文件不存在或已删除"
                 reply.content = replyText
                 e_context["reply"] = reply
-                e_context.action = EventAction.BREAK_PASS  
+                e_context.action = EventAction.BREAK_PASS
 
             elif content.startswith("🎡 自定义 "):
                 if self.use_number >= self.max_number:
@@ -418,7 +418,7 @@ class pictureChange(Plugin):
                     replyText = f"🧸当前排队人数为 {str(self.wait_number)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"
                     reply.content = replyText
                     e_context["reply"] = reply
-                    e_context.action = EventAction.BREAK_PASS  
+                    e_context.action = EventAction.BREAK_PASS
                 else:
                     self.use_number += 1
                     parts = content.split(" ")
@@ -552,13 +552,13 @@ class pictureChange(Plugin):
                                          f"MODEL_3 : Q版\n🌈 图片不满意的话，点击变换\n{self.request_bot_name}帮你再画一幅吧!\n💖 感谢您的使用！ "
                         reply.content = reply.content
                         e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  
+                        e_context.action = EventAction.BREAK_PASS
                     else:
                         reply.type = ReplyType.TEXT
                         replyText = f"🥰请先发送图片给我,我将为您进行{role['title']}"
                         reply.content = replyText
                         e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  
+                        e_context.action = EventAction.BREAK_PASS
 
                     self.use_number -= 1
                     self.wait_number = 0
@@ -580,19 +580,19 @@ class pictureChange(Plugin):
                         reply.type = ReplyType.IMAGE_URL
                         reply.content = image_url
                         e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  
+                        e_context.action = EventAction.BREAK_PASS
                         return
                     else:
                         reply.type = ReplyType.TEXT
                         reply.content = f"[😭放大图片失败]\n❌图片只会保存一天\n😂图片可能已被删除\n🥰快联系{self.request_bot_name}解决问题吧！"
                         e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  
+                        e_context.action = EventAction.BREAK_PASS
                 except Exception as e:
                     reply.type = ReplyType.TEXT
                     reply.content = f"[😭放大图片失败]" + str(
                         e) + f"❌图片只会保存一天\n😂图片可能已被删除\n🥰快联系{self.request_bot_name}解决问题吧！"
                     e_context["reply"] = reply
-                    e_context.action = EventAction.BREAK_PASS  
+                    e_context.action = EventAction.BREAK_PASS
 
             elif content.startswith("🎡 变换 "):
                 if self.use_number >= self.max_number:
@@ -601,7 +601,7 @@ class pictureChange(Plugin):
                     replyText = f"🧸当前排队人数为 {str(self.wait_number)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"
                     reply.content = replyText
                     e_context["reply"] = reply
-                    e_context.action = EventAction.BREAK_PASS  
+                    e_context.action = EventAction.BREAK_PASS
                 else:
                     self.use_number += 1
                     file_content = content.split()[2]
@@ -692,13 +692,13 @@ class pictureChange(Plugin):
                         reply.content += f"\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n👑 MODEL_1 : 动漫\n🏆 MODEL_2 : 现实\n🧩 MODEL_3 : Q版\n🌈 图片不满意的话，点击变换\n{self.request_bot_name}帮你再画一幅吧!\n💖 感谢您的使用！"
                         reply.content = reply.content
                         e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  
+                        e_context.action = EventAction.BREAK_PASS
 
                     else:
                         reply.type = ReplyType.TEXT
                         reply.content = f"[😭转换图片失败]\n快联系{self.request_bot_name}解决问题吧🥰🥰🥰"
                         e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  
+                        e_context.action = EventAction.BREAK_PASS
 
                     self.use_number -= 1
                     self.wait_number = 0
@@ -710,7 +710,7 @@ class pictureChange(Plugin):
                     replyText = f"🧸当前排队人数为 {str(self.wait_number)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"
                     reply.content = replyText
                     e_context["reply"] = reply
-                    e_context.action = EventAction.BREAK_PASS  
+                    e_context.action = EventAction.BREAK_PASS
                 else:
                     self.use_number += 1
                     file_content = content[len(title + " "):]
@@ -817,14 +817,14 @@ class pictureChange(Plugin):
                                          f"MODEL_3 : Q版\n🌈 图片不满意的话，点击变换\n{self.request_bot_name}帮你再画一幅吧!\n💖 感谢您的使用！ "
                         reply.content = reply.content
                         e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  
+                        e_context.action = EventAction.BREAK_PASS
 
                     else:
                         reply.type = ReplyType.TEXT
                         replyText = f"🥰请先发送图片给我,我将为您进行{role['title']}"
                         reply.content = replyText
                         e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  
+                        e_context.action = EventAction.BREAK_PASS
                     self.use_number -= 1
                     self.wait_number = 0
 
@@ -836,7 +836,7 @@ class pictureChange(Plugin):
             reply = Reply(ReplyType.ERROR, reply.content)
             logger.error("[pictureChange画图失败] exception: %s" % e)
             channel._send(reply, e_context["context"])
-            e_context.action = EventAction.BREAK_PASS  
+            e_context.action = EventAction.BREAK_PASS
 
     def get_help_text(self, **kwargs):
         if not conf().get('image_create_prefix'):

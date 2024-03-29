@@ -13,24 +13,27 @@
 
 ## 环境要求
 
-使用前先安装stable diffusion webui，并在它的启动参数中添加 "--api",并开启**种子数**。
+### 1.使用前先安装stable diffusion webui，并在它的启动参数中添加 "--api",并开启**种子数**。
+* 安装具体信息，请参考[视频](https://www.youtube.com/watch?v=Z6FmiaWBbAE&t=3s)。
+* 部署运行后，保证主机能够成功访问http://127.0.0.1:7860/
+* 如果是服务器部署则不必需要内网穿透，如果是本地电脑部署推荐[cpolar](https://dashboard.cpolar.com/signup)启动内网穿透
 
-**如下图**
+#### **如下图**
 ![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/7c58fde5-832c-4e8d-b822-0117cd77814f)
 
-**请确保图片的文件名字有种子数进行命名**
+#### **请确保图片的文件名字有种子数进行命名**
 ![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/5e310369-011d-430c-a85b-ca95946af799)
 
+### 2.如果你的**chatgpt-on-wechat**是最新版，[请点击查看](https://github.com/Yanyutin753/pictureChange/issues/9#issuecomment-2024305057)
 
-如果你的**chatgpt-on-wechat**是最新版，[请点击查看](https://github.com/Yanyutin753/pictureChange/issues/9#issuecomment-2024305057)
+### 3.**确保图片位置填写正确**
+![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/7736b31e-c58c-47b0-8f44-0dc167d43027)
 
-安装具体信息，请参考[视频](https://www.youtube.com/watch?v=Z6FmiaWBbAE&t=3s)。
+```
+"file_url": "file=D:/sd/sd-webui-aki/sd-webui-aki-v4.2/sd-webui-aki-v4.2/outputs,  #这个地址是你图片生成的地址"
+```
 
-部署运行后，保证主机能够成功访问http://127.0.0.1:7860/
-
-如果是服务器部署则不必需要内网穿透，如果是本地电脑部署推荐[cpolar](https://dashboard.cpolar.com/signup)启动内网穿透
-
-请确保**安装**本插件的依赖包```pip3 install -r requirements.txt```
+### 4.请确保**安装**本插件的依赖包```pip3 install -r requireents.txt```
 
 ```
 pip3 install -r requirements.txt
@@ -99,7 +102,7 @@ PS: 实际参数分为两部分:
 {
     "max_number":3, #最大并行人数量
     "request_bot_name" : "群聊请求机器人的名称，和config.json环境变量一致（只限一个）",
-    "file_url": "file=F:/sd-webui-aki_v4.7/outputs/,  #这个地址是你图片生成的地址"
+    "file_url": "file=D:/sd/sd-webui-aki/sd-webui-aki-v4.2/sd-webui-aki-v4.2/outputs,  #这个地址是你图片生成的地址"
     "is_use_fanyi":false, #是否使用翻译，true就直接使用百度翻译，false使用gpt优化提示词
      #申请地址https://ai.baidu.com/ai-doc
     "api_key" : "你的百度云api_key",

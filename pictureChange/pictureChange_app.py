@@ -23,7 +23,7 @@ from bot import bot_factory
 from bridge.bridge import Bridge
 
 
-@plugins.register(name="pictureChange", desc="利用百度云AI和stable-diffusion webui来画图,图生图", version="1.8.4",
+@plugins.register(name="pictureChange", desc="利用百度云AI和stable-diffusion webui来画图,图生图", version="1.8.5",
                   author="yangyang")
 class pictureChange(Plugin):
     # 定义了模型枚举类型  需要填入自己的模型，有几个填几个

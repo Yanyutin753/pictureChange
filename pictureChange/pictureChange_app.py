@@ -85,6 +85,7 @@ class pictureChange(Plugin):
 
                 self.use_number = 0
                 self.wait_number = 0
+
             self.handlers[Event.ON_HANDLE_CONTEXT] = self.on_handle_context
             logger.info("[pictureChange] inited")
         except Exception as e:
@@ -113,7 +114,8 @@ class pictureChange(Plugin):
             return
         context = e_context['context']
         msg: ChatMessage = context["msg"]
-        content = context.content
+        content = context.content.strip()
+        logger.info(f"收到信息：{content}")
         file_content = content
         check_exist = False
         denoising_strength = 0
@@ -341,7 +343,8 @@ class pictureChange(Plugin):
                     self.wait_number = 0
 
             elif content.startswith("🤖 图像修复 "):
-                file_content = content[len("🤖 图像修复 "):]
+                file_content = content.split()[2]
+                logger.info(f"{file_content}")
                 if os.path.isfile(file_content):
                     try:
                         with open(file_content, 'rb') as file:
@@ -380,7 +383,6 @@ class pictureChange(Plugin):
                             image_storage = io.BytesIO()
                             image_storage.write(image_data)
                             image_storage.seek(0)
-
                             reply.type = ReplyType.IMAGE
                             reply.content = image_storage
                             e_context["reply"] = reply
@@ -398,7 +400,8 @@ class pictureChange(Plugin):
                     e_context.action = EventAction.BREAK_PASS
 
             elif content.startswith("❎ 暂不处理 "):
-                file_content = content[len("❎ 暂不处理 "):]
+                file_content = content.split()[2]
+                logger.info(f"{file_content}")
                 # 删除文件
                 reply.type = ReplyType.TEXT
                 replyText = ""
@@ -565,7 +568,8 @@ class pictureChange(Plugin):
 
             elif content.startswith("🔍 放大 "):
                 try:
-                    file_content = content[len("🔍 放大 "):]
+                    file_content = content.split()[2]
+                    logger.info(f"{file_content}")
                     if self.use_https:
                         image_url = "https://{}:{}/{}{}".format(self.host, self.port, self.file_url,
                                                                 file_content)
@@ -605,6 +609,7 @@ class pictureChange(Plugin):
                 else:
                     self.use_number += 1
                     file_content = content.split()[2]
+                    logger.info(f"{file_content}")
                     sdModel = getattr(self.Model, content.split()[3]).value
                     if self.use_https:
                         image_url = "https://{}:{}/{}{}".format(self.host, self.port, self.file_url,
@@ -713,7 +718,8 @@ class pictureChange(Plugin):
                     e_context.action = EventAction.BREAK_PASS
                 else:
                     self.use_number += 1
-                    file_content = content[len(title + " "):]
+                    file_content = content.split()[2]
+                    logger.info(f"{file_content}")
                     if os.path.isfile(file_content):
                         try:
                             # 从文件中读取数据

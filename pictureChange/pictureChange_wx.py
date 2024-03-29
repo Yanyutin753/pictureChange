@@ -28,7 +28,9 @@ from bridge.bridge import Bridge
 class pictureChange(Plugin):
     # 定义了模型枚举类型
     class Model(Enum):
-        MODEL_1 = "revAnimated_v1.2.2"
+        MODEL_1 = "anything-v5-PrtRE.safetensors [7f96a1a9ca]"
+        MODEL_2 = "absolutereality_v181.safetensors [463d6a9fe8]"
+        MODEL_3 = "QteaMix-fp16.safetensors [0c1efcbbd6]"
 
     def __init__(self):
         super().__init__()
@@ -107,7 +109,8 @@ class pictureChange(Plugin):
             return
         context = e_context['context']
         msg: ChatMessage = context["msg"]
-        content = context.content
+        content = context.content.strip()
+        logger.info(f"收到信息：{content}")
         file_content = content
         check_exist = False
         denoising_strength = 0
@@ -139,7 +142,7 @@ class pictureChange(Plugin):
                     replyText = f"🤖图生图模式已开启，请勿重复开启"
                     reply.content = replyText
                     e_context["reply"] = reply
-                    e_context.action = EventAction.BREAK_PASS  
+                    e_context.action = EventAction.BREAK_PASS
                 else:
                     self.other_user_id.append(context["msg"].other_user_id)
                     curdir = os.path.dirname(__file__)
@@ -153,7 +156,7 @@ class pictureChange(Plugin):
                     replyText = f"🥰图生图模式已开启，请发送图片给我,我将为您进行图像处理"
                     reply.content = replyText
                     e_context["reply"] = reply
-                    e_context.action = EventAction.BREAK_PASS  
+                    e_context.action = EventAction.BREAK_PASS
                 return
 
             elif content == "关闭图生图":
@@ -171,21 +174,21 @@ class pictureChange(Plugin):
                         replyText = "🥰图生图模式已关闭"
                         reply.content = replyText
                         e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  
+                        e_context.action = EventAction.BREAK_PASS
                     except Exception as e:
                         # 处理异常情况的代码
                         reply.type = ReplyType.TEXT
                         replyText = "😭关闭失败：" + str(e)
                         reply.content = replyText
                         e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  
+                        e_context.action = EventAction.BREAK_PASS
                 else:
                     # 处理异常情况的代码
                     reply.type = ReplyType.TEXT
                     replyText = "😭请检查图生图是否开启"
                     reply.content = replyText
                     e_context["reply"] = reply
-                    e_context.action = EventAction.BREAK_PASS  
+                    e_context.action = EventAction.BREAK_PASS
                 return
 
             elif e_context['context'].type == ContextType.IMAGE_CREATE:
@@ -195,7 +198,7 @@ class pictureChange(Plugin):
                     replyText = f"🧸当前排队人数为 {str(self.wait_number)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"
                     reply.content = replyText
                     e_context["reply"] = reply
-                    e_context.action = EventAction.BREAK_PASS  
+                    e_context.action = EventAction.BREAK_PASS
                     return
                 else:
                     self.use_number += 1
@@ -278,6 +281,7 @@ class pictureChange(Plugin):
                                 modelname = member.name
                                 break
                         else:
+                            modelname = model
                             print("使用了其他模型")
                         # 发送图片
                         b_img = io.BytesIO()
@@ -302,7 +306,8 @@ class pictureChange(Plugin):
                             reply.content += "\n\n{} 🎡 变换 {}.png {} {}".format(self.request_bot_name,
                                                                                 f"txt2img-images/{seed}",
                                                                                 modelname, temposition_2)
-                        reply.content += "\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n🌈 图片不满意的话，点击变换指令\n🐏 帮你再画一幅吧!\n💖 感谢您的使用！"
+                        reply.content += f"\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n👑 MODEL_1 : 动漫\n🏆 MODEL_2 : 现实\n🧩 " \
+                                         f"MODEL_3 : Q版\n🌈 图片不满意的话，点击变换\n{self.request_bot_name}帮你再画一幅吧!\n💖 感谢您的使用！ "
                         reply.content = reply.content
                         e_context["reply"] = reply
                         if os.path.isfile(file_content):
@@ -324,7 +329,7 @@ class pictureChange(Plugin):
                             replyText = f"🧸当前排队人数为 {str(self.wait_number)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"
                             reply.content = replyText
                             e_context["reply"] = reply
-                            e_context.action = EventAction.BREAK_PASS  
+                            e_context.action = EventAction.BREAK_PASS
                         else:
                             msg.prepare()
                             reply.type = ReplyType.TEXT
@@ -334,10 +339,11 @@ class pictureChange(Plugin):
                                 replyText += f"\n\n{self.request_bot_name} {role['title']} {file_content}"
                             replyText += f"\n\n{self.request_bot_name} 🎡 自定义 {file_content} [关键词] 例如 黑色头发 白色短袖 等关键词"
                             replyText += f"\n\n{self.request_bot_name} ❎ 暂不处理 {file_content}"
+                            replyText += "\n\n🥰 温馨提示\n👑 MODEL_1 : 动漫\n🏆 MODEL_2 : 现实\n🧩 MODEL_3 : Q版"
                             replyText += "\n\n🚀 发送指令后，请耐心等待一至两分钟，作品将很快呈现出来！"
                             reply.content = replyText
                             e_context["reply"] = reply
-                            e_context.action = EventAction.BREAK_PASS  
+                            e_context.action = EventAction.BREAK_PASS
 
                     elif any(ext in content for ext in ["jpg", "jpeg", "png", "gif", "webp"]) and (
                             content.startswith("http://") or content.startswith("https://")):
@@ -347,7 +353,7 @@ class pictureChange(Plugin):
                             replyText = f"🧸当前排队人数为 {str(self.wait_number)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"
                             reply.content = replyText
                             e_context["reply"] = reply
-                            e_context.action = EventAction.BREAK_PASS  
+                            e_context.action = EventAction.BREAK_PASS
                         else:
                             response = requests.get(content)
                             file_content = str(int(time.time())) + ".jpg"
@@ -362,12 +368,14 @@ class pictureChange(Plugin):
                                 replyText += f"\n\n{self.request_bot_name} {role['title']} {file_content}"
                             replyText += f"\n\n{self.request_bot_name} 🎡 自定义 {file_content} [关键词] 例如 黑色头发 白色短袖 等关键词"
                             replyText += f"\n\n{self.request_bot_name} ❎ 暂不处理 {file_content}"
+                            replyText += "\n\n🥰 温馨提示\n👑 MODEL_1 : 动漫\n🏆 MODEL_2 : 现实\n🧩 MODEL_3 : Q版"
                             replyText += "\n\n🚀 发送指令后，请耐心等待一至两分钟，作品将很快呈现出来！"
                             reply.content = replyText
-                            e_context.action = EventAction.BREAK_PASS  
+                            e_context.action = EventAction.BREAK_PASS
 
                     elif content.startswith("❎ 暂不处理 "):
-                        file_content = content[len("❎ 暂不处理 "):]
+                        file_content = content.split()[2]
+                        logger.info(f"{file_content}")
                         # 删除文件
                         reply.type = ReplyType.TEXT
                         if os.path.isfile(file_content):
@@ -377,10 +385,11 @@ class pictureChange(Plugin):
                             replyText = "😭图片不存在或已删除"
                         reply.content = replyText
                         e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  
+                        e_context.action = EventAction.BREAK_PASS
 
                     elif content.startswith("🤖 图像修复 "):
-                        file_content = content[len("🤖 图像修复 "):]
+                        file_content = content.split()[2]
+                        logger.info(f"{file_content}")
                         if os.path.isfile(file_content):
                             try:
                                 with open(file_content, 'rb') as file:
@@ -432,7 +441,7 @@ class pictureChange(Plugin):
                                         logger.info("文件已成功删除")
                                     else:
                                         logger.error("文件不存在")
-                                    e_context.action = EventAction.BREAK_PASS  
+                                    e_context.action = EventAction.BREAK_PASS
                                     return
                                 else:
                                     logger.error("未找到转换后的图像数据")
@@ -443,7 +452,7 @@ class pictureChange(Plugin):
                             replyText = f"🥰请先发送图片给我,我将为您进行图像修复"
                             reply.content = replyText
                             e_context["reply"] = reply
-                            e_context.action = EventAction.BREAK_PASS  
+                            e_context.action = EventAction.BREAK_PASS
                             return
 
                     elif content.startswith("🎡 自定义 "):
@@ -453,7 +462,7 @@ class pictureChange(Plugin):
                             replyText = f"🧸当前排队人数为 {str(self.wait_number)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"
                             reply.content = replyText
                             e_context["reply"] = reply
-                            e_context.action = EventAction.BREAK_PASS  
+                            e_context.action = EventAction.BREAK_PASS
                             return
                         else:
                             self.use_number += 1
@@ -553,6 +562,7 @@ class pictureChange(Plugin):
                                         modelname = member.name
                                         break
                                 else:
+                                    modelname = model
                                     print("使用了其他模型")
                                 # 发送图片
                                 b_img = io.BytesIO()
@@ -577,8 +587,9 @@ class pictureChange(Plugin):
                                     reply.content += "\n\n{} 🎡 变换 {}.png {} {}".format(self.request_bot_name,
                                                                                         f"img2img-images/{seed}",
                                                                                         modelname, temposition_2)
-                                reply.content += "\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n🌈 图片不满意的话，点击变换指令\n🐏 " \
-                                                 "Bot帮你再画一幅吧!\n💖 感谢您的使用！ "
+                                reply.content += f"\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n👑 MODEL_1 : 动漫\n🏆 MODEL_2 : " \
+                                                 f"现实\n🧩 MODEL_3 : Q版\n" \
+                                                 f"🌈 图片不满意的话，点击变换\n{self.request_bot_name}帮你再画一幅吧!\n💖 感谢您的使用！ "
                                 reply.content = reply.content
                                 e_context["reply"] = reply
                                 if os.path.isfile(file_content):
@@ -586,7 +597,7 @@ class pictureChange(Plugin):
                                     logger.info("文件已成功删除")
                                 else:
                                     logger.error("文件不存在")
-                                e_context.action = EventAction.BREAK_PASS  
+                                e_context.action = EventAction.BREAK_PASS
                             else:
                                 reply.type = ReplyType.TEXT
                                 replyText = f"🥰请先发送图片给我,我将为您进行{role['title']}"
@@ -604,11 +615,12 @@ class pictureChange(Plugin):
                             replyText = f"🧸当前排队人数为 {str(self.wait_number)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"
                             reply.content = replyText
                             e_context["reply"] = reply
-                            e_context.action = EventAction.BREAK_PASS  
+                            e_context.action = EventAction.BREAK_PASS
                             return
                         else:
                             self.use_number += 1
-                            file_content = content[len(title + " "):]
+                            file_content = content.split()[2]
+                            logger.info(f"{file_content}")
                             if os.path.isfile(file_content):
                                 try:
                                     # 从文件中读取数据
@@ -667,6 +679,7 @@ class pictureChange(Plugin):
                                         modelname = member.name
                                         break
                                 else:
+                                    modelname = model
                                     print("使用了其他模型")
                                 # 发送图片
                                 b_img = io.BytesIO()
@@ -691,8 +704,9 @@ class pictureChange(Plugin):
                                     reply.content += "\n\n{} 🎡 变换 {}.png {} {}".format(self.request_bot_name,
                                                                                         f"img2img-images/{seed}",
                                                                                         modelname, temposition_2)
-                                reply.content += "\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n🌈 图片不满意的话，点击变换指令\n🐏 " \
-                                                 "Bot帮你再画一幅吧!\n💖 感谢您的使用！ "
+                                reply.content += f"\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n👑 MODEL_1 : 动漫\n🏆 MODEL_2 : " \
+                                                 f"现实\n🧩 MODEL_3 : Q版\n" \
+                                                 f"🌈 图片不满意的话，点击变换\n{self.request_bot_name}帮你再画一幅吧!\n💖 感谢您的使用！ "
                                 reply.content = reply.content
                                 e_context["reply"] = reply
                                 if os.path.isfile(file_content):
@@ -700,7 +714,7 @@ class pictureChange(Plugin):
                                     logger.info("文件已成功删除")
                                 else:
                                     logger.error("文件不存在")
-                                e_context.action = EventAction.BREAK_PASS  
+                                e_context.action = EventAction.BREAK_PASS
                             else:
                                 reply.type = ReplyType.TEXT
                                 replyText = f"🥰请先发送图片给我,我将为您进行{role['title']}"
@@ -718,10 +732,11 @@ class pictureChange(Plugin):
                             replyText = f"🧸当前排队人数为 {str(self.wait_number)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"
                             reply.content = replyText
                             e_context["reply"] = reply
-                            e_context.action = EventAction.BREAK_PASS  
+                            e_context.action = EventAction.BREAK_PASS
                         else:
                             self.use_number += 1
                             file_content = content.split()[2]
+                            logger.info(f"{file_content}")
                             sdModel = getattr(self.Model, content.split()[3]).value
                             if self.use_https:
                                 image_url = "https://{}:{}/{}{}".format(self.host, self.port, self.file_url,
@@ -795,7 +810,9 @@ class pictureChange(Plugin):
                                                                                         f"img2img-images/{seed}",
                                                                                         content.split()[3],
                                                                                         temposition_2)
-                                reply.content += "\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n🌈 图片不满意的话，点击变换指令\n🐏 Bot帮你再画一幅吧!\n💖 感谢您的使用！"
+                                reply.content += f"\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n👑 MODEL_1 : 动漫\n🏆 MODEL_2 : " \
+                                                 f"现实\n🧩 MODEL_3 : Q版\n" \
+                                                 f"🌈 图片不满意的话，点击变换\n{self.request_bot_name}帮你再画一幅吧!\n💖 感谢您的使用！ "
                                 reply.content = reply.content
                                 e_context["reply"] = reply
                                 if os.path.isfile(file_content):
@@ -803,7 +820,7 @@ class pictureChange(Plugin):
                                     logger.info("文件已成功删除")
                                 else:
                                     logger.error("文件不存在")
-                                e_context.action = EventAction.BREAK_PASS  
+                                e_context.action = EventAction.BREAK_PASS
 
                             else:
                                 reply.type = ReplyType.TEXT
@@ -816,13 +833,15 @@ class pictureChange(Plugin):
 
                     elif content.startswith("🤖 放大 "):
                         try:
-                            file_content = content[len("🔍 放大 "):]
+                            file_content = content.split()[2]
+                            logger.info(f"{file_content}")
                             if self.use_https:
                                 image_url = "https://{}:{}/{}{}".format(self.host, self.port, self.file_url,
                                                                         file_content)
                             else:
                                 image_url = "http://{}:{}/{}{}".format(self.host, self.port, self.file_url,
                                                                        file_content)
+                            logger.info(f"图片地址为：{image_url}")
                             response = requests.get(image_url)
                             if response.status_code == 200:
                                 text = f"🚀放大图片生成中～～～\n⏳请您耐心等待1-2分钟\n✨请稍等片刻✨✨\n❤️感谢您的耐心与支持"
@@ -868,7 +887,7 @@ class pictureChange(Plugin):
                         replyText = f"🧸当前排队人数为 {str(self.wait_number)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"
                         reply.content = replyText
                         e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  
+                        e_context.action = EventAction.BREAK_PASS
                     else:
                         msg.prepare()
                         reply.type = ReplyType.TEXT
@@ -878,10 +897,11 @@ class pictureChange(Plugin):
                             replyText += f"\n\n {role['title']} {file_content}"
                         replyText += f"\n\n🎡 自定义 {file_content} [关键词] 例如 黑色头发 白色短袖 等关键词"
                         replyText += f"\n\n❎ 暂不处理 {file_content}"
+                        replyText += "\n\n🥰 温馨提示\n👑 MODEL_1 : 动漫\n🏆 MODEL_2 : 现实\n🧩 MODEL_3 : Q版"
                         replyText += "\n\n🚀 发送指令后，请耐心等待一至两分钟，作品将很快呈现出来！"
                         reply.content = replyText
                         e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  
+                        e_context.action = EventAction.BREAK_PASS
 
                 elif any(ext in content for ext in ["jpg", "jpeg", "png", "gif", "webp"]) and (
                         content.startswith("http://") or content.startswith("https://")):
@@ -891,7 +911,7 @@ class pictureChange(Plugin):
                         replyText = f"🧸当前排队人数为 {str(self.wait_number)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"
                         reply.content = replyText
                         e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  
+                        e_context.action = EventAction.BREAK_PASS
                     else:
                         response = requests.get(content)
                         file_content = str(int(time.time())) + ".jpg"
@@ -906,10 +926,11 @@ class pictureChange(Plugin):
                             replyText += f"\n\n {role['title']} {file_content}"
                         replyText += f"\n\n🎡 自定义 {file_content} [关键词] 例如 黑色头发 白色短袖 等关键词"
                         replyText += f"\n\n❎ 暂不处理 {file_content}"
+                        replyText += "\n\n🥰 温馨提示\n👑 MODEL_1 : 动漫\n🏆 MODEL_2 : 现实\n🧩 MODEL_3 : Q版"
                         replyText += "\n\n🚀 发送指令后，请耐心等待一至两分钟，作品将很快呈现出来！"
                         reply.content = replyText
                         e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  
+                        e_context.action = EventAction.BREAK_PASS
 
                 elif e_context['context'].type == ContextType.IMAGE_CREATE:
                     if self.use_number >= self.max_number:
@@ -919,7 +940,7 @@ class pictureChange(Plugin):
                                     f"'一张图片'，让我为您进行图片操作 "
                         reply.content = replyText
                         e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  
+                        e_context.action = EventAction.BREAK_PASS
                     else:
                         self.use_number += 1
                         content = e_context['context'].content[:]
@@ -1001,6 +1022,7 @@ class pictureChange(Plugin):
                                     modelname = member.name
                                     break
                             else:
+                                modelname = model
                                 print("使用了其他模型")
                             # 发送图片
                             b_img = io.BytesIO()
@@ -1022,8 +1044,9 @@ class pictureChange(Plugin):
                                 temposition_2 += 1
                                 reply.content += "\n\n🎡 变换 {}.png {} {}".format(f"txt2img-images/{seed}", modelname,
                                                                                  temposition_2)
-                            reply.content += "\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n🌈 图片不满意的话，点击变换指令\n🐏 " \
-                                             "Bot帮你再画一幅吧!\n💖 感谢您的使用！ "
+                            reply.content += f"\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n👑 MODEL_1 : 动漫\n🏆 MODEL_2 : " \
+                                             f"现实\n🧩 MODEL_3 : Q版\n" \
+                                             f"🌈 图片不满意的话，点击变换\n{self.request_bot_name}帮你再画一幅吧!\n💖 感谢您的使用！ "
                             reply.content = reply.content
                             e_context["reply"] = reply
                             if os.path.isfile(file_content):
@@ -1037,7 +1060,8 @@ class pictureChange(Plugin):
                         self.wait_number = 0
 
                 elif content.startswith("🤖 图像修复 "):
-                    file_content = content[len("🤖 图像修复 "):]
+                    file_content = content.split()[2]
+                    logger.info(f"{file_content}")
                     if os.path.isfile(file_content):
                         try:
                             with open(file_content, 'rb') as file:
@@ -1091,7 +1115,7 @@ class pictureChange(Plugin):
                                     logger.info("文件已成功删除")
                                 else:
                                     logger.error("文件不存在")
-                                e_context.action = EventAction.BREAK_PASS 
+                                e_context.action = EventAction.BREAK_PASS
                                 return
                             else:
                                 logger.error("未找到转换后的图像数据")
@@ -1102,10 +1126,11 @@ class pictureChange(Plugin):
                         replyText = f"🥰请先发送图片给我,我将为您进行图像修复"
                         reply.content = replyText
                         e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  
+                        e_context.action = EventAction.BREAK_PASS
 
                 elif content.startswith("❎ 暂不处理 "):
-                    file_content = content[len("❎ 暂不处理 "):]
+                    file_content = content.split()[2]
+                    logger.info(f"{file_content}")
                     # 删除文件
                     reply.type = ReplyType.TEXT
                     if os.path.isfile(file_content):
@@ -1115,7 +1140,7 @@ class pictureChange(Plugin):
                         replyText = "😭文件不存在或已删除"
                     reply.content = replyText
                     e_context["reply"] = reply
-                    e_context.action = EventAction.BREAK_PASS  
+                    e_context.action = EventAction.BREAK_PASS
 
                 elif content.startswith("🎡 自定义 "):
                     if self.use_number >= self.max_number:
@@ -1125,7 +1150,7 @@ class pictureChange(Plugin):
                                     f"'一张图片'，让我为您进行图片操作 "
                         reply.content = replyText
                         e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  
+                        e_context.action = EventAction.BREAK_PASS
                     else:
                         self.use_number += 1
                         start_index = content.find("tmp/")
@@ -1215,7 +1240,7 @@ class pictureChange(Plugin):
                                                 "gross proportions,missing arms,missing legs,extra digit, extra arms, "
                                                 "extra leg, extra foot,teethcroppe,signature, watermark, username,"
                                                 "blurry,cropped,jpeg artifacts,text,error,Lower body exposure,",
-    
+
                             )
                             model = default_options["sd_model_checkpoint"]
                             modelname = ""
@@ -1224,6 +1249,7 @@ class pictureChange(Plugin):
                                     modelname = member.name
                                     break
                             else:
+                                modelname = model
                                 print("使用了其他模型")
                             # 发送图片
                             b_img = io.BytesIO()
@@ -1231,7 +1257,7 @@ class pictureChange(Plugin):
                             reply.content = b_img
                             reply = Reply(ReplyType.IMAGE, reply.content)
                             channel._send(reply, e_context["context"])
-    
+
                             # 发送放大和转换指令
                             reply.type = ReplyType.TEXT
                             all_seeds = result.info['all_seeds']
@@ -1245,7 +1271,9 @@ class pictureChange(Plugin):
                                 temposition_2 += 1
                                 reply.content += "\n\n🎡 变换 {}.png {} {}".format(f"img2img-images/{seed}", modelname,
                                                                                  temposition_2)
-                            reply.content += "\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n🌈 图片不满意的话，点击变换指令\n🐏 Bot帮你再画一幅吧!\n💖 感谢您的使用！"
+                            reply.content += f"\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n👑 MODEL_1 : 动漫\n🏆 MODEL_2 : " \
+                                             f"现实\n🧩 MODEL_3 : Q版\n" \
+                                             f"🌈 图片不满意的话，点击变换\n{self.request_bot_name}帮你再画一幅吧!\n💖 感谢您的使用！ "
                             reply.content = reply.content
                             e_context["reply"] = reply
                             if os.path.isfile(file_content):
@@ -1253,20 +1281,21 @@ class pictureChange(Plugin):
                                 logger.info("文件已成功删除")
                             else:
                                 logger.error("文件不存在")
-                            e_context.action = EventAction.BREAK_PASS  
+                            e_context.action = EventAction.BREAK_PASS
                         else:
                             reply.type = ReplyType.TEXT
                             replyText = f"🥰请先发送图片给我,我将为您进行{role['title']}"
                             reply.content = replyText
                             e_context["reply"] = reply
-                            e_context.action = EventAction.BREAK_PASS  
-                        
+                            e_context.action = EventAction.BREAK_PASS
+
                         self.use_number -= 1
                         self.wait_number = 0
 
                 elif content.startswith("🤖 放大 "):
                     try:
-                        file_content = content[len("🔍 放大 "):]
+                        file_content = content.split()[2]
+                        logger.info(f"{file_content}")
                         if self.use_https:
                             image_url = "https://{}:{}/{}{}".format(self.host, self.port, self.file_url,
                                                                     file_content)
@@ -1287,12 +1316,12 @@ class pictureChange(Plugin):
                             reply.type = ReplyType.TEXT
                             reply.content = "[😭放大图片失败]\n快联系管理员解决问题吧🥰🥰🥰"
                             e_context["reply"] = reply
-                            e_context.action = EventAction.BREAK_PASS 
+                            e_context.action = EventAction.BREAK_PASS
                     except Exception as e:
                         reply.type = ReplyType.TEXT
                         reply.content = "[😭转换图片失败]" + str(e) + "\n快联系管理员解决问题吧🥰🥰🥰"
                         e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS 
+                        e_context.action = EventAction.BREAK_PASS
 
                 elif content.startswith("🎡 变换 "):
                     if self.use_number >= self.max_number:
@@ -1301,10 +1330,11 @@ class pictureChange(Plugin):
                         replyText = f"🧸当前排队人数为 {str(self.wait_number)}\n🚀 请耐心等待一至两分钟，再发送 '一张图片'，让我为您进行图片操作"
                         reply.content = replyText
                         e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  
+                        e_context.action = EventAction.BREAK_PASS
                     else:
                         self.use_number += 1
                         file_content = content.split()[2]
+                        logger.info(f"{file_content}")
                         sdModel = getattr(self.Model, content.split()[3]).value
                         if self.use_https:
                             image_url = "https://{}:{}/{}{}".format(self.host, self.port, self.file_url,
@@ -1360,7 +1390,7 @@ class pictureChange(Plugin):
                                                 "cross-eyed,mutated hands,polar lowres,bad body,bad proportions,"
                                                 "gross proportions,missing arms,missing legs,extra digit, extra arms, "
                                                 "extra leg, extra foot,teethcroppe,signature, watermark, username,"
-                                                "blurry,cropped,jpeg artifacts,text,error,Lower body exposure,", 
+                                                "blurry,cropped,jpeg artifacts,text,error,Lower body exposure,",
 
                             )
                             # 发送图片
@@ -1383,8 +1413,9 @@ class pictureChange(Plugin):
                                 temposition_2 += 1
                                 reply.content += "\n\n🎡 变换 {}.png {} {}".format(f"img2img-images/{seed}",
                                                                                  content.split()[3], temposition_2)
-                            reply.content += "\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n🌈 图片不满意的话，点击变换指令\n🐏 " \
-                                             "Bot帮你再画一幅吧!\n💖 感谢您的使用！ "
+                            reply.content += f"\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n👑 MODEL_1 : 动漫\n🏆 MODEL_2 : " \
+                                             f"现实\n🧩 MODEL_3 : Q版\n" \
+                                             f"🌈 图片不满意的话，点击变换\n{self.request_bot_name}帮你再画一幅吧!\n💖 感谢您的使用！ "
                             reply.content = reply.content
                             e_context["reply"] = reply
                             if os.path.isfile(file_content):
@@ -1392,13 +1423,13 @@ class pictureChange(Plugin):
                                 logger.info("文件已成功删除")
                             else:
                                 logger.error("文件不存在")
-                            e_context.action = EventAction.BREAK_PASS  
+                            e_context.action = EventAction.BREAK_PASS
 
                         else:
                             reply.type = ReplyType.TEXT
                             reply.content = "[😭转换图片失败]\n快联系管理员解决问题吧🥰🥰🥰"
                             e_context["reply"] = reply
-                            e_context.action = EventAction.BREAK_PASS  
+                            e_context.action = EventAction.BREAK_PASS
 
                         self.use_number -= 1
                         self.wait_number = 0
@@ -1411,10 +1442,11 @@ class pictureChange(Plugin):
                                     f"'一张图片'，让我为您进行图片操作 "
                         reply.content = replyText
                         e_context["reply"] = reply
-                        e_context.action = EventAction.BREAK_PASS  
+                        e_context.action = EventAction.BREAK_PASS
                     else:
                         self.use_number += 1
-                        file_content = content[len(title + " "):]
+                        file_content = content.split()[2]
+                        logger.info(f"{file_content}")
                         if os.path.isfile(file_content):
                             try:
                                 # 从文件中读取数据
@@ -1480,7 +1512,7 @@ class pictureChange(Plugin):
                             reply.content = b_img
                             reply = Reply(ReplyType.IMAGE, reply.content)
                             channel._send(reply, e_context["context"])
-    
+
                             # 发送放大和转换指令
                             reply.type = ReplyType.TEXT
                             all_seeds = result.info['all_seeds']
@@ -1494,25 +1526,26 @@ class pictureChange(Plugin):
                                 temposition_2 += 1
                                 reply.content += "\n\n🎡 变换 {}.png {} {}".format(f"img2img-images/{seed}", modelname,
                                                                                  temposition_2)
-                            reply.content += "\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n🌈 图片不满意的话，点击变换指令\n🐏 " \
-                                             "Bot帮你再画一幅吧!\n💖 感谢您的使用！ "
+                            reply.content += f"\n\n🥰 温馨提示\n✨ 1:左上 2:右上 3:左下 4:右下\n👑 MODEL_1 : 动漫\n🏆 MODEL_2 : " \
+                                             f"现实\n🧩 MODEL_3 : Q版\n" \
+                                             f"🌈 图片不满意的话，点击变换\n{self.request_bot_name}帮你再画一幅吧!\n💖 感谢您的使用！ "
                             e_context["reply"] = reply
                             if os.path.isfile(file_content):
                                 os.remove(file_content)
                                 logger.info("文件已成功删除")
                             else:
                                 logger.error("文件不存在")
-                            e_context.action = EventAction.BREAK_PASS  
+                            e_context.action = EventAction.BREAK_PASS
                         else:
                             reply.type = ReplyType.TEXT
                             replyText = f"🥰请先发送图片给我,我将为您进行{role['title']}"
                             reply.content = replyText
                             e_context["reply"] = reply
-                            e_context.action = EventAction.BREAK_PASS 
+                            e_context.action = EventAction.BREAK_PASS
                         self.use_number -= 1
                         self.wait_number = 0
                 else:
-                    e_context.action = EventAction.CONTINUE 
+                    e_context.action = EventAction.CONTINUE
 
             except Exception as e:
                 reply.content = "[😭SD画图失败] " + str(e) + "\n快联系管理员解决问题吧🥰🥰🥰"
@@ -1522,7 +1555,7 @@ class pictureChange(Plugin):
                 if os.path.isfile(file_content):
                     os.remove(file_content)
                     logger.info("文件已成功删除")
-                e_context.action = EventAction.BREAK_PASS 
+                e_context.action = EventAction.BREAK_PASS
 
     def get_help_text(self, **kwargs):
         if not conf().get('image_create_prefix'):

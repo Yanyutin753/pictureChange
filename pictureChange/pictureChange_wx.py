@@ -271,7 +271,6 @@ class pictureChange(Plugin):
                             do_not_save_samples=True,
                             do_not_save_grid=True,
                             save_images=True,
-                            negative_prompt="(((nsfw))),EasyNegative,badhandv4,ng_deepnegative_v1_75t,(worst quality:2), (low quality:2), (normal quality:2), lowres, ((monochrome)), ((grayscale)), bad anatomy,DeepNegative, skin spots, acnes, skin blemishes,(fat:1.2),facing away, looking away,tilted head, lowres,bad anatomy,bad hands, missing fingers,extra digit, fewer digits,bad feet,poorly drawn hands,poorly drawn face,mutation,deformed,extra fingers,extra limbs,extra arms,extra legs,malformed limbs,fused fingers,too many fingers,long neck,cross-eyed,mutated hands,polar lowres,bad body,bad proportions,gross proportions,missing arms,missing legs,extra digit, extra arms, extra leg, extra foot,teethcroppe,signature, watermark, username,blurry,cropped,jpeg artifacts,text,error,Lower body exposure,",
                             **params
                         )
                         model = options["sd_model_checkpoint"]
@@ -446,7 +445,7 @@ class pictureChange(Plugin):
                                 else:
                                     logger.error("未找到转换后的图像数据")
                             else:
-                                logger.error("API请求失败")
+                                logger.error(f"API请求失败:{response.text}")
                         else:
                             reply.type = ReplyType.TEXT
                             replyText = f"🥰请先发送图片给我,我将为您进行图像修复"
@@ -1120,7 +1119,7 @@ class pictureChange(Plugin):
                             else:
                                 logger.error("未找到转换后的图像数据")
                         else:
-                            logger.error("API请求失败")
+                            logger.error(f"API请求失败:{response.text}")
                     else:
                         reply.type = ReplyType.TEXT
                         replyText = f"🥰请先发送图片给我,我将为您进行图像修复"

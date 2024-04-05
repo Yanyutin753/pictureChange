@@ -379,7 +379,5 @@ PS: 如果你下载了多个模型，就可以根据实际需要，填入你想�
 - 敲代码不易，希望客官给点赞助，让我更好修改代码！
 ![image](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/713eb69e-6e00-46ad-bec5-0b3926305ef0)
 
-- 欢迎加入群聊讨论
-![2045e6eec4d1feebab7159b200154bd](https://github.com/Yanyutin753/pictureChange/assets/132346501/3a3fac14-086a-4622-9cb6-4c9c3e20596e)
 
 

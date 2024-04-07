@@ -226,12 +226,12 @@ class Godcmd(Plugin):
         logger.info("[Godcmd] inited")
 
     def on_handle_context(self, e_context: EventContext):
+        curdir = os.path.dirname(__file__)
         context_type = e_context["context"].type
         if context_type != ContextType.TEXT:
             if not self.isrunning:
                 e_context.action = EventAction.BREAK_PASS
             return
-
         content = e_context["context"].content
         logger.debug("[Godcmd] on_handle_context. content: %s" % content)
         if content.startswith("#"):

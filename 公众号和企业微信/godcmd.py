@@ -154,7 +154,8 @@ ADMIN_COMMANDS = {
 def get_help_text(isadmin, isgroup):
     help_text = "通用指令\n"
     for cmd, info in COMMANDS.items():
-        if cmd in ["auth", "set_openai_api_key", "reset_openai_api_key", "set_gpt_model", "reset_gpt_model", "gpt_model"]:  # 不显示帮助指令
+        if cmd in ["auth", "set_openai_api_key", "reset_openai_api_key", "set_gpt_model", "reset_gpt_model",
+                   "gpt_model"]:  # 不显示帮助指令
             continue
         if cmd == "id" and conf().get("channel_type", "wx") not in ["wxy", "wechatmp"]:
             continue
@@ -226,12 +227,12 @@ class Godcmd(Plugin):
         logger.info("[Godcmd] inited")
 
     def on_handle_context(self, e_context: EventContext):
+        curdir = os.path.dirname(__file__)
         context_type = e_context["context"].type
         if context_type != ContextType.TEXT:
             if not self.isrunning:
                 e_context.action = EventAction.BREAK_PASS
             return
-
         content = e_context["context"].content
         logger.debug("[Godcmd] on_handle_context. content: %s" % content)
         if content.startswith("#"):
@@ -274,7 +275,9 @@ class Godcmd(Plugin):
                             if not plugincls.enabled:
                                 continue
                             if query_name == name or query_name == plugincls.namecn:
-                                ok, result = True, PluginManager().instances[name].get_help_text(isgroup=isgroup, isadmin=isadmin, verbose=True)
+                                ok, result = True, PluginManager().instances[name].get_help_text(isgroup=isgroup,
+                                                                                                 isadmin=isadmin,
+                                                                                                 verbose=True)
                                 break
                         if not ok:
                             result = "插件不存在或未启用"
@@ -329,7 +332,8 @@ class Godcmd(Plugin):
                     except Exception as e:
                         ok, result = False, "你没有设置私有GPT模型"
                 elif cmd == "reset":
-                    if bottype in [const.OPEN_AI, const.CHATGPT, const.CHATGPTONAZURE, const.LINKAI, const.BAIDU, const.XUNFEI, const.QWEN, const.GEMINI, const.ZHIPU_AI]:
+                    if bottype in [const.OPEN_AI, const.CHATGPT, const.CHATGPTONAZURE, const.LINKAI, const.BAIDU,
+                                   const.XUNFEI, const.QWEN, const.GEMINI, const.ZHIPU_AI]:
                         bot.sessions.clear_session(session_id)
                         if Bridge().chat_bots.get(bottype):
                             Bridge().chat_bots.get(bottype).sessions.clear_session(session_id)
@@ -353,7 +357,7 @@ class Godcmd(Plugin):
                         elif cmd == "reconf":
                             load_config()
                             ok, result = True, "配置已重载"
-                             elif cmd == "setKey":
+                        elif cmd == "setKey":
                             if len(args) != 1:
                                 ok, result = False, "请提供正确的api_key"
                             else:
@@ -362,82 +366,82 @@ class Godcmd(Plugin):
                                 # 加载配置文件
                                 with open(config_path, "r", encoding="utf-8") as config_file:
                                     config_data = json.load(config_file)
-                                
+
                                 # 修改 open_ai_api_key 的值
                                 config_data["open_ai_api_key"] = args[0]
-                                
+
                                 # 保存修改后的配置
                                 with open(config_path, "w", encoding="utf-8") as config_file:
                                     json.dump(config_data, config_file, indent=4, ensure_ascii=False)
                                 bot = ChatGPTBot()
                                 bot.initialize_gpt()
                                 print("open_ai_api_key 已经更新为:", args[0])
-                                
-                                
+
                             ok, result = True, "修改成功"
-                            
+
                         elif cmd == "setHost":
                             if len(args) != 1:
                                 ok, result = False, "请提供正确的Host"
                             else:
                                 # 设置配置文件路径
                                 config_path = os.path.join(curdir, "../picturechange/config.json")
-                                
+
                                 # 加载配置文件
                                 with open(config_path, "r", encoding="utf-8") as config_file:
                                     config_data = json.load(config_file)
-                                
+
                                 # 修改 host 的值
                                 config_data["start"]["host"] = args[0]
-                                
+
                                 # 保存修改后的配置
                                 with open(config_path, "w", encoding="utf-8") as config_file:
                                     json.dump(config_data, config_file, indent=4, ensure_ascii=False)
-                                
+
                                 PluginManager().reload_plugin("pictureChange")
-                                print("Host已成功更新为:",args[0])
-                                
+                                print("Host已成功更新为:", args[0])
+
                             ok, result = True, "Host已成功更新"
-                            
+
                         elif cmd == "enImageChange":
                             # 设置配置文件路径
                             config_path = os.path.join(curdir, "../../config.json")
                             # 加载配置文件
                             with open(config_path, "r", encoding="utf-8") as config_file:
                                 config_data = json.load(config_file)
-                            
+
                             # 修改 group_imageChange 的值
                             config_data["group_imageChange"] = True
-                            
+
                             # 保存修改后的配置
                             with open(config_path, "w", encoding="utf-8") as config_file:
                                 json.dump(config_data, config_file, indent=4, ensure_ascii=False)
-                                
+
                             PluginManager().reload_plugin("pictureChange")
                             print("group_imageChange 已经更新为:", True)
                             ok, result = True, "开启成功"
-                            
+
                         elif cmd == "disImageChange":
                             # 设置配置文件路径
                             config_path = os.path.join(curdir, "../../config.json")
                             # 加载配置文件
                             with open(config_path, "r", encoding="utf-8") as config_file:
                                 config_data = json.load(config_file)
-                            
+
                             # 修改 group_imageChange 的值
                             config_data["group_imageChange"] = False
-                            
+
                             # 保存修改后的配置
                             with open(config_path, "w", encoding="utf-8") as config_file:
                                 json.dump(config_data, config_file, indent=4, ensure_ascii=False)
-                                
+
                             PluginManager().reload_plugin("pictureChange")
                             print("group_imageChange 已经更新为:", False)
                             ok, result = True, "关闭成功"
-                            
+
                         elif cmd == "resetall":
                             if bottype in [const.OPEN_AI, const.CHATGPT, const.CHATGPTONAZURE, const.LINKAI,
-                                           const.BAIDU, const.XUNFEI, const.QWEN, const.GEMINI, const.ZHIPU_AI, const.MOONSHOT]:
+                                           const.BAIDU, const.XUNFEI, const.QWEN, const.GEMINI, const.ZHIPU_AI,
+                                           const.MOONSHOT]:
                                 channel.cancel_all_session()
                                 bot.sessions.clear_all_session()
                                 ok, result = True, "重置所有会话成功"
@@ -533,7 +537,7 @@ class Godcmd(Plugin):
             reply.content = result
             e_context["reply"] = reply
 
-            e_context.action = EventAction.BREAK_PASS  
+            e_context.action = EventAction.BREAK_PASS
         elif not self.isrunning:
             e_context.action = EventAction.BREAK_PASS
 
@@ -562,12 +566,10 @@ class Godcmd(Plugin):
     def get_help_text(self, isadmin=False, isgroup=False, **kwargs):
         return get_help_text(isadmin, isgroup)
 
-
     def is_admin_in_group(self, context):
         if context["isgroup"]:
             return context.kwargs.get("msg").actual_user_id in global_config["admin_users"]
         return False
-
 
     def model_mapping(self, model) -> str:
         if model == "gpt-4-turbo":
@@ -581,6 +583,3 @@ class Godcmd(Plugin):
                 self.password = gconf["password"]
             if gconf.get("admin_users"):
                 self.admin_users = gconf["admin_users"]
-
-    def get_help_text(self, isadmin=False, isgroup=False, **kwargs):
-        return get_help_text(isadmin, isgroup)

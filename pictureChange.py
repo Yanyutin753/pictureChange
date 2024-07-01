@@ -171,8 +171,7 @@ class pictureChange(Plugin):
             group_name = context["msg"].other_user_nickname
             group_config = find_group.find_group(group_name)
             logger.info(group_config)
-            if group_config:
-                is_group_enable = group_config["IMAGE"]
+            if group_config and group_config["ENABLE"]:
                 is_group_image = group_config["IMAGE"]
                 is_group_file = group_config["FILE"]
                 is_group_music = group_config["MUSIC"]

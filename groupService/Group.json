@@ -20,6 +20,16 @@
                 "MODEL": "abab6.5s-chat",
                 "ENABLE": true
             }
+        },
+        {
+            "name": "小羊一家",
+            "function": {
+                "IMAGE": true,
+                "FILE": true,
+                "MUSIC": true,
+                "MODEL": "gpt-4o",
+                "ENABLE": true
+            }
         }
     ]
 }

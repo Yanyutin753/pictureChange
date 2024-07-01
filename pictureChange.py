@@ -3,6 +3,7 @@ from bridge.context import ContextType
 from bridge.reply import ReplyType
 from plugins import *
 from plugins.pictureChange.adminService.adminService import adminService
+from plugins.pictureChange.groupService import change_config
 from plugins.pictureChange.groupService.find_group import find_group
 from plugins.pictureChange.message import message_reply as MessageReply, message_type
 from plugins.pictureChange.message.message_limit import MessageLimit
@@ -332,7 +333,7 @@ class pictureChange(Plugin):
             return
 
         if self.admin.is_admin(sender_id):
-            if content.startswith("颤值"):
+            if content.startswith("修改pictureChange参数"):
                 content1 = content.split(" ")
                 if len(content1) != 3:
                     replyText = f"😭修改成失败，格式错误，应该为‘修改pictureChange参数 参数名称 参数数值’"
@@ -381,6 +382,6 @@ class pictureChange(Plugin):
 
             elif content.startswith("群聊修改 "):
                 content = content.replace("群聊修改 ", "")
-                replyText = change_group_config.GroupConfig().ins_command(content)
+                replyText = change_config.GroupConfig().ins_command(content)
                 MessageReply.reply_Text_Message(True, replyText, e_context)
                 return

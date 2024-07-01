@@ -1,0 +1,35 @@
+{
+    "AllFunction": {
+        "IS_IMAGE": "True",
+        "IS_FILE": "True",
+        "IS_MUSIC": "True",
+        "MODEL": [
+            "gpt-4o",
+            "glm-4",
+            "abab6.5-chat",
+            "abab6.5S-CHAT"
+        ]
+    },
+    "group": [
+        {
+            "name": "500 Not Found",
+            "function": {
+                "IMAGE": "True",
+                "FILE": "True",
+                "MUSIC": "True",
+                "MODEL": "ABAB6.5S-CHAT",
+                "发送消息": "True"
+            }
+        },
+        {
+            "name": "小羊一家🏠",
+            "function": {
+                "IMAGE": "True",
+                "FILE": "True",
+                "MUSIC": "True",
+                "MODEL": "abab6.5-chat",
+                "发送消息": "True"
+            }
+        }
+    ]
+}

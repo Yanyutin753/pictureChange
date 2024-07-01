@@ -48,13 +48,12 @@ def create_Image(content, is_use_fanyi, bot_prompt, rules, Model,
         keywords = keywords.split()
         unused_keywords = []
 
-        rule_params = {}
         # Match keywords to rules
         for keyword in keywords:
             for rule in rules:
                 if keyword in rule["keywords"]:
                     logger.info("[SD] keyword matched: %s" % keyword)
-                    rule_params.update(rule["params"])
+                    params.update(rule["params"])
                     if "options" in rule:
                         options.update(rule["options"])
                     break

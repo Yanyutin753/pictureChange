@@ -2,16 +2,15 @@
 
 - 支持运用百度AI进行图像处理
 - 支持运用stable diffusion webui进行图像处理
-- 支持运用stable diffusion webui画图
-- 支持多种sd模型
-- 支持并发控制
-- 支持管理员修改Host
-- 支持自定义模板
-- 支持管理员开关群聊的图生图
-- 支持管理员开关图生图功能，不影响文生图
+- 支持运用stable diffusion webui画图，不影响dall-3画图
+- 支持运用suno音乐组合AI进行图生音，文生音
+- 支持运用AI进行文件总结，图片总结等
+- 支持多种stable diffusion模型
+- 支持管理员控制群聊图像，文件，音乐，更改群聊模型等功能
+- 支持并发控制，管理员参数控制
+- 支持stable diffusion图生图，文生图自定义模板
 - 支持企业微信，个人号，公众号部署
 
-## 环境要求
 
 ### 1.使用前先安装stable diffusion webui，并在它的启动参数中添加 "--api",并开启**种子数**。
 
@@ -36,18 +35,17 @@
 ![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/7736b31e-c58c-47b0-8f44-0dc167d43027)
 
 ```
-"file_url": "file=D:/sd/sd-webui-aki/sd-webui-aki-v4.2/sd-webui-aki-v4.2/outputs,  #这个地址是你图片生成的地址"
+"file_url": "file=D:/sd/sd-webui-aki/sd-webui-aki-v4.2/sd-webui-aki-v4.2/outputs/,  #这个地址是你图片生成的地址"
 ```
 
-### 4.请确保**安装**本插件的依赖包```pip3 install -r requireents.txt```
+### 3. 请确保**安装**本插件的依赖包```pip3 install -r requireents.txt```
 
 ```
 pip3 install -r requirements.txt
 ```
 
-## 使用说明
 
-请将`config.json.template`复制为`config.json`，并修改其中的参数和规则。
+## config.json 配置
 
 PS: 修改了pictureChange的`host`和`port`和`sd_model_checkpoint`和 `api_key` ,`secret_key`，并填充相应的模型名称
 
@@ -108,26 +106,64 @@ PS: 实际参数分为两部分:
 ```bash
 # config.json文件内容示例
 {
-    "max_number":3, #最大并行人数量
-    "request_bot_name" : "群聊请求机器人的名称，和config.json环境变量一致（只限一个）",
-    "file_url": "file=D:/sd/sd-webui-aki/sd-webui-aki-v4.2/sd-webui-aki-v4.2/outputs,  #这个地址是你图片生成的地址"
-    "is_use_fanyi":false, #是否使用翻译，true就直接使用百度翻译，false使用gpt优化提示词
-     #申请地址https://ai.baidu.com/ai-doc
-    "api_key" : "你的百度云api_key",
-    "secret_key" : "你的百度云secret_key",
-    "use_group": [],#不用填
-    "max_size": 1150,
+    # 是否使用pictureChange插件功能
+    "use_pictureChange": true,
+    # 是否使用SD功能
+    "use_stable_diffusion": false,
+    # 是否使用Suno音乐功能
+    "use_music_handle": true,
+    # 是否使用文件识别功能
+    "use_file_handle": true,
+    # 最大并发数
+    "max_number": 3,
+    # 触发suno音乐关键词
+    "music_create_prefix": [
+        "唱",
+        "帮我唱"
+    ],
+    # 触发SD画图关键词
+    "image_create_prefix": [
+        "SD画",
+        "SD帮我画"
+    ],
+    # 是否使用翻译提示词，否的话使用当前对话机器人进行翻译
+    "is_use_fanyi": false,
+    # 百度翻译API密钥
+    "baidu_api_key": "0fqG8crG04FDU",
+    # 百度翻译API密钥
+    "baidu_secret_key": "RQXZgD9j7hZqgse",
+    # 外部识别图片和文件或者suno音乐的API BASE URL
+    "openai_api_base": "https://xxx/v1",
+    # 外部识别图片和文件或者suno音乐的API密钥
+    "openai_api_key": "sk-8toj6An",
+    "music_model": "suno-v3.5",
+    # 识别图片的模型
+    "image_recognize_model": "gpt-4o",
+    # 识别文件的模型
+    "file_recognize_model": "gpt-4o",
+    # 识别图片的提示词
+    "image_recognize_prompt": "请帮我描述这个图片的内容。【重要】1.请不要用markdown语法输出 2.请仔细阅读之后把你描述的内容分析给我！",
+    # 识别文件的提示词
+    "file_recognize_prompt": "请帮我描述这个文件的内容，【重要】1.请不要用markdown语法输出 2.请仔细阅读之后把你描述的内容分析给我！",
+    # 识别图片的提示词
+    "image_music_prompt": "请帮我描述这个图片的内容,将这段内容按照语义分成 Title（题目），Song Description（歌曲描述），Type of Music（音乐类型）。并根据用户的意图生成对应语言的歌曲提示词。请直接了当地输出Title（题目），Song Description（歌曲描述），Type of Music（音乐类型），[重点]不要超过100字！！！",
+    # 图生图最大尺寸
+    "max_size": 1024,
+    # SD启动参数
     "start": {
-        "host": "你的sd画图的ip",#填上你的ip
-        "port": 80,#填上你的ip的端口号
+        "host": "127.0.0.1",
+        "port": 7860,
         "use_https": false
     },
-      "defaults": {
+    # 本地SD图片存放位置
+    "file_url": "file=G:/sd/sd-webui-aki-v4.8/outputs/",
+    # 默认参数
+    "defaults": {
         "params": {
-            "sampler_name": "DPM++ 2M Karras",
+            "sampler_name": "Euler a",
             "steps": 20,
-            "width": 512,
-            "height": 512,
+            "width": 1024,
+            "height": 1024,
             "cfg_scale": 7,
             "prompt": "absurdres, 8k",
             "negative_prompt": "(((nsfw))),EasyNegative,badhandv4,ng_deepnegative_v1_75t,(worst quality:2), (low quality:2), (normal quality:2), lowres, ((monochrome)), ((grayscale)), bad anatomy,DeepNegative, skin spots, acnes, skin blemishes,(fat:1.2),facing away, looking away,tilted head, lowres,bad anatomy,bad hands, missing fingers,extra digit, fewer digits,bad feet,poorly drawn hands,poorly drawn face,mutation,deformed,extra fingers,extra limbs,extra arms,extra legs,malformed limbs,fused fingers,too many fingers,long neck,cross-eyed,mutated hands,polar lowres,bad body,bad proportions,gross proportions,missing arms,missing legs,extra digit, extra arms, extra leg, extra foot,teethcroppe,signature, watermark, username,blurry,cropped,jpeg artifacts,text,error,Lower body exposure",
@@ -160,7 +196,8 @@ PS: 实际参数分为两部分:
             "params": {
                 "width": 384,
                 "height": 640
-            }
+            },
+            "desc": "分辨率会变成384x640"
         },
         {
             "keywords": [
@@ -176,10 +213,7 @@ PS: 实际参数分为两部分:
             "keywords": [
                 "二次元"
             ],
-            "params": {
-                "negative_prompt": "(((nsfw))),EasyNegative,badhandv4,ng_deepnegative_v1_75t,(worst quality:2), (low quality:2), (normal quality:2), lowres, ((monochrome)), ((grayscale)), bad anatomy,DeepNegative, skin spots, acnes, skin blemishes,(fat:1.2),facing away, looking away,tilted head, lowres,bad anatomy,bad hands, missing fingers,extra digit, fewer digits,bad feet,poorly drawn hands,poorly drawn face,mutation,deformed,extra fingers,extra limbs,extra arms,extra legs,malformed limbs,fused fingers,too many fingers,long neck,cross-eyed,mutated hands,polar lowres,bad body,bad proportions,gross proportions,missing arms,missing legs,extra digit, extra arms, extra leg, extra foot,teethcroppe,signature, watermark, username,blurry,cropped,jpeg artifacts,text,error,Lower body exposure",
-                "prompt": "masterpiece, best quality"
-            },
+            # 切换模型
             "options": {
                 "sd_model_checkpoint": "anything-v5-PrtRE.safetensors [7f96a1a9ca]"
             },
@@ -189,94 +223,31 @@ PS: 实际参数分为两部分:
             "keywords": [
                 "现实"
             ],
-            "params": {
-                "negative_prompt": "(((nsfw))),EasyNegative,badhandv4,ng_deepnegative_v1_75t,(worst quality:2), (low quality:2), (normal quality:2), lowres, ((monochrome)), ((grayscale)), bad anatomy,DeepNegative, skin spots, acnes, skin blemishes,(fat:1.2),facing away, looking away,tilted head, lowres,bad anatomy,bad hands, missing fingers,extra digit, fewer digits,bad feet,poorly drawn hands,poorly drawn face,mutation,deformed,extra fingers,extra limbs,extra arms,extra legs,malformed limbs,fused fingers,too many fingers,long neck,cross-eyed,mutated hands,polar lowres,bad body,bad proportions,gross proportions,missing arms,missing legs,extra digit, extra arms, extra leg, extra foot,teethcroppe,signature, watermark, username,blurry,cropped,jpeg artifacts,text,error,Lower body exposure",
-                "prompt": "masterpiece, best quality"
-            },
+            # 切换模型
             "options": {
                 "sd_model_checkpoint": "absolutereality_v181.safetensors [463d6a9fe8]"
             },
             "desc": "使用现实风格模型出图"
-        },
-        {
-            "keywords": [
-                "Q版"
-            ],
-            "params": {
-                "negative_prompt": "(((nsfw))),EasyNegative,badhandv4,ng_deepnegative_v1_75t,(worst quality:2), (low quality:2), (normal quality:2), lowres, ((monochrome)), ((grayscale)), bad anatomy,DeepNegative, skin spots, acnes, skin blemishes,(fat:1.2),facing away, looking away,tilted head, lowres,bad anatomy,bad hands, missing fingers,extra digit, fewer digits,bad feet,poorly drawn hands,poorly drawn face,mutation,deformed,extra fingers,extra limbs,extra arms,extra legs,malformed limbs,fused fingers,too many fingers,long neck,cross-eyed,mutated hands,polar lowres,bad body,bad proportions,gross proportions,missing arms,missing legs,extra digit, extra arms, extra leg, extra foot,teethcroppe,signature, watermark, username,blurry,cropped,jpeg artifacts,text,error,Lower body exposure",
-                "prompt": "masterpiece, best quality"
-            },
-            "options": {
-                "sd_model_checkpoint": "QteaMix-fp16.safetensors [0c1efcbbd6]"
-            },
-            "desc": "使用Q版风格模型出图"
         }
     ],
+    # 可自定义图生图角色
     "roles": [
         {
-            "title": "🌈 图像动漫化",
-            "prompt": "masterpiece, best quality",
-            "negative_prompt": "(((nsfw))),EasyNegative,badhandv4,ng_deepnegative_v1_75t,(worst quality:2), (low quality:2), (normal quality:2), lowres, ((monochrome)), ((grayscale)), bad anatomy,DeepNegative, skin spots, acnes, skin blemishes,(fat:1.2),facing away, looking away,tilted head, lowres,bad anatomy,bad hands, missing fingers,extra digit, fewer digits,bad feet,poorly drawn hands,poorly drawn face,mutation,deformed,extra fingers,extra limbs,extra arms,extra legs,malformed limbs,fused fingers,too many fingers,long neck,cross-eyed,mutated hands,polar lowres,bad body,bad proportions,gross proportions,missing arms,missing legs,extra digit, extra arms, extra leg, extra foot,teethcroppe,signature, watermark, username,blurry,cropped,jpeg artifacts,text,error,Lower body exposure",
-            "denoising_strength": 0.45,
-            "cfg_scale": 7.0,
-            "options": {
-                "sd_model_checkpoint": "anything-v5-PrtRE.safetensors [7f96a1a9ca]"
-            }
-        },
-        {
             "title": "👧 可爱女生",
-            "prompt": "masterpiece, best quality",
-            "negative_prompt": "paintings, sketches, (worst quality:2), (low quality:2), (normal quality:2), lowres, ((monochrome)), ((grayscale)), skin spots, acnes, skin blemishes, age spot, glans, extra fingers, fewer fingers, ((watermark:2)), (white letters:1), (multi nipples), bad anatomy, bad hands, text, error, missing fingers, missing arms, missing legs, extra digit, fewer digits, cropped, worst quality, jpeg artifacts, signature, watermark, username, bad feet, Multiple people, blurry, poorly drawn hands, poorly drawn face, mutation, deformed, extra limbs, extra arms, extra legs, malformed limbs, fused fingers, too many fingers, long neck, cross-eyed, mutated hands, polar lowres, bad body, bad proportions, gross proportions, wrong feet bottom render, abdominal stretch, briefs, knickers, kecks, thong, fused fingers, bad body,bad proportion body to legs, wrong toes, extra toes, missing toes, weird toes, 2 body, 2 pussy, 2 upper, 2 lower, 2 head, 3 hand, 3 feet, extra long leg, super long leg, mirrored image, mirrored noise,, badhandv4, ng_deepnegative_v1_75t",
-            "denoising_strength": 0.45,
-            "cfg_scale": 8.0,
+            "enable": false,
+            "prompt": "multiple girls,Masterpiece,best quality, <lora:cozy anime_20230630155224:1>",
+            "negative_prompt": "(((nsfw))),EasyNegative,badhandv4,ng_deepnegative_v1_75t,(worst quality:2), (low quality:2), (normal quality:2), lowres, ((monochrome)), ((grayscale)), bad anatomy,DeepNegative, skin spots, acnes, skin blemishes,(fat:1.2),facing away, looking away,tilted head, lowres,bad anatomy,bad hands, missing fingers,extra digit, fewer digits,bad feet,poorly drawn hands,poorly drawn face,mutation,deformed,extra fingers,extra limbs,extra arms,extra legs,malformed limbs,fused fingers,too many fingers,long neck,cross-eyed,mutated hands,polar lowres,bad body,bad proportions,gross proportions,missing arms,missing legs,extra digit, extra arms, extra leg, extra foot,teethcroppe,signature, watermark, username,blurry,cropped,jpeg artifacts,text,error,Lower body exposure",
+            "denoising_strength": 0.5,
+            "cfg_scale": 7.0,
             "options": {
                 "sd_model_checkpoint": "anything-v5-PrtRE.safetensors [7f96a1a9ca]"
             }
         },
         {
             "title": "🧑 帅气男神",
-            "prompt": "boy, male focus, topless male, messy hair, looking at viewer, outdoors, beautiful lighting, deep shadow, best quality, masterpiece, ultra highres, photorealistic, blurry background,",
+            "enable": true,
+            "prompt": "multiple boys, male focus, topless male, messy hair, looking at viewer, outdoors, beautiful lighting, deep shadow, best quality, masterpiece, ultra highres, photorealistic, blurry background,",
             "negative_prompt": "cartoon, anime, sketches,(worst quality, low quality), (deformed, distorted, disfigured), (bad eyes, wrong lips, weird mouth, bad teeth, mutated hands and fingers:1.2), bad anatomy, wrong anatomy, amputation, extra limb, missing limb, floating limbs, disconnected limbs, mutation, ugly, disgusting, (bad_pictures, negative_hand-neg:1.2)",
-            "denoising_strength": 0.45,
-            "cfg_scale": 8.0,
-            "options": {
-                "sd_model_checkpoint": "anything-v5-PrtRE.safetensors [7f96a1a9ca]"
-            }
-        },
-        {
-            "title": "💑 二次元情侣",
-            "prompt": "absurdres, highres, ultra detailed, (:1.3), BREAK , Create a vintage advertisement, with retro design elements, classic typography, and a nostalgic atmosphere. BREAK , Create an image of a half-human, half-dragon hybrid, with a combination of physical features and powers from both of their parentage. BREAK , Create an image with a shallow depth of field, focusing on the subject and blurring the background for a sense of depth and separation. BREAK , Illustrate an old-town street, with historic buildings, cobblestone streets, and a sense of charm and nostalgia. BREAK , Capture a tender moment between a couple, showcasing their love, intimacy, and emotional connection. BREAK , Illustrate an image using soft pastel colors, with a gentle, dreamy quality and a focus on light and atmosphere.",
-            "negative_prompt": "EasyNegative, (worst quality, low quality:1.4), nsfw, (blush:1.3), logo",
-            "denoising_strength": 0.45,
-            "cfg_scale": 8.0,
-            "options": {
-                "sd_model_checkpoint": "anything-v5-PrtRE.safetensors [7f96a1a9ca]"
-            }
-        },
-        {
-            "title": "🦄 Q版化图像",
-            "prompt": "masterpiece, best quality",
-            "negative_prompt": "(((nsfw))),EasyNegative,badhandv4,ng_deepnegative_v1_75t,(worst quality:2), (low quality:2), (normal quality:2), lowres, ((monochrome)), ((grayscale)), bad anatomy,DeepNegative, skin spots, acnes, skin blemishes,(fat:1.2),facing away, looking away,tilted head, lowres,bad anatomy,bad hands, missing fingers,extra digit, fewer digits,bad feet,poorly drawn hands,poorly drawn face,mutation,deformed,extra fingers,extra limbs,extra arms,extra legs,malformed limbs,fused fingers,too many fingers,long neck,cross-eyed,mutated hands,polar lowres,bad body,bad proportions,gross proportions,missing arms,missing legs,extra digit, extra arms, extra leg, extra foot,teethcroppe,signature, watermark, username,blurry,cropped,jpeg artifacts,text,error,Lower body exposure",
-            "denoising_strength": 0.7,
-            "cfg_scale": 7.0,
-            "options": {
-                "sd_model_checkpoint": "QteaMix-fp16.safetensors [0c1efcbbd6]"
-            }
-        },
-        {
-            "title": "🏎 机甲女孩",
-            "prompt": "absurdres, highres, ultra detailed, (1girl:1.3), BREAK , Sun Knight, solar magic, light manipulation, radiant power, sunbeam attacks, aura of warmth, shining armor BREAK , photo manipulation, altered realities, fantastical scenes, digital artistry, creative editing, evocative narratives, striking visuals BREAK , kinetic art, moving sculptures, mechanical creations, interactive installations, dynamic motion, engineering ingenuity, captivating visuals",
-            "negative_prompt": "EasyNegative, (worst quality, low quality:1.4), nsfw",
-            "denoising_strength": 0.45,
-            "cfg_scale": 7.0,
-            "options": {
-                "sd_model_checkpoint": "anything-v5-PrtRE.safetensors [7f96a1a9ca]"
-            }
-        },
-        {
-            "title": "🌸 樱花女孩",
-            "prompt": "(masterpiece, high quality, highres,illustration),blurry background,[(white background:1.2)::5],cowboy shot, spring (season),(no light:1.1),(temptation:1.2),elegance, (1loli:1.1),(very long hair:1.1),(blush:0.7),floating hair,ahoge,deep sky,star (sky), (summer (Floral:1.2) dress:1.1),outline,(see-through:0.85),shining,low twintails, (polychromatic peony:1.15),Movie poster,(colorful:1.1),ornament,petals,(pantyhose:1.1), ribbon",
-            "negative_prompt": "sketch, duplicate, ugly, huge eyes, text, logo, worst face, (bad and mutated hands:1.3), (worst quality:2.0), (low quality:2.0), (blurry:2.0), horror, geometry, bad_prompt, (bad hands), (missing fingers), multiple limbs, bad anatomy, (interlocked fingers:1.2), Ugly Fingers, (extra digit and hands and fingers and legs and arms:1.4), ((2girl)), (deformed fingers:1.2), (long fingers:1.2),(bad-artist-anime), bad-artist, bad hand, extra legs, nipples,nsfw, Size: 384x832, Seed: 969039108, Model: MAADBD2fp16, Steps: 20, (blurry: 2.0), horror, geometry, bad_prompt, (bad hands), (missing fingers), multiple limbs, bad anatomy, Version: v1.3.2, Sampler: DPM++ 2M Karras, CFG scale: 8, Clip skip: 2, Model hash: cca17b08da, Hires steps: 20, (low quality: 2.0), (long fingers: 1.2),(bad-artist-anime), bad-artist, bad hand, extra legs, nipples,nsfw, Hires upscale: 2, (worst quality: 2.0), Hires upscaler: Latent, (deformed fingers: 1.2), Denoising strength: 0.5, (interlocked fingers: 1.2), Ugly Fingers, (bad and mutated hands: 1.3), Wildcard negative prompt: sketch, duplicate, ugly, huge eyes, text, logo, worst face, (extra digit and hands and fingers and legs and arms: 1.4), ((2girl))",
             "denoising_strength": 0.45,
             "cfg_scale": 8.0,
             "options": {
@@ -304,7 +275,39 @@ PS: 如果你下载了多个模型，就可以根据实际需要，填入你想�
 - config.json
 
 ```
-    "group_imageChange": true,默认为True
+
+```groupService/Group.json
+{
+    # 控制群聊的功能
+    "AllFunction": {
+        # 是否进行图片处理
+        "IS_IMAGE": "True",
+        # 是否进行文件处理
+        "IS_FILE": "True",
+        # 是否进行音乐处理
+        "IS_MUSIC": "True",
+        # 群聊可用模型列表
+        "MODEL": [
+            "gpt-4o",
+            "glm-4",
+            "abab6.5-chat",
+            "abab6.5s-chat"
+        ]
+    },
+    "group": [
+        {
+            # 群聊名称
+            "name": "500 Not Found",
+            "function": {
+                "IMAGE": "True",
+                "FILE": "True",
+                "MUSIC": "True",
+                "MODEL": "abab6.5s-chat",
+                "发送消息": "True"
+            }
+        }
+    ]
+}
 ```
 
 - config.py

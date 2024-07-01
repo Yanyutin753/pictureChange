@@ -49,8 +49,6 @@ def create_Image(content, is_use_fanyi, bot_prompt, rules, Model,
         unused_keywords = []
 
         rule_params = {}
-        rule_options = {}
-
         # Match keywords to rules
         for keyword in keywords:
             for rule in rules:
@@ -58,7 +56,7 @@ def create_Image(content, is_use_fanyi, bot_prompt, rules, Model,
                     logger.info("[SD] keyword matched: %s" % keyword)
                     rule_params.update(rule["params"])
                     if "options" in rule:
-                        rule_options.update(rule["options"])
+                        options.update(rule["options"])
                     break
             else:
                 unused_keywords.append(keyword)
@@ -143,8 +141,9 @@ def custom_Image(content, is_use_fanyi, bot_prompt, Model, request_bot_name, sta
             message_reply.reply_Error_Message(True, str(e), e_context)
             return
 
+        sdModel = getattr(Model, content.split()[3]).value
         default_options = {
-            "sd_model_checkpoint": "anything-v5-PrtRE.safetensors [7f96a1a9ca]"
+            "sd_model_checkpoint": sdModel
         }
         api = webuiapi.WebUIApi(**start_args)
         api.set_options(default_options)
@@ -183,7 +182,7 @@ def custom_Image(content, is_use_fanyi, bot_prompt, Model, request_bot_name, sta
 
 # 用于stable_diffusion按照config.json变换图生图
 def change_Image(content, Model, request_bot_name, start_args, default_options,
-                 roleRule_options, denoising_strength, cfg_scale,
+                 role_options, denoising_strength, cfg_scale,
                  prompt, negative_prompt, title, maxsize: int, is_wecom, e_context):
     start_time = time.time()
     file_content = content.split()[2]
@@ -206,7 +205,7 @@ def change_Image(content, Model, request_bot_name, start_args, default_options,
         logger.info(f"width: {width} height: {height}")
         images.append(image)
 
-        options = {**default_options, **roleRule_options}
+        options = {**default_options, **role_options}
         # 更改固定模型
         api = webuiapi.WebUIApi(**start_args)
         api.set_options(options)

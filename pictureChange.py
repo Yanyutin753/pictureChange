@@ -13,7 +13,7 @@ from plugins.pictureChange.work.common import Common
 
 @plugins.register(name="pictureChange",
                   desc="百度AI 和 Stable-Diffusion 来文生图和图生图， suno音乐，文件和图片识别，群聊聊天模型转换",
-                  version="2.0.0",
+                  version="2.0.1",
                   author="yang yang")
 class pictureChange(Plugin):
     # 定义了模型枚举类型

@@ -334,7 +334,7 @@ PS: 如果你下载了多个模型，就可以根据实际需要，填入你想�
 
 ### 使用实例
 
-- 图生图
+#### 图生图
 
 ![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/4d6f16b0-136a-48d6-991e-482ce3bbc701)
 
@@ -342,17 +342,35 @@ PS: 如果你下载了多个模型，就可以根据实际需要，填入你想�
 
 ![9d3c926daec3b69ef1f2e1b38e4ad7e](https://github.com/Yanyutin753/pictureChange/assets/132346501/cc5f8843-6a42-422c-bbeb-1c073ffa651b)
 
-- 画图
+#### 画图
 
 ![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/428a2333-1589-42fd-88df-a1b182f8b3f6)
 
 ![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/89782b7c-8f28-42af-8c16-a588539219a3)
 
-- 支持放大 变换操作
+#### 支持放大 变换操作
 
 ![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/1ab662b2-bd3c-490f-9981-404dcb1ca0e3)
 
 ![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/32949ac2-93fc-4b7c-8387-f5cd7b1cb139)
+
+#### suno音乐
+  
+- 1. 文生图
+![ff731f85a945cac88772af6f2cad790](https://github.com/Yanyutin753/pictureChange/assets/132346501/dde5488a-d9b2-4c71-b971-28074a477db1)
+
+- 2. 图生图
+![d2f549aec32642e0ff2dbc9ad4f8956](https://github.com/Yanyutin753/pictureChange/assets/132346501/264ede7d-e162-423b-b9d3-2cb145fd4cd5)
+
+#### 文件识别
+![dd0b8389d12a753f37781259c0f6ea7](https://github.com/Yanyutin753/pictureChange/assets/132346501/d973d5ce-b228-4d98-8771-7ffddccaecb1)
+
+#### 图片识别
+![cf7e611c93f674098a3752f4f720a93](https://github.com/Yanyutin753/pictureChange/assets/132346501/94c171e4-2a96-4553-be82-998b39a962a5)
+
+#### 群聊管理和config管理
+![8f911097129cb2585526e75556f4182](https://github.com/Yanyutin753/pictureChange/assets/132346501/1597cef7-d72c-4850-b3da-5978e759a21a)
+
 
 ### 贡献与支持
 

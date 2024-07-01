@@ -164,7 +164,7 @@ class pictureChange(Plugin):
         is_group_image = True
         is_group_file = True
         is_group_music = True
-        # is_group_model = "gpt-3.5-turbo"
+        is_group_model = None
         user = e_context["context"]["receiver"]
 
         if is_group:
@@ -172,10 +172,10 @@ class pictureChange(Plugin):
             group_config = find_group.find_group(group_name)
             logger.info(group_config)
             if group_config:
-                is_group_enable = group_config["IMAGE"] == "True"
-                is_group_image = group_config["IMAGE"] == "True"
-                is_group_file = group_config["FILE"] == "True"
-                is_group_music = group_config["MUSIC"] == "True"
+                is_group_enable = group_config["IMAGE"]
+                is_group_image = group_config["IMAGE"]
+                is_group_file = group_config["FILE"]
+                is_group_music = group_config["MUSIC"]
                 is_group_model = group_config["MODEL"]
             else:
                 is_group_enable = False
@@ -299,8 +299,9 @@ class pictureChange(Plugin):
                 # 跳过插件，到下一个插件里面
                 else:
                     user_data = conf().get_user_data(user)
-                    user_data["gpt_model"] = is_group_model
-                    logger.info(f"模型已经更换成为 {is_group_model}")
+                    if is_group_model:
+                        user_data["gpt_model"] = is_group_model
+                        logger.info(f"模型已经更换成为 {is_group_model}")
                     e_context.action = EventAction.CONTINUE
 
             except Exception as e:

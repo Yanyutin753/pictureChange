@@ -28,7 +28,7 @@ class find_group:
                             if funct_values[i] in values[i]:
                                 ans_dic[funct_keys[i]] = funct_values[i]
                                 continue
-                        if values[i] == "True" and values[i] == funct_values[i]:
+                        if values[i] and funct_values[i]:
                             ans_dic[funct_keys[i]] = True
                         else:
                             ans_dic[funct_keys[i]] = False
@@ -42,3 +42,5 @@ class find_group:
                 return None
         else:
             return None
+
+print(find_group.find_group("小羊一家"))

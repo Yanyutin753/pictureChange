@@ -3,7 +3,6 @@ from bridge.context import ContextType
 from bridge.reply import ReplyType
 from plugins import *
 from plugins.pictureChange.adminService.adminService import adminService
-from plugins.pictureChange.groupService import change_group_config
 from plugins.pictureChange.groupService.find_group import find_group
 from plugins.pictureChange.message import message_reply as MessageReply, message_type
 from plugins.pictureChange.message.message_limit import MessageLimit
@@ -229,9 +228,9 @@ class pictureChange(Plugin):
                     Common.process_init_image_url(request_bot_name, self.role_options, self.use_stable_diffusion,
                                                   self.use_music_handle, self.use_file_handle, self.is_wecom, e_context)
 
-                elif (any(content.startswith(prefix) for prefix in self.image_create_prefix) 
+                elif (any(content.startswith(prefix) for prefix in self.image_create_prefix)
                       and is_group_image and self.use_stable_diffusion):
-                    content = next((content.replace(prefix, "") for prefix in self.image_create_prefix 
+                    content = next((content.replace(prefix, "") for prefix in self.image_create_prefix
                                     if content.startswith(prefix)),
                                    content)
                     e_context['context'].content = content

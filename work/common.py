@@ -199,7 +199,8 @@ class Common:
                 with open(file_content, 'wb') as file:
                     file.write(response.content)
                     replyText = MessageType.in_image_reply(file_content, request_bot_name, role_options,
-                                                           use_stable_diffusion, use_file_handle, use_music_handle, is_wecom)
+                                                           use_stable_diffusion, use_file_handle, use_music_handle,
+                                                           is_wecom)
                     MessageReply.reply_Text_Message(True, replyText, e_context)
             else:
                 logger.error("下载失败")

@@ -1,14 +1,11 @@
-
-import os
-import json
-from plugins.pictureChange.groupService.Config_cache import Group_cache
 from common.log import logger
+from plugins.pictureChange.groupService.config_cache import group_cache
 
 
 class find_group:
     @staticmethod
     def find_group(group_name):
-        all_conf = Group_cache().get_cached_data()  # 从缓存获取内容
+        all_conf = group_cache().get_cached_data()  # 从缓存获取内容
         # 获取群聊名称，要放到插件，将上面改成def find_group(self, e_context: EventContext)，去掉下行注释
         # group_name = e_context["msg"].other_user_nickname
         if all_conf is None:
@@ -43,4 +40,4 @@ class find_group:
         else:
             return None
 
-print(find_group.find_group("小羊一家"))
+# print(find_group.find_group("小羊一家"))

@@ -4,7 +4,7 @@ import re
 import threading
 
 from common.log import logger
-from plugins.pictureChange.groupService.Config_cache import Group_cache
+from plugins.pictureChange.groupService.config_cache import group_cache
 
 """
 
@@ -14,7 +14,7 @@ from plugins.pictureChange.groupService.Config_cache import Group_cache
 class GroupConfig:
     def __init__(self):
         self.config = None
-        self.config_file = os.path.join(os.path.dirname(__file__), "group.json")
+        self.config_file = os.path.join(os.path.dirname(__file__), "config.json")
         self.mode = None
         self.load_config()
         self.lock = threading.Lock()
@@ -68,7 +68,7 @@ class GroupConfig:
             else:
                 self.mode = None
                 reply = f"未知指令 {ins}"
-            Group_cache.load_from_json()
+            group_cache.load_from_json()
             logger.info("已将更新数据放入缓存")
             return reply
 

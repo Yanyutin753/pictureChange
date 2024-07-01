@@ -3,7 +3,9 @@ import os
 import re
 import time
 import urllib
+
 import requests
+
 from bot import bot_factory
 from bridge.bridge import Bridge
 from common.log import logger

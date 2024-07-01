@@ -48,8 +48,8 @@ def file_toBase64(image_path: str):
 def delete_file(file_content):
     try:
         if os.path.isfile(file_content):
-           os.remove(file_content)
-           return "🥰图片已成功删除\n🧸感谢您的使用！"
+            os.remove(file_content)
+            return "🥰图片已成功删除\n🧸感谢您的使用！"
     except Exception as e:
         logger.error(f"{str(e)}")
     return "😭文件不存在或已删除"

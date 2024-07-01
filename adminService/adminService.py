@@ -21,7 +21,8 @@ class adminService:
             if self.admin_password == "":
                 # 生成随机密码
                 self.admin_password = ''.join(random.sample(string.ascii_letters + string.digits, 8))
-            logger.info(f"[adminService] 读取配置文件成功! admin_id: {self.admin_id}, admin_password: {self.admin_password}")
+            logger.info(
+                f"[adminService] 读取配置文件成功! admin_id: {self.admin_id}, admin_password: {self.admin_password}")
 
     # 认证管理员,然后写入config中
     def verify_admin(self, user_id: str, admin_password: str) -> bool:
@@ -74,13 +75,13 @@ class adminService:
     def update_json(self, user_id: str, target: str, *args, value: str) -> bool:
         if not self.is_admin(user_id):
             return False
-        
+
         # 设定文件路径
         config_path = os.path.join(os.path.dirname(__file__), "../config.json")
         try:
             with open(config_path, "r", encoding="utf-8") as f:
                 config = json.load(f)
-                
+
             # 使用递归函数设置值
             def set_nested_value(d, keys, value):
 
@@ -97,7 +98,7 @@ class adminService:
 
             # 调用递归函数
             set_nested_value(config, [target] + list(args), value)
-            
+
             with open(config_path, "w", encoding="utf-8") as f:
                 json.dump(config, f, ensure_ascii=False, indent=4)
 
@@ -112,13 +113,13 @@ class adminService:
     def append_json(self, user_id: str, target: str, *args, value: str) -> bool:
         if not self.is_admin(user_id):
             return False
-        
+
         # 设定文件路径
         config_path = os.path.join(os.path.dirname(__file__), "../config.json")
         try:
             with open(config_path, "r", encoding="utf-8") as f:
                 config = json.load(f)
-                
+
             # 使用递归函数设置值
             def set_nested_value(d, keys, value):
                 if len(keys) == 1:
@@ -127,13 +128,13 @@ class adminService:
                     if keys[0] not in d:
                         d[keys[0]] = []
                     set_nested_value(d[keys[0]], keys[1:], value)
-            
+
             # 调用递归函数
             set_nested_value(config, [target] + list(args), value)
-            
+
             with open(config_path, "w", encoding="utf-8") as f:
                 json.dump(config, f, ensure_ascii=False, indent=4)
-                
+
             logger.info(f"[adminService] 修改json成功! target: {target}, value: {value}")
             return True
         except Exception as e:

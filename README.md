@@ -41,7 +41,7 @@ pip3 install -r requirements.txt
 ```
 
 
-```bash
+```config.json
 # config.json文件内容示例
 {
     # 是否使用pictureChange插件功能
@@ -54,7 +54,7 @@ pip3 install -r requirements.txt
     "use_file_handle": true,
     # 是否开启群聊管理功能
     "use_group_handle": true,
-    # 最大并发数
+    # Stable Diffusion 最大并发数
     "max_number": 3,
     # 触发suno音乐关键词
     "music_create_prefix": [
@@ -200,11 +200,9 @@ pip3 install -r requirements.txt
 ```
 
 
-- config.json
+- groupService/config.json
 
-```
-
-```groupService/Group.json
+```groupService/config.json
 {
     # 控制群聊的功能
     "AllFunction": {
@@ -238,12 +236,13 @@ pip3 install -r requirements.txt
 }
 ```
 
-- config.py
-
+- adminService/config.json
+```adminService/config.json
+{
+    "admin_id": [],
+    "admin_password": "xxx"
+}
 ```
-    "group_imageChange": False,默认为True
-```
-
 
 <details>
 <summary>

@@ -237,7 +237,7 @@ class music_handle:
                         continue
 
         except Exception as e:
-            message_reply.reply_Error_Message(f"music_handle: {e}")
+            message_reply.reply_Error_Message(True, f"music_handle: {e}", e_context)
             raise Exception(f"An error occurred: {e}")
         finally:
             e_context.action = EventAction.BREAK_PASS

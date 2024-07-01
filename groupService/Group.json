@@ -24,7 +24,7 @@
         {
             "name": "小羊一家",
             "function": {
-                "IMAGE": false,
+                "IMAGE": true,
                 "FILE": true,
                 "MUSIC": true,
                 "MODEL": "gpt-4o",

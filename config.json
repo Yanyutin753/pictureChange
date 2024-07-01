@@ -1,6 +1,6 @@
 {
     "use_pictureChange": true,
-    "use_stable_diffusion": false,
+    "use_stable_diffusion": true,
     "use_music_handle": true,
     "use_file_handle": true,
     "max_number": 3,

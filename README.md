@@ -26,11 +26,7 @@
 
 ![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/5e310369-011d-430c-a85b-ca95946af799)
 
-### 2.如果你的**chatgpt-on-wechat
-
-**是最新版，[请点击查看](https://github.com/Yanyutin753/pictureChange/issues/9#issuecomment-2024305057)
-
-### 3.**确保图片位置填写正确**
+### 2.**确保图片位置填写正确**
 
 ![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/7736b31e-c58c-47b0-8f44-0dc167d43027)
 
@@ -44,64 +40,6 @@
 pip3 install -r requirements.txt
 ```
 
-
-## config.json 配置
-
-PS: 修改了pictureChange的`host`和`port`和`sd_model_checkpoint`和 `api_key` ,`secret_key`，并填充相应的模型名称
-
-### 图生图请求格式
-
-## 个人号
-
-- 群聊
-
-1. 需要发送"开启图生图"之后自动识别群聊里的每一张图
-2. 不需要则发送"关闭图生图"之后关闭功能
-   ![image](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/1813d361-242f-4ac1-8cbf-c0282e95f34e)
-
-- 单聊
-  直接发照片即可
-
-## 公众号和企业微信
-
-- 直接发图即可使用功能
-  ![image](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/6a3559ff-f538-469d-84b8-4446bf814207)
-
-## godcmd添加功能
-
-- 个人号使用一键开启或关闭图生图功能
-- 更改Host(更改地址,由于本地部署内网穿透，每次的ip不同，需要更改)
-  ![image](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/722ad22c-ef26-47e0-a105-86b8ffc02a08)
-
-## 实现分流控制
-
-- 当请求数超过3的时候，会发送消息，需要用户等待一会，直至前面用户完成任务之后再进行
-  ![image](https://github.com/Yanyutin753/wechat_pictureChange/assets/132346501/8f56227b-e8b2-49a1-902b-1812f8336765)
-
-### 画图请求格式
-
-用户的画图请求格式为:
-
-```
-    <画图触发词><关键词1> <关键词2> ... <关键词n>:<prompt> 
-```
-
-例如: 画高清 现实:男孩，强壮，挺拔，running，黑色耳机，白色短袖（中间有个羊字），黑色头发，黑色短裤
-
-会触发三个关键词 "高清", "现实",
-
-PS: 实际参数分为两部分:
-
-- 一部分是`params`，为画画的参数;参数名**必须**
-  与webuiapi包中[txt2img api](https://github.com/mix1009/sdwebuiapi/blob/fb2054e149c0a4e25125c0cd7e7dca06bda839d4/webuiapi/webuiapi.py#L163)
-  的参数名一致
-- 另一部分是`sd_model_checkpoint`，它必须和你下载的模型(http://127.0.0.1:7860/sdapi/v1/options )一致。
-
-### 部署操作
-
-1. 确保stable diffusion webui部署成功且能访问
-2. 安装包解压，并确保只把pictureChange文件夹plugins目录里面，之后把`config.json.template`复制为`config.json`，并修改其中的参数和规则。
-   具体如下
 
 ```bash
 # config.json文件内容示例
@@ -259,18 +197,6 @@ PS: 实际参数分为两部分:
 
 ```
 
-PS: 如果你下载了多个模型，就可以根据实际需要，填入你想要的模型 请确保你填入的模型是你下载过的模型，且模型能正常使用！
-
-3. 修改文件
-
-## 个人号
-
-1.
-
-直接把[godcmd.py](https://github.com/Yanyutin753/wechat_pictureChange/blob/main/%E5%85%AC%E4%BC%97%E5%8F%B7%E5%92%8C%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1/godcmd.py)
-覆盖你的chatgpt-on-wechat\plugins\godcmd\godcmd.py
-
-2. 在根目录config.json和config.py分别添加下面代码
 
 - config.json
 
@@ -316,25 +242,15 @@ PS: 如果你下载了多个模型，就可以根据实际需要，填入你想�
     "group_imageChange": False,默认为True
 ```
 
-3.群聊的时候记得先发送@机器人 开启图生图，才能正常使用功能
 
-### 公众号和企业微信
+<details>
+<summary>
 
-1.
+    使用实例
+</summary>
 
-直接把[godcmd.py](https://github.com/Yanyutin753/wechat_pictureChange/blob/main/%E5%85%AC%E4%BC%97%E5%8F%B7%E5%92%8C%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1/godcmd.py)
-覆盖你的chatgpt-on-wechat\plugins\godcmd\godcmd.py
 
-4. 安装依赖
-
-```
-    #进入pictureChange文件夹安装依赖
-    pip3 install -r requirements.txt
-```
-
-### 使用实例
-
-- 图生图
+#### 图生图
 
 ![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/4d6f16b0-136a-48d6-991e-482ce3bbc701)
 
@@ -342,18 +258,38 @@ PS: 如果你下载了多个模型，就可以根据实际需要，填入你想�
 
 ![9d3c926daec3b69ef1f2e1b38e4ad7e](https://github.com/Yanyutin753/pictureChange/assets/132346501/cc5f8843-6a42-422c-bbeb-1c073ffa651b)
 
-- 画图
+#### 画图
 
 ![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/428a2333-1589-42fd-88df-a1b182f8b3f6)
 
 ![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/89782b7c-8f28-42af-8c16-a588539219a3)
 
-- 支持放大 变换操作
+#### 支持放大 变换操作
 
 ![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/1ab662b2-bd3c-490f-9981-404dcb1ca0e3)
 
 ![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/32949ac2-93fc-4b7c-8387-f5cd7b1cb139)
 
+#### suno音乐
+  
+- 1. 文生图
+![ff731f85a945cac88772af6f2cad790](https://github.com/Yanyutin753/pictureChange/assets/132346501/dde5488a-d9b2-4c71-b971-28074a477db1)
+
+- 2. 图生图
+![d2f549aec32642e0ff2dbc9ad4f8956](https://github.com/Yanyutin753/pictureChange/assets/132346501/264ede7d-e162-423b-b9d3-2cb145fd4cd5)
+
+#### 文件识别
+![dd0b8389d12a753f37781259c0f6ea7](https://github.com/Yanyutin753/pictureChange/assets/132346501/d973d5ce-b228-4d98-8771-7ffddccaecb1)
+
+#### 图片识别
+![cf7e611c93f674098a3752f4f720a93](https://github.com/Yanyutin753/pictureChange/assets/132346501/94c171e4-2a96-4553-be82-998b39a962a5)
+
+#### 群聊管理和config管理
+![8f911097129cb2585526e75556f4182](https://github.com/Yanyutin753/pictureChange/assets/132346501/1597cef7-d72c-4850-b3da-5978e759a21a)
+
+
+</details>
+   
 ### 贡献与支持
 
 - 欢迎贡献代码，提出问题和建议。如果你发现了bug或者有新的功能想法，请提交一个Issue让我知道。你也可以通过Fork项目并提交Pull

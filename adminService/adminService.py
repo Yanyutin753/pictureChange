@@ -10,6 +10,9 @@ class adminService():
         self.admin_password = []
         # 读取配置文件
         config_path = os.path.join(os.path.dirname(__file__), "config.json")
+        if not os.path.exists(config_path):
+            print(f"[adminService] 读取配置文件失败! config.json文件不存在")
+            return
         with open(config_path, "r", encoding="utf-8") as f:
             config = json.load(f)
             self.admin_id = config["admin_id"]
@@ -22,6 +25,7 @@ class adminService():
     # 认证管理员,然后写入config中
     def verify_admin(self, user_id: str, admin_password: str) -> bool:
         if admin_password != self.admin_password:
+            print("[adminService] 认证管理员失败!")
             return False
         config_path = os.path.join(os.path.dirname(__file__), "config.json")
         self.admin_id.append(user_id)
@@ -30,6 +34,7 @@ class adminService():
             config["admin_id"].append(user_id)
         with open(config_path, "w", encoding="utf-8") as f:
             json.dump(config, f, ensure_ascii=False, indent=4)
+        print(f"[adminService] 认证管理员成功! admin_id: {self.admin_id}")
         return True
         
 
@@ -74,21 +79,47 @@ class adminService():
         
         # 设定文件路径
         config_path = os.path.join(os.path.dirname(__file__), "../config.json")
+        if not os.path.exists(config_path):
+            print(f"[adminService] 修改json失败! target: {target}, value: {value}, error: config.json文件不存在")
+            return False
         try:
             with open(config_path, "r", encoding="utf-8") as f:
                 config = json.load(f)
-                
+
             # 使用递归函数设置值
             def set_nested_value(d, keys, value):
                 if len(keys) == 1:
+                    # 判断原先value的属性，如果是数字，转换为数字
+                    if isinstance(d[keys[0]], int):
+                        if value.isdigit():
+                            value = int(value)
+                        else:
+                            print(f"[adminService] 修改json失败! target: {target}, value: {value}, error: value不是数字")
+                            return False
+                    elif isinstance(d[keys[0]], bool):
+                        if value == "True":
+                            value = True
+                        elif value == "False":
+                            value = False
+                        else:
+                            print(f"[adminService] 修改json失败! target: {target}, value: {value}, error: value不是bool")
+                            return False
+                    elif isinstance(d[keys[0]], list):
+                        print(f"[adminService] 修改json失败! target: {target}, value: {value}, error: 请使用append_json方法添加元素")
+                        return False
+
                     d[keys[0]] = value
+                    
+                    return True
                 else:
                     if keys[0] not in d:
                         d[keys[0]] = {}
-                    set_nested_value(d[keys[0]], keys[1:], value)
+                    return set_nested_value(d[keys[0]], keys[1:], value)
             
             # 调用递归函数
-            set_nested_value(config, [target] + list(args), value)
+            if set_nested_value(config, [target] + list(args), value) == False:
+                return False
+
             
             with open(config_path, "w", encoding="utf-8") as f:
                 json.dump(config, f, ensure_ascii=False, indent=4)
@@ -106,6 +137,9 @@ class adminService():
         
         # 设定文件路径
         config_path = os.path.join(os.path.dirname(__file__), "../config.json")
+        if not os.path.exists(config_path):
+            print(f"[adminService] 修改json失败! target: {target}, value: {value}, error: config.json文件不存在")
+            return False
         try:
             with open(config_path, "r", encoding="utf-8") as f:
                 config = json.load(f)
@@ -113,14 +147,28 @@ class adminService():
             # 使用递归函数设置值
             def set_nested_value(d, keys, value):
                 if len(keys) == 1:
-                    d[keys[0]].append(value)
+                    # 判断是否能append
+                    if isinstance(d[keys[0]], list):
+                        # 判断是什么元素类型
+                        if isinstance(d[keys[0]][0], int):
+                            if value.isdigit():
+                                value = int(value)
+                            else:
+                                print(f"[adminService] 修改json失败! target: {target}, value: {value}, error: value不是数字")
+                                return False
+                        d[keys[0]].append(value)
+                        return True
+                    else:
+                        print(f"[adminService] 修改json失败! target: {target}, value: {value}, error: value不是list")
+                        return False
                 else:
                     if keys[0] not in d:
                         d[keys[0]] = []
-                    set_nested_value(d[keys[0]], keys[1:], value)
+                    return set_nested_value(d[keys[0]], keys[1:], value)
             
             # 调用递归函数
-            set_nested_value(config, [target] + list(args), value)
+            if set_nested_value(config, [target] + list(args), value) == False:
+                return False
             
             with open(config_path, "w", encoding="utf-8") as f:
                 json.dump(config, f, ensure_ascii=False, indent=4)
@@ -129,4 +177,46 @@ class adminService():
             return True
         except Exception as e:
             print(f"[adminService] 修改json失败! target: {target}, value: {value}, error: {str(e)}")
+            return False
+
+    # 清空json中的值,仅对list有效
+    def clear_json(self, user_id: str, target: str, *args) -> bool:
+        if not self.is_admin(user_id):
+            return False
+        
+        # 设定文件路径
+        config_path = os.path.join(os.path.dirname(__file__), "../config.json")
+        if not os.path.exists(config_path):
+            print(f"[adminService] 修改json失败! target: {target}, error: config.json文件不存在")
+            return False
+        try:
+            with open(config_path, "r", encoding="utf-8") as f:
+                config = json.load(f)
+                
+
+            # 使用递归函数设置值
+            def set_nested_value(d, keys):
+                if len(keys) == 1:
+                    if isinstance(d[keys[0]], list):
+                        d[keys[0]] = []
+                        return True
+                    else:
+                        print(f"[adminService] 修改json失败! target: {target}, error: value不是list")
+                        return False
+                else:
+                    if keys[0] not in d:
+                        d[keys[0]] = []
+                    return set_nested_value(d[keys[0]], keys[1:])
+            
+            # 调用递归函数
+            if set_nested_value(config, [target] + list(args)) == False:
+                return False
+            
+            with open(config_path, "w", encoding="utf-8") as f:
+                json.dump(config, f, ensure_ascii=False, indent=4)
+                
+            print(f"[adminService] 修改json成功! target: {target}")
+            return True
+        except Exception as e:
+            print(f"[adminService] 修改json失败! target: {target}, error: {str(e)}")
             return False

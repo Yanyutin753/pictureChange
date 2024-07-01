@@ -14,7 +14,7 @@
 
 ### 1.使用前先安装stable diffusion webui，并在它的启动参数中添加 "--api",并开启**种子数**。
 
-* 安装具体信息，请参考[视频](https://www.youtube.com/watch?v=Z6FmiaWBbAE&t=3s)。
+* 安装具体信息，请参考[视频](https://www.bilibili.com/video/BV1iM4y1y7oA/?spm_id_from=333.337.search-card.all.click)。
 * 部署运行后，保证主机能够成功访问http://127.0.0.1:7860/
 * 如果是服务器部署则不必需要内网穿透，如果是本地电脑部署推荐[cpolar](https://dashboard.cpolar.com/signup)启动内网穿透
 

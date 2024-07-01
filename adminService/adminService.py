@@ -4,6 +4,7 @@ import random
 import string
 
 from common.log import logger
+from plugins import PluginManager
 
 
 class adminService:
@@ -99,7 +100,8 @@ class adminService:
             
             with open(config_path, "w", encoding="utf-8") as f:
                 json.dump(config, f, ensure_ascii=False, indent=4)
-                
+
+            PluginManager().reload_plugin(args[0])
             logger.info(f"[adminService] 修改json成功! target: {target}, value: {value}")
             return True
         except Exception as e:

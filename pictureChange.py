@@ -336,7 +336,7 @@ class pictureChange(Plugin):
             if content.startswith("颤值"):
                 content1 = content.split(" ")
                 if len(content1) != 3:
-                    replyText = f"😭修改成失败，格式错误，应该为‘颤值 参数名称 参数数值’"
+                    replyText = f"😭修改成失败，格式错误，应该为‘修改pictureChange参数 参数名称 参数数值’"
                     MessageReply.reply_Text_Message(True, replyText, e_context)
                     return
                 name = str(content1[1])
@@ -346,64 +346,12 @@ class pictureChange(Plugin):
                 elif str(change_value).lower() == "false":
                     change_value = False
 
-                if name == "port":
-                    self.port = change_value
-                    self.admin.update_json(sender_id, "start", name, value=change_value)
-                elif name == "host":
-                    self.host = change_value
-                    self.admin.update_json(sender_id, "start", name, value=change_value)
-                elif name == "use_https":
-                    self.use_https = change_value
-                    self.admin.update_json(sender_id, "start", name, value=change_value)
-                elif name == "use_pictureChange":
-                    self.use_pictureChange = change_value
-                    self.admin.update_json(sender_id, name, value=change_value)
-                elif name == "max_number":
-                    self.max_number = change_value
-                    self.admin.update_json(sender_id, name, value=change_value)
-                elif name == "is_use_fanyi":
-                    self.is_use_fanyi = change_value
-                    self.admin.update_json(sender_id, name, value=change_value)
-                elif name == "file_url":
-                    self.file_url = change_value
-                    self.admin.update_json(sender_id, name, value=change_value)
-                elif name == "baidu_api_key":
-                    self.baidu_api_key = change_value
-                    self.admin.update_json(sender_id, name, value=change_value)
-                elif name == "baidu_secret_key":
-                    self.baidu_secret_key = change_value
-                    self.admin.update_json(sender_id, name, value=change_value)
-                elif name == "openai_api_base":
-                    self.openai_api_base = change_value
-                    self.admin.update_json(sender_id, name, value=change_value)
-                elif name == "openai_api_key":
-                    self.openai_api_key = change_value
-                    self.admin.update_json(sender_id, name, value=change_value)
-                elif name == "music_model":
-                    self.music_model = change_value
-                    self.admin.update_json(sender_id, name, value=change_value)
-                elif name == "image_recognize_model":
-                    self.image_recognize_model = change_value
-                    self.admin.update_json(sender_id, name, value=change_value)
-                elif name == "file_recognize_model":
-                    self.file_recognize_model = change_value
-                    self.admin.update_json(sender_id, name, value=change_value)
-                elif name == "use_stable_diffusion":
-                    self.use_stable_diffusion = change_value
-                    self.admin.update_json(sender_id, name, value=change_value)
-                elif name == "use_music_handle":
-                    self.use_music_handle = change_value
-                    self.admin.update_json(sender_id, name, value=change_value)
-                elif name == "use_file_handle":
-                    self.use_file_handle = change_value
-                    self.admin.update_json(sender_id, name, value=change_value)
-                else:
+                if not self.admin.update_json(sender_id, name, value=change_value):
                     replyText = f"😭修改成失败，没有这个参数名称"
                     MessageReply.reply_Text_Message(True, replyText, e_context)
-                    return
-
-                replyText = f"🥰修改成功，当前{name}的值为{change_value}"
-                MessageReply.reply_Text_Message(True, replyText, e_context)
+                else:
+                    replyText = f"🥰修改成功，当前{name}的值为{change_value}"
+                    MessageReply.reply_Text_Message(True, replyText, e_context)
                 return
 
             elif content.startswith("修改密码"):

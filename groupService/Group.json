@@ -1,0 +1,25 @@
+{
+    "AllFunction": {
+        "IS_IMAGE": true,
+        "IS_FILE": true,
+        "IS_MUSIC": true,
+        "MODEL": [
+            "gpt-4o",
+            "glm-4",
+            "abab6.5-chat",
+            "abab6.5s-chat"
+        ]
+    },
+    "group": [
+        {
+            "name": "小羊一家🏡",
+            "function": {
+                "IMAGE": true,
+                "FILE": true,
+                "MUSIC": true,
+                "MODEL": "abab6.5s-chat",
+                "ENABLE": true
+            }
+        }
+    ]
+}

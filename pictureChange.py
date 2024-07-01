@@ -130,11 +130,6 @@ class pictureChange(Plugin):
         return os.path.join(curdir, json_path)
 
     def on_handle_context(self, e_context: EventContext):
-        if not self.use_pictureChange:
-            replyText = f"😭pictureChange关闭了，快联系管理员开启pictureChange吧🥰🥰🥰"
-            MessageReply.reply_Text_Message(False, replyText, e_context)
-            return
-
         channel = e_context['channel']
         if ReplyType.IMAGE in channel.NOT_SUPPORT_REPLYTYPE:
             return
@@ -308,6 +303,10 @@ class pictureChange(Plugin):
                 logger.error("[SD画图失败] exception: %s" % e)
                 MessageReply.reply_Error_Message(True, replyText, e_context)
                 # util.delete_file(file_content)
+
+        elif not self.use_pictureChange and self.admin.is_admin(user):
+            self.admin_service(content, user, e_context)
+
         else:
             e_context.action = EventAction.CONTINUE
 

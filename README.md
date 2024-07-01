@@ -11,6 +11,40 @@
 - 支持stable diffusion图生图，文生图自定义模板
 - 支持企业微信，个人号，公众号部署
 
+
+## Stable Diffusion
+
+### 1. 使用前先安装stable diffusion webui，并在它的启动参数中添加 "--api",并开启**种子数**。
+
+* 安装具体信息，请参考[视频](https://www.youtube.com/watch?v=Z6FmiaWBbAE&t=3s)。
+* 部署运行后，保证主机能够成功访问http://127.0.0.1:7860/
+* 如果是服务器部署则不必需要内网穿透，如果是本地电脑部署推荐[cpolar](https://dashboard.cpolar.com/signup)启动内网穿透
+
+#### **如下图**
+
+![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/7c58fde5-832c-4e8d-b822-0117cd77814f)
+
+#### **请确保图片的文件名字有种子数进行命名**
+
+![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/5e310369-011d-430c-a85b-ca95946af799)
+
+### 2. **确保图片位置填写正确**
+
+![image](https://github.com/Yanyutin753/pictureChange/assets/132346501/7736b31e-c58c-47b0-8f44-0dc167d43027)
+
+```
+"file_url": "file=D:/sd/sd-webui-aki/sd-webui-aki-v4.2/sd-webui-aki-v4.2/outputs/,  #这个地址是你图片生成的地址"
+```
+
+### 3. 请确保**安装**本插件的依赖包```pip3 install -r requireents.txt```
+
+```
+pip3 install -r requirements.txt
+```
+
+
+## config.json 配置
+
 ```config.json
 # config.json文件内容示例
 {
@@ -109,24 +143,6 @@
         },
         {
             "keywords": [
-                "机甲少女"
-            ],
-            "desc": "输出机甲少女风格"
-        },
-        {
-            "keywords": [
-                "港风"
-            ],
-            "desc": "输出港风风格"
-        },
-        {
-            "keywords": [
-                "国风"
-            ],
-            "desc": "输出国风风格"
-        },
-        {
-            "keywords": [
                 "高清"
             ],
             "params": {
@@ -139,7 +155,7 @@
             "keywords": [
                 "二次元"
             ],
-                        # 切换模型
+            # 切换模型
             "options": {
                 "sd_model_checkpoint": "anything-v5-PrtRE.safetensors [7f96a1a9ca]"
             },
@@ -154,15 +170,6 @@
                 "sd_model_checkpoint": "absolutereality_v181.safetensors [463d6a9fe8]"
             },
             "desc": "使用现实风格模型出图"
-        },
-        {
-            "keywords": [
-                "Q版"
-            ],
-            "options": {
-                "sd_model_checkpoint": "QteaMix-fp16.safetensors [0c1efcbbd6]"
-            },
-            "desc": "使用Q版风格模型出图"
         }
     ],
     # 可自定义图生图角色
@@ -238,7 +245,7 @@
 ```
 
 
-### 贡献与支持
+## 贡献与支持
 
 - 欢迎贡献代码，提出问题和建议。如果你发现了bug或者有新的功能想法，请提交一个Issue让我知道。你也可以通过Fork项目并提交Pull
   Request来贡献代码。 如果你想部署这个项目，给我一个星星⭐，这是对我最大的支持！

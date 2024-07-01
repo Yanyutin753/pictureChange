@@ -3,6 +3,7 @@
     "use_stable_diffusion": true,
     "use_music_handle": true,
     "use_file_handle": true,
+    "use_group_handle": true,
     "max_number": 3,
     "music_create_prefix": [
         "唱",

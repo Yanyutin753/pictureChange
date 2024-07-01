@@ -105,6 +105,7 @@ class pictureChange(Plugin):
                 self.use_stable_diffusion = config["use_stable_diffusion"]
                 self.use_music_handle = config["use_music_handle"]
                 self.use_file_handle = config["use_file_handle"]
+                self.use_group_handle = config.get("use_group_handle", True)
                 self.admin = admin_service()
 
                 # 判断回复类型
@@ -162,7 +163,7 @@ class pictureChange(Plugin):
         is_group_model = None
         user = e_context["context"]["receiver"]
 
-        if is_group:
+        if is_group and self.use_group_handle:
             group_name = context["msg"].other_user_nickname
             data_group_config = find_group.find_group(group_name)
             logger.info(data_group_config)

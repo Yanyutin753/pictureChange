@@ -48,10 +48,12 @@ pip3 install -r requirements.txt
     "use_pictureChange": true,
     # 是否使用SD功能
     "use_stable_diffusion": false,
-    # 是否使用Suno音乐功能
+    # 是否开启Suno音乐功能
     "use_music_handle": true,
-    # 是否使用文件识别功能
+    # 是否开启文件识别功能
     "use_file_handle": true,
+    # 是否开启群聊管理功能
+    "use_group_handle": true,
     # 最大并发数
     "max_number": 3,
     # 触发suno音乐关键词

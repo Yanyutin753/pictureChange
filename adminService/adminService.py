@@ -90,12 +90,10 @@ class adminService:
                         d[keys[0]] = {}
                     set_nested_value(d[keys[0]], keys[1:], value)
 
-            if value.isdigit():  # 判断是否是数字
-                value = int(value)
-            elif value.lower() == "true":  # 判断是否是布尔类型 true
-                value = True
-            elif value.lower() == "false":  # 判断是否是布尔类型 false
-                value = False
+            if not isinstance(value, bool):
+                if value.isdigit():
+                    value = int(value)
+
             # 调用递归函数
             set_nested_value(config, [target] + list(args), value)
             

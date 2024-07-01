@@ -3,10 +3,7 @@ import json
 
 
 class Group_cache:
-    _cached_data = None  # 静态变量用于存储缓存数据
-
-    def __init__(self):
-        Group_cache.load_from_json()
+    _cached_data = None
 
     @staticmethod
     def load_from_json():
@@ -25,10 +22,10 @@ class Group_cache:
         if Group_cache._cached_data:
             return Group_cache._cached_data
         else:
-            return None
+            Group_cache.load_from_json()
+            return Group_cache._cached_data
 
     @staticmethod
     def refresh_cache():
         # 强制刷新缓存数据
         Group_cache.load_from_json()
-

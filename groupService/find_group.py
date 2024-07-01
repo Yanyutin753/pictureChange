@@ -29,10 +29,14 @@ class find_group:
                                 ans_dic[funct_keys[i]] = funct_values[i]
                                 continue
                         if values[i] == "True" and values[i] == funct_values[i]:
-                            ans_dic[funct_keys[i]] = "True"
+                            ans_dic[funct_keys[i]] = True
                         else:
-                            ans_dic[funct_keys[i]] = "False"
+                            ans_dic[funct_keys[i]] = False
 
+                    if funct_dic["ENABLE"]:
+                        ans_dic["ENABLE"] = True
+                    else:
+                        ans_dic["ENABLE"] = False
                     return ans_dic
             else:
                 return None

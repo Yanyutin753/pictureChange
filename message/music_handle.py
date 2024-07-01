@@ -1,4 +1,3 @@
-# 此类用于存放音乐回复处理操作
 import json
 import os
 import re
@@ -105,13 +104,14 @@ class music_handle:
                                 message_content = delta.get('content', "")
                                 # 处理生成音乐提示的不同部分
                                 if "违规" in message_content:
-                                    replyText = (f"⚠️⚠️ 违规 ⚠️⚠️\n\n🤖歌曲提示\n\n{prompt}\n\n"
-                                                 f"🚨注意\n\n😭您的提示词中存在违规词，歌曲创作失败😭"
-                                                 f"\n\n🤗请更换提示词，我会为您重新创作✨")
+                                    replyText = (f"⚠️⚠️ 违规 ⚠️⚠️\n\n🤖 歌曲提示\n\n{str(prompt)}\n\n"
+                                                 f"🚨 注意\n\n😭您的提示词中存在违规词，歌曲创作失败😭\n\n"
+                                                 f"🤗 请更换提示词，我会为您重新创作✨")
                                     message_reply.tem_reply_Text_Message(replyText, e_context)
                                     break
                                 if "ID" in message_content:
-                                    replyText = "🤩音乐已经生成，敬请期待！\n✨温馨提示：用英文表述音乐术语，结果会更准确哟~"
+                                    replyText = (f"🤯 Creating\n\n🤖 歌曲提示\n\n{prompt}\n\n"
+                                                 "🤩 音乐已经生成，敬请期待！\n\n🤗 温馨提示：用英文表述音乐术语，结果会更准确哟~")
                                     message_reply.tem_reply_Text_Message(replyText, e_context)
                                 if "歌名" in message_content:
                                     song_name_match = re.search(r'歌名\*\*：(.+?)\n', message_content)
@@ -153,7 +153,10 @@ class music_handle:
                                 if is_wecom:
                                     # 处理企业微信消息
                                     if song_name and genre and full_lyrics and not song_info_printed:
-                                        replyText = f"⭐⭐ 歌曲信息 ⭐⭐\n\n『歌名』\n{song_name}\n\n『类型』\n{genre}\n\n『完整歌词』\n{full_lyrics}"
+                                        replyText = (f"⭐⭐ 歌曲信息 ⭐⭐\n\n『🤖 歌名』\n"
+                                                     f"{song_name}\n\n『💄 类型』\n{genre}"
+                                                     f"\n\n『📖 完整歌词』\n{full_lyrics}"
+                                                     f"\n\n👀 更多\n\n🚨 歌曲图片和实时音乐链接正在火速生成中🚀🚀🚀")
                                         message_reply.tem_reply_Text_Message(replyText, e_context)
 
                                         song_info_printed = True
@@ -163,7 +166,7 @@ class music_handle:
                                     if music_link1 and music_link2 and not music_links_printed:
                                         replyText = (
                                             f"🎵🎵 即刻体验 🎵🎵\n\n『实时音乐1️⃣』\n{music_link1}\n\n『实时音乐2️⃣』\n{music_link2}\n\n"
-                                            f"🚀音乐MP3和视频正在火速生成中，大概需要2-3分钟，请耐心等待！")
+                                            f"🚀 音乐MP3和视频正在火速生成中，大概需要2-3分钟，请耐心等待！")
                                         message_reply.tem_reply_Text_Message(replyText, e_context)
                                         music_links_printed = True
                                     if song1 and song2 and not songs_printed:
@@ -178,7 +181,10 @@ class music_handle:
                                     # 处理普通消息
                                     # 同时回复歌名、类型和完整歌词
                                     if song_name and genre and full_lyrics and not song_info_printed:
-                                        replyText = f"⭐⭐ 歌曲信息 ⭐⭐\n\n『歌名』\n{song_name}\n\n『类型』\n{genre}\n\n『完整歌词』\n{full_lyrics}"
+                                        replyText = (f"⭐⭐ 歌曲信息 ⭐⭐\n\n『🤖 歌名』\n"
+                                                     f"{song_name}\n\n『💄 类型』\n{genre}"
+                                                     f"\n\n『📖 完整歌词』\n{full_lyrics}"
+                                                     f"\n\n👀 更多\n\n🚨 歌曲图片和实时音乐链接正在火速生成中🚀🚀🚀")
                                         message_reply.tem_reply_Text_Message(replyText, e_context)
                                         song_info_printed = True
                                     # 回复歌曲图片
@@ -189,7 +195,7 @@ class music_handle:
                                     if music_link1 and music_link2 and not music_links_printed:
                                         replyText = (
                                             f"🎵🎵 即刻体验 🎵🎵\n\n『实时音乐1️⃣』\n{music_link1}\n\n『实时音乐2️⃣』\n{music_link2}\n\n"
-                                            f"🚀音乐MP3和视频正在火速生成中，大概需要2-3分钟，请耐心等待！")
+                                            f"🚀 音乐MP3和视频正在火速生成中，大概需要2-3分钟，请耐心等待！")
                                         message_reply.tem_reply_Text_Message(replyText, e_context)
                                         music_links_printed = True
                                     # 回复歌曲

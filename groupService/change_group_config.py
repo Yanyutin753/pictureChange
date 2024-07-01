@@ -1,9 +1,9 @@
 import json
+import os
 import re
 import threading
 
 from common.log import logger
-from plugins.pictureChange.groupService.find_group import find_group
 from plugins.pictureChange.groupService.Config_cache import Group_cache
 
 """
@@ -12,12 +12,12 @@ from plugins.pictureChange.groupService.Config_cache import Group_cache
 
 
 class GroupConfig:
-    def __init__(self, config_file='group.json'):
+    def __init__(self):
         self.config = None
-        self.config_file = config_file
+        self.config_file = os.path.join(os.path.dirname(__file__), "group.json")
         self.mode = None
         self.load_config()
-        self.lock = threading.Lock()  # 初始化线程锁
+        self.lock = threading.Lock()
 
     def load_config(self):
         try:
@@ -26,9 +26,9 @@ class GroupConfig:
         except FileNotFoundError:
             self.config = {
                 "AllFunction": {
-                    "IS_IMAGE": "True",
-                    "IS_FILE": "True",
-                    "IS_MUSIC": "True",
+                    "IS_IMAGE": True,
+                    "IS_FILE": True,
+                    "IS_MUSIC": True,
                     "MODEL": ["GPT3-5", "GLM-4"]
                 },
                 "group": []
@@ -38,6 +38,7 @@ class GroupConfig:
     def save_config(self):
         with open(self.config_file, 'w', encoding='utf-8') as file:
             json.dump(self.config, file, ensure_ascii=False, indent=4)
+        self.load_config()
 
     def ins_command(self, ins):
         with self.lock:  # 使用线程锁确保同一时间只有一个线程访问
@@ -48,7 +49,7 @@ class GroupConfig:
                         "修改已有群聊功能模式，请使用#change [funct] in [group_name] to [state]来修改群聊功能状态\n新增群聊模式，请使用#add ["
                         "group_name]来新增群聊"
                         "\n删除群聊模式，请使用#del [group_name]来删除群聊\n"
-                        "修改群聊模型模式，请使用#change [group_name] to [model]来修改模型")
+                        "修改群聊模型模式，请使用#modify [group_name] to [model]来修改模型")
             if ins[:7] == "#change":
                 self.mode = "modify_group_function"
                 reply = self.change_command(ins)
@@ -84,6 +85,11 @@ class GroupConfig:
                 funct, state = change_match.groups()
                 funct = funct.upper()
                 state = normalize_state(state)
+                # 将状态字符串转换为布尔类型
+                if state.lower() == "true":
+                    state = True
+                elif state.lower() == "false":
+                    state = False
                 if funct in (key.upper() for key in self.config["AllFunction"]):
                     self.config["AllFunction"][funct] = state
                     self.save_config()
@@ -98,7 +104,13 @@ class GroupConfig:
             if group_change_match:
                 funct, group_name, state = group_change_match.groups()
                 funct = funct.upper()
+                # 假设 normalize_state 已经处理好状态字符串
                 state = normalize_state(state)
+                # 将状态字符串转换为布尔类型
+                if state.lower() == "true":
+                    state = True
+                elif state.lower() == "false":
+                    state = False
                 if funct == "MODEL":
                     return "您没有对应权限"
                 group_found = False
@@ -120,12 +132,11 @@ class GroupConfig:
             model_change_match = model_change_pattern.match(command)
             if model_change_match:
                 group_name, model = model_change_match.groups()
-                model = model.upper()
                 group_found = False
                 for group in self.config["group"]:
                     if group["name"] == group_name:
                         group_found = True
-                        if model in (m.upper() for m in self.config["AllFunction"]["MODEL"]):
+                        if model in (m for m in self.config["AllFunction"]["MODEL"]):
                             group["function"]["MODEL"] = model
                             self.save_config()
                             return f"群聊 {group_name} 的模型已修改为 {model}"
@@ -149,11 +160,11 @@ class GroupConfig:
             new_group = {
                 "name": group_name,
                 "function": {
-                    "IMAGE": "False",
-                    "FILE": "False",
-                    "MUSIC": "False",
-                    "ENABLE": "True",
-                    "MODEL": "GPT_4",
+                    "IMAGE": self.config["AllFunction"]["IS_IMAGE"],
+                    "FILE": self.config["AllFunction"]["IS_FILE"],
+                    "MUSIC": self.config["AllFunction"]["IS_MUSIC"],
+                    "MODEL": self.config["AllFunction"]["MODEL"][0],
+                    "ENABLE": True,
                 }
             }
             self.config["group"].append(new_group)
@@ -179,15 +190,7 @@ class GroupConfig:
         else:
             return f"未知指令 {command}"
 
-
-# 测试代码
-manager = GroupConfig()
-print(manager.ins_command("#modify 500 Not Found to abab6.5s-chat"))
-# print(manager.ins_command("#add 505_b"))
-# print(manager.ins_command("#del 500 Not Found"))
-# print(Group_cache.get_cached_data())
-# findGroup = find_group()
-# s = findGroup.find_group("505_b")
-# print(s)
-# print(manager.ins_command("#modify is_music to false"))
-# print(manager.ins_command("#modify is_file to true"))
+# # 测试代码
+# manager = GroupConfig()
+# print(manager.config["group"])
+# print(manager.ins_command("#modify 500 Not Found to abab6.5s-chat"))

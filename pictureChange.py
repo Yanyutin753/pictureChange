@@ -341,6 +341,10 @@ class pictureChange(Plugin):
                     return
                 name = str(content1[1])
                 change_value = content1[2]
+                if str(change_value).lower() == "true":
+                    change_value = True
+                elif str(change_value).lower() == "false":
+                    change_value = False
 
                 if name == "port":
                     self.port = change_value
@@ -384,6 +388,15 @@ class pictureChange(Plugin):
                 elif name == "file_recognize_model":
                     self.file_recognize_model = change_value
                     self.admin.update_json(sender_id, name, value=change_value)
+                elif name == "use_stable_diffusion":
+                    self.use_stable_diffusion = change_value
+                    self.admin.update_json(sender_id, name, value=change_value)
+                elif name == "use_music_handle":
+                    self.use_music_handle = change_value
+                    self.admin.update_json(sender_id, name, value=change_value)
+                elif name == "use_file_handle":
+                    self.use_file_handle = change_value
+                    self.admin.update_json(sender_id, name, value=change_value)
                 else:
                     replyText = f"😭修改成失败，没有这个参数名称"
                     MessageReply.reply_Text_Message(True, replyText, e_context)
@@ -400,7 +413,6 @@ class pictureChange(Plugin):
                 self.admin.update_password(sender_id, content1[1])
                 replyText = f"🥰修改密码成功"
                 MessageReply.reply_Text_Message(True, replyText, e_context)
-
                 return
 
             elif content.startswith("修改host"):

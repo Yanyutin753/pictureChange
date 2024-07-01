@@ -7,7 +7,7 @@ from common.log import logger
 from plugins import PluginManager
 
 
-class adminService:
+class admin_service:
     def __init__(self):
         # 存储的管理员及激活码
         self.admin_id = []
@@ -83,14 +83,14 @@ class adminService:
                 config = json.load(f)
 
             # 使用递归函数设置值
-            def set_nested_value(d, keys, value):
+            def set_nested_value(d, keys, key_value):
 
                 if len(keys) == 1:
-                    d[keys[0]] = value
+                    d[keys[0]] = key_value
                 else:
                     if keys[0] not in d:
                         d[keys[0]] = {}
-                    set_nested_value(d[keys[0]], keys[1:], value)
+                    set_nested_value(d[keys[0]], keys[1:], key_value)
 
             if not isinstance(value, bool):
                 if value.isdigit():
@@ -121,13 +121,13 @@ class adminService:
                 config = json.load(f)
 
             # 使用递归函数设置值
-            def set_nested_value(d, keys, value):
+            def set_nested_value(d, keys, key_value):
                 if len(keys) == 1:
-                    d[keys[0]].append(value)
+                    d[keys[0]].append(key_value)
                 else:
                     if keys[0] not in d:
                         d[keys[0]] = []
-                    set_nested_value(d[keys[0]], keys[1:], value)
+                    set_nested_value(d[keys[0]], keys[1:], key_value)
 
             # 调用递归函数
             set_nested_value(config, [target] + list(args), value)

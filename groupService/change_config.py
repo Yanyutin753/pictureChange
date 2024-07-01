@@ -11,7 +11,7 @@ from plugins.pictureChange.groupService.config_cache import group_cache
 """
 
 
-class GroupConfig:
+class group_config:
     def __init__(self):
         self.config = None
         self.config_file = os.path.join(os.path.dirname(__file__), "config.json")
@@ -42,7 +42,6 @@ class GroupConfig:
 
     def ins_command(self, ins):
         with self.lock:  # 使用线程锁确保同一时间只有一个线程访问
-            reply = ""
             if ins == "#help":
                 self.mode = "help"
                 return ("修改总功能，请使用#change [funct] to [state]来修改总功能\n"
@@ -73,8 +72,8 @@ class GroupConfig:
             return reply
 
     def change_command(self, command):
-        def normalize_state(state):
-            return state.capitalize()
+        def normalize_state(value_state):
+            return value_state.capitalize()
 
         change_pattern = re.compile(r'^#modify (\w+) to (\w+)$')
         group_change_pattern = re.compile(r'^#change (\w+) in (.+) to (\w+)$')
@@ -116,7 +115,6 @@ class GroupConfig:
                 group_found = False
                 for group in self.config["group"]:
                     if group["name"] == group_name:
-                        group_found = True
                         if funct in (key.upper() for key in group["function"]):
                             group["function"][funct] = state
                             self.save_config()
@@ -135,7 +133,6 @@ class GroupConfig:
                 group_found = False
                 for group in self.config["group"]:
                     if group["name"] == group_name:
-                        group_found = True
                         if model in (m for m in self.config["AllFunction"]["MODEL"]):
                             group["function"]["MODEL"] = model
                             self.save_config()
@@ -181,7 +178,6 @@ class GroupConfig:
             group_found = False
             for group in self.config["group"]:
                 if group["name"] == group_name:
-                    group_found = True
                     self.config["group"].remove(group)
                     self.save_config()
                     return f"群聊 {group_name} 已成功删除"

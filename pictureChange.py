@@ -2,8 +2,8 @@ import plugins
 from bridge.context import ContextType
 from bridge.reply import ReplyType
 from plugins import *
-from plugins.pictureChange.adminService.adminService import adminService
-from plugins.pictureChange.groupService import change_config
+from plugins.pictureChange.adminService.admin_service import admin_service
+from plugins.pictureChange.groupService.change_config import group_config
 from plugins.pictureChange.groupService.find_group import find_group
 from plugins.pictureChange.message import message_reply as MessageReply, message_type
 from plugins.pictureChange.message.message_limit import MessageLimit
@@ -105,7 +105,7 @@ class pictureChange(Plugin):
                 self.use_stable_diffusion = config["use_stable_diffusion"]
                 self.use_music_handle = config["use_music_handle"]
                 self.use_file_handle = config["use_file_handle"]
-                self.admin = adminService()
+                self.admin = admin_service()
 
                 # 判断回复类型
                 channel_type = conf().get("channel_type", "wx")
@@ -169,13 +169,13 @@ class pictureChange(Plugin):
 
         if is_group:
             group_name = context["msg"].other_user_nickname
-            group_config = find_group.find_group(group_name)
-            logger.info(group_config)
-            if group_config and group_config["ENABLE"]:
-                is_group_image = group_config["IMAGE"]
-                is_group_file = group_config["FILE"]
-                is_group_music = group_config["MUSIC"]
-                is_group_model = group_config["MODEL"]
+            data_group_config = find_group.find_group(group_name)
+            logger.info(data_group_config)
+            if data_group_config and data_group_config["ENABLE"]:
+                is_group_image = data_group_config["IMAGE"]
+                is_group_file = data_group_config["FILE"]
+                is_group_music = data_group_config["MUSIC"]
+                is_group_model = data_group_config["MODEL"]
             else:
                 is_group_enable = False
                 is_group_image = False
@@ -382,6 +382,6 @@ class pictureChange(Plugin):
 
             elif content.startswith("群聊修改 "):
                 content = content.replace("群聊修改 ", "")
-                replyText = change_config.GroupConfig().ins_command(content)
+                replyText = group_config().ins_command(content)
                 MessageReply.reply_Text_Message(True, replyText, e_context)
                 return

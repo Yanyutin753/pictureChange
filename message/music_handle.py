@@ -219,8 +219,8 @@ class music_handle:
                                             message_reply.tem_reply_Video_Message(file_path1, e_context)
                                             songs_printed = True
                                         except Exception as e:
-                                            continue
                                             logger.error(f"Error downloading song: {e}")
+                                            continue
                                     # 回复视频
                                     if video1 and video2 and not videos_printed:
                                         while requests.get(video1).status_code != 200:

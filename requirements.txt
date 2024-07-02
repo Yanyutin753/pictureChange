@@ -1,3 +1,4 @@
 # sdwebui plugin
 webuiapi>=0.6.2
 langid
+oauthlib

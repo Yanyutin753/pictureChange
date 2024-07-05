@@ -273,10 +273,10 @@ pip3 install -r requirements.txt
 
 #### suno音乐
   
-- 1. 文生图
+- 1. 文生音
 ![ff731f85a945cac88772af6f2cad790](https://github.com/Yanyutin753/pictureChange/assets/132346501/dde5488a-d9b2-4c71-b971-28074a477db1)
 
-- 2. 图生图
+- 2. 图生音
 ![d2f549aec32642e0ff2dbc9ad4f8956](https://github.com/Yanyutin753/pictureChange/assets/132346501/264ede7d-e162-423b-b9d3-2cb145fd4cd5)
 
 #### 文件识别

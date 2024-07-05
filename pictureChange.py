@@ -210,7 +210,8 @@ class pictureChange(Plugin):
         if self.use_pictureChange and is_group_enable:
             try:
                 # 判断消息类型
-                if e_context['context'].type == ContextType.IMAGE and is_group_image:
+                if (e_context['context'].type == ContextType.IMAGE and is_group_image
+                        and (self.use_music_handle or self.use_stable_diffusion)):
                     Common.process_init_image(request_bot_name, self.role_options,
                                               self.use_stable_diffusion, self.use_music_handle, self.use_file_handle,
                                               self.is_wecom, e_context)
@@ -220,8 +221,8 @@ class pictureChange(Plugin):
                                         self.file_recognize_prompt, e_context)
 
                 elif (any(ext in content for ext in ["jpg", "jpeg", "png", "gif", "webp"]) and (
-                        content.startswith("http://") or content.startswith("https://"))
-                      and is_group_image):
+                        content.startswith("http://") or content.startswith("https://")) and is_group_image
+                      and (self.use_music_handle or self.use_stable_diffusion)):
                     Common.process_init_image_url(request_bot_name, self.role_options, self.use_stable_diffusion,
                                                   self.use_music_handle, self.use_file_handle, self.is_wecom, e_context)
 

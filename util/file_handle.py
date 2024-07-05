@@ -25,14 +25,16 @@ def update_config(config_path, user_id, append):
 
 
 # 用于图片和文件转成base64
-def file_toBase64(image_path: str):
-    if os.path.isfile(image_path):
+def file_toBase64(file_path: str):
+    if os.path.isfile(file_path):
         try:
-            with open(image_path, 'rb') as file:
+            with open(file_path, 'rb') as file:
                 image_data = file.read()
                 base64_image = base64.b64encode(image_data).decode('utf-8')
                 # 获取文件的MIME类型
-                mime_type, _ = mimetypes.guess_type(image_path)
+                mime_type, _ = mimetypes.guess_type(file_path)
+                logger.info(f"文件路径: {file_path}")
+                logger.info(f"文件MIME类型: {mime_type}")
                 if mime_type is None:
                     mime_type = "application/octet-stream"  # 默认MIME类型
                 base64_image = f"data:{mime_type};base64,{base64_image}"
@@ -41,7 +43,7 @@ def file_toBase64(image_path: str):
             logger.error(f"读取文件时出错: {e}")
             return None
     else:
-        logger.warning(f"文件不存在: {image_path}")
+        logger.warning(f"文件不存在: {file_path}")
         return None
 
 

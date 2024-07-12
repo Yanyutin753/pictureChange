@@ -213,7 +213,7 @@ class pictureChange(Plugin):
                 if (e_context['context'].type == ContextType.IMAGE and is_group_image
                         and (self.use_music_handle or self.use_stable_diffusion)):
                     Common.process_init_image(request_bot_name, self.role_options,
-                                              self.use_stable_diffusion, self.use_music_handle, self.use_file_handle,
+                                              self.use_stable_diffusion, self.use_music_handle, True,
                                               self.is_wecom, e_context)
 
                 elif e_context['context'].type == ContextType.FILE and is_group_file and self.use_file_handle:
@@ -224,7 +224,7 @@ class pictureChange(Plugin):
                         content.startswith("http://") or content.startswith("https://")) and is_group_image
                       and (self.use_music_handle or self.use_stable_diffusion)):
                     Common.process_init_image_url(request_bot_name, self.role_options, self.use_stable_diffusion,
-                                                  self.use_music_handle, self.use_file_handle, self.is_wecom, e_context)
+                                                  self.use_music_handle, True, self.is_wecom, e_context)
 
                 elif (any(content.startswith(prefix) for prefix in self.image_create_prefix)
                       and is_group_image and self.use_stable_diffusion):
@@ -246,7 +246,7 @@ class pictureChange(Plugin):
                 elif content.startswith("🤖 图像修复 ") and is_group_image and self.use_stable_diffusion:
                     Common.process_baidu_image(self.baidu_api_key, self.baidu_secret_key, e_context)
 
-                elif content.startswith("🖼️ 图像描述 ") and is_group_image and self.use_file_handle:
+                elif content.startswith("🖼️ 图像描述 ") and is_group_image:
                     Common.process_image(self.openai_api_base, self.openai_api_key, self.image_recognize_model,
                                          self.image_recognize_prompt, e_context)
 

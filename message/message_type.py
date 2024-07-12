@@ -8,7 +8,7 @@ def in_image_reply(file_content, request_bot_name, role_options, use_stable_diff
             replyText += f"\n\n{request_bot_name}🎧 图生音 {file_content}"
 
         if use_file_handle:
-            replyText += f"\n\n{request_bot_name}🖼️ 图像描述  {file_content}"
+            replyText += f"\n\n{request_bot_name}🖼️ 图像描述 {file_content}"
 
         if use_stable_diffusion:
             replyText += f"\n\n{request_bot_name}🤖 图像修复 {file_content}"

@@ -18,7 +18,7 @@ def in_image_reply(file_content, request_bot_name, role_options, use_stable_diff
 
             replyText += f"\n\n{request_bot_name}🎡 自定义 {file_content} [关键词] 例如 黑色头发 白色短袖 等关键词"
 
-        replyText += f"\n\n{request_bot_name}⭐ 暂不处理 {file_content}"
+        replyText += f"\n\n{request_bot_name}👀 暂不处理 {file_content}"
 
     else:
         replyText = f"🥰 您的图片编号:\n💖 {file_content}\n\n❗ 请点击指令,以进行图片操作"
@@ -38,7 +38,7 @@ def in_image_reply(file_content, request_bot_name, role_options, use_stable_diff
             replyText += f"\n\n{request_bot_name}🎡 自定义 {file_content} [关键词] 例如 黑色头发 白色短袖 等关键词"
 
         replyText += ("\n\n<a href=\"weixin://bizmsgmenu?msgmenuid=1&msgmenucontent={}{} {}\">{}</a>".
-                      format(request_bot_name, "⭐ 暂不处理", file_content, "⭐ 暂不处理"))
+                      format(request_bot_name, "👀 暂不处理", file_content, "👀 暂不处理"))
 
     if use_stable_diffusion:
         replyText += "\n\n🥰 温馨提示\n👑 MODEL_1 : 动漫\n🏆 MODEL_2 : 现实\n🧩 MODEL_3 : Q版"

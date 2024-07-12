@@ -32,7 +32,14 @@ def file_toBase64(file_path: str):
                 image_data = file.read()
                 base64_image = base64.b64encode(image_data).decode('utf-8')
                 # 获取文件的MIME类型
-                mime_type, _ = mimetypes.guess_type(file_path)
+                mime_type, _ = mimetypes.guess_type(file_path, strict=False)
+                if mime_type is None:
+                    if file_path.endswith(".docx"):
+                        mime_type = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                    elif file_path.endswith(".xlsx"):
+                        mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    else:
+                        mime_type = "application/octet-stream"
                 logger.info(f"文件路径: {file_path}")
                 logger.info(f"文件MIME类型: {mime_type}")
                 if mime_type is None:

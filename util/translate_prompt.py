@@ -15,7 +15,8 @@ def translatePrompt(is_use_fanyi, bot_prompt, prompt, params, session_id):
                 if not is_use_fanyi:
                     bot = bot_factory.create_bot(Bridge().btype['chat'])
                     session = bot.sessions.build_session(session_id, bot_prompt)
-                    session.add_query(prompt)
+                    # 不带有之前的提示词
+                    # session.add_query(prompt)
                     result = bot.reply_text(session)
                     prompt = result['content']
                 else:
@@ -36,7 +37,8 @@ def simple_translatePrompt(is_use_fanyi, bot_prompt, prompt, session_id):
                 if not is_use_fanyi:
                     bot = bot_factory.create_bot(Bridge().btype['chat'])
                     session = bot.sessions.build_session(session_id, bot_prompt)
-                    session.add_query(prompt)
+                    # 不带有之前的提示词
+                    # session.add_query(prompt)
                     result = bot.reply_text(session)
                     prompt = result['content']
                 else:

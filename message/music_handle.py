@@ -26,7 +26,8 @@ def music_prompt(bot_prompt, prompt, e_context):
         session_id = context.content.strip()
         bot = bot_factory.create_bot(Bridge().btype['chat'])
         session = bot.sessions.build_session(session_id, bot_prompt)
-        session.add_query(prompt)
+        # 不带有之前的提示词
+        # session.add_query(prompt)
         result = bot.reply_text(session)
         return str(result.get("content"))
     except Exception:
